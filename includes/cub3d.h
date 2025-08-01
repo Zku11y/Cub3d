@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/07/31 13:19:01 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/01 12:34:21 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 #include <sys/time.h>
 #include <stdbool.h>
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1200
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 800
 
 
 typedef struct s_vect2
