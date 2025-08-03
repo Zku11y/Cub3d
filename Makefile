@@ -13,9 +13,10 @@ LIBFT_INC = -I$(LIBFT_DIR)
 
 CC = cc
 CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
+# CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC) -fsanitize=address
 
 $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
-	cc $(SRC) $(MLX_LIB) $(LIBFT_LIB) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
+	cc $(CFLAGS) $(SRC) $(MLX_LIB) $(LIBFT_LIB) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
 
 $(MLX_LIB):
 	make -C $(MLX_DIR)

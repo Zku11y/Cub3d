@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/01 12:34:21 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/03 16:02:20 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,16 @@ typedef struct s_vect2
 typedef struct s_cube
 {
     mlx_t *mlx;
+
+    char **map;
     mlx_image_t *image;
     t_vect2 pos;
     bool moving;
+    int map_x;
+    int map_y;
+    unsigned long init_t;
+    unsigned long final_t;
+    int fps;
 }   t_cube;
 
 #endif
