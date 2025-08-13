@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/03 18:24:46 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/13 14:08:34 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,19 @@ void draw_player(t_cube *cube)
     int offset;
 
     offset = 3;
-    if(cube->pos.x < offset)
-        cube->pos.x = offset;
-    else if(cube->pos.x > SCREEN_WIDTH)
-        cube->pos.x = SCREEN_WIDTH - offset;
-    if(cube->pos.y < offset)
-        cube->pos.y = offset;
-    else if(cube->pos.y > SCREEN_HEIGHT)
-        cube->pos.y = SCREEN_HEIGHT - offset;
-    x = cube->pos.x - offset;
-    while(x < (cube->pos.x + offset))
+    if(cube->player.x < offset)
+        cube->player.x = offset;
+    else if(cube->player.x > SCREEN_WIDTH)
+        cube->player.x = SCREEN_WIDTH - offset;
+    if(cube->player.y < offset)
+        cube->player.y = offset;
+    else if(cube->player.y > SCREEN_HEIGHT)
+        cube->player.y = SCREEN_HEIGHT - offset;
+    x = cube->player.x - offset;
+    while(x < (cube->player.x + offset))
     {
-        y = cube->pos.y - offset;
-        while(y < (cube->pos.y + offset))
+        y = cube->player.y - offset;
+        while(y < (cube->player.y + offset))
         {
             mlx_put_pixel(cube->image, x, y, 0xff1100ff);
             y++;
@@ -88,6 +88,58 @@ void draw_grid(t_cube *cube)
     }
 }
 
+void ft_mouvement(t_cube *cube)
+{
+    float angle_mod;
+
+    angle_mod = 0.01;
+    if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
+        cube->player.angle += angle_mod;
+    else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
+        cube->player.angle -= angle_mod;
+    if(cube->player.angle < 0)
+        cube->player.angle = (2 * PI) + cube->player.angle;
+    else if(cube->player.angle > (PI * 2))
+        cube->player.angle = (2 * PI) - cube->player.angle;
+    if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
+    {
+        cube->player.x += cos(cube->player.angle) * 3;
+        cube->player.y += sin(cube->player.angle) * 3;
+    }
+    else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
+    {
+        cube->player.x -= cos(cube->player.angle) * 3;
+        cube->player.y -= sin(cube->player.angle) * 3;
+    }
+}
+
+void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
+{
+    t_vect2 add;
+    t_vect2 mod;
+
+    mod.x = finish.x - start.x; // -50
+    mod.y = finish.y - start.y; // -100
+    if(fabs(mod.x) >= fabs(mod.y))
+    {
+        add.x = mod.x / fabs(mod.x);
+        add.y = mod.y / fabs(mod.x);
+    }
+    else
+    {
+        add.x = mod.x / fabs(mod.y); // -0.5
+        add.y = mod.y / fabs(mod.y); // -1
+    }
+    while(round(start.x) != finish.x && round(start.y) != finish.y)
+    {
+        if(start.x > SCREEN_WIDTH || start.x < 0 || start.y > SCREEN_HEIGHT || start.y < 0)
+            return;
+        mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), 0x00ff44ff);
+        start.x += add.x;
+        start.y += add.y;
+    }
+}
+
 void ft_update(void *param)
 {
     t_cube *cube;
@@ -104,18 +156,20 @@ void ft_update(void *param)
         cube->fps = 0;
     }
     clear_image(cube);
-    // printf("start here\n");
-    // printf("start here\n");
     draw_grid(cube);
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
-        cube->pos.y -= 5;
-    else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
-        cube->pos.y += 5;
-    else if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
-        cube->pos.x += 5;
-    else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
-        cube->pos.x -= 5;
+    // if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
+    //     cube->player.y -= 5;
+    // else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
+    //     cube->player.y += 5;
+    // else if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
+    //     cube->player.x += 5;
+    // else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
+    //     cube->player.x -= 5;
+    ft_mouvement(cube);
     draw_player(cube);
+    t_vect2 start = {cube->player.x, cube->player.y};
+    t_vect2 finish = {cube->player.x + round(cos(cube->player.angle) * 300), cube->player.y + round(sin(cube->player.angle) * 30d0)};
+    ft_draw_line(cube, start, finish);
     //    usleep(12000);
 }  
 
@@ -172,8 +226,9 @@ void ft_init(t_cube *cube)
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
     cube->moving = false;
-    cube->pos.x = SCREEN_WIDTH / 2;
-    cube->pos.y = SCREEN_HEIGHT / 2;
+    cube->player.x = SCREEN_WIDTH / 2;
+    cube->player.y = SCREEN_HEIGHT / 2;
+    cube->player.angle = 0;
     cube->mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d", true);
     if(cube->mlx == NULL)
     {

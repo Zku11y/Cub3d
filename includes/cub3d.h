@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/03 16:02:20 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/10 19:36:36 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,25 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdbool.h>
+#include <math.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
+#define PI 3.14159265359
 
 
 typedef struct s_vect2
 {
-    int x;
-    int y;
+    double x;
+    double y;
 }   t_vect2;
 
+typedef struct s_player
+{
+    int x;
+    int y;
+    float angle;
+}   t_player;
 typedef struct s_cube
 {
     mlx_t *mlx;
@@ -39,6 +47,7 @@ typedef struct s_cube
     char **map;
     mlx_image_t *image;
     t_vect2 pos;
+    t_player player;
     bool moving;
     int map_x;
     int map_y;
