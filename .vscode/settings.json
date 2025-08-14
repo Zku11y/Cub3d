@@ -2,6 +2,7 @@
     "files.associations": {
         "cub3d.h": "c",
         "random": "c",
-        "error.h": "c"
+        "error.h": "c",
+        "chrono": "c"
     }
 }

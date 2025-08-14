@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/13 14:08:34 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/14 18:23:33 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void draw_player(t_cube *cube)
     }
 }
 
-void draw_line(t_cube *cube, int start, int finish, int cst, bool axis_x)
+void grid_line(t_cube *cube, int start, int finish, int cst, bool axis_x)
 {
     int i;
 
@@ -74,13 +74,13 @@ void draw_grid(t_cube *cube)
             if(cube->map[y][x] == 1)
             {
                 if(y == 0 || cube->map[y - 1][x] == 0)
-                    draw_line(cube, x * 50, (x + 1) * 50, y * 50, true);
+                    grid_line(cube, x * 50, (x + 1) * 50, y * 50, true);
                 if(y == cube->map_y - 1 || cube->map[y + 1][x] == 0)
-                    draw_line(cube, x * 50, (x + 1) * 50, (y + 1) * 50, true);
+                    grid_line(cube, x * 50, (x + 1) * 50, (y + 1) * 50, true);
                 if(x == 0 || cube->map[y][x - 1] == 0)
-                    draw_line(cube, y * 50, (y + 1) * 50, x * 50, false);
+                    grid_line(cube, y * 50, (y + 1) * 50, x * 50, false);
                 if(x == cube->map_x - 1 || cube->map[y][x + 1] == 0)
-                    draw_line(cube, y * 50, (y + 1) * 50, (x + 1) * 50, false);
+                    grid_line(cube, y * 50, (y + 1) * 50, (x + 1) * 50, false);
             }
             x++;
         }
@@ -92,7 +92,7 @@ void ft_mouvement(t_cube *cube)
 {
     float angle_mod;
 
-    angle_mod = 0.01;
+    angle_mod = 0.03;
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
         cube->player.angle += angle_mod;
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
@@ -103,14 +103,16 @@ void ft_mouvement(t_cube *cube)
         cube->player.angle = (2 * PI) - cube->player.angle;
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
-        cube->player.x += cos(cube->player.angle) * 3;
-        cube->player.y += sin(cube->player.angle) * 3;
+        cube->player.x += round(cos(cube->player.angle) * 5);
+        cube->player.y += round(sin(cube->player.angle) * 5);
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
-        cube->player.x -= cos(cube->player.angle) * 3;
-        cube->player.y -= sin(cube->player.angle) * 3;
+        cube->player.x -= round(cos(cube->player.angle) * 5);
+        cube->player.y -= round(sin(cube->player.angle) * 5);
     }
+    cube->player.grid_x = (int)(cube->player.x / 50);
+    cube->player.grid_y = (int)(cube->player.y / 50);
 }
 
 void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
@@ -140,21 +142,29 @@ void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
     }
 }
 
+void ft_ray_init(t_cube *cube)
+{
+    cube->player.ray.start.x = cube->player.x;
+    cube->player.ray.start.y = cube->player.y;
+    cube->player.ray.end.x = cube->player.x + round(cos(cube->player.angle) * 300);
+    cube->player.ray.end.y = cube->player.y + round(sin(cube->player.angle) * 300);
+    cube->player.ray.angle = cube->player.angle;
+    if(cube->player.ray.angle >= PI && cube->player.ray.angle <= 2 * PI)
+        cube->player.ray.y_dir = UP;
+    else
+        cube->player.ray.y_dir = DOWN;
+    if((cube->player.ray.angle >= 0.5 * PI) && (cube->player.ray.angle <= 1.5 * PI))
+        cube->player.ray.x_dir = LEFT;
+    else
+        cube->player.ray.x_dir = RIGHT;
+}
+
 void ft_update(void *param)
 {
     t_cube *cube;
     struct timeval tv;
 
     cube = (t_cube *)param;
-    cube->fps++;
-    gettimeofday(&tv, NULL);
-    cube->final_t = tv.tv_sec;
-    if(cube->final_t - cube->init_t == 1)
-    {
-        printf("fps : %d\n", cube->fps);
-        cube->init_t = cube->final_t;
-        cube->fps = 0;
-    }
     clear_image(cube);
     draw_grid(cube);
     // if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
@@ -167,10 +177,17 @@ void ft_update(void *param)
     //     cube->player.x -= 5;
     ft_mouvement(cube);
     draw_player(cube);
-    t_vect2 start = {cube->player.x, cube->player.y};
-    t_vect2 finish = {cube->player.x + round(cos(cube->player.angle) * 300), cube->player.y + round(sin(cube->player.angle) * 30d0)};
-    ft_draw_line(cube, start, finish);
-    //    usleep(12000);
+    cube->fps++;
+    gettimeofday(&tv, NULL);
+    cube->final_t = tv.tv_sec;
+    ft_ray_init(cube);
+    if(cube->final_t - cube->init_t == 1)
+    {
+        printf("fps : %d\n", cube->fps);
+        cube->init_t = cube->final_t;
+        cube->fps = 0;
+    }
+    ft_draw_line(cube, cube->player.ray.start, cube->player.ray.end);
 }  
 
 void ft_parse(t_cube *cube)

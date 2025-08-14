@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/10 19:36:36 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/14 18:12:16 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,39 @@
 #define PI 3.14159265359
 
 
+typedef enum s_direction
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+} t_direction;
+
 typedef struct s_vect2
 {
     double x;
     double y;
 }   t_vect2;
 
+typedef struct s_ray
+{
+    t_vect2 start;
+    t_vect2 end;
+    double length;
+    t_direction x_dir;
+    t_direction y_dir;
+    double angle;
+} t_ray;
 typedef struct s_player
 {
     int x;
     int y;
     float angle;
+    int grid_x;
+    int grid_y;
+    t_ray ray;
 }   t_player;
+
 typedef struct s_cube
 {
     mlx_t *mlx;
