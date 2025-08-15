@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/14 18:12:16 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/15 17:35:40 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
 #define PI 3.14159265359
+#define GRID_SIZE 50
 
 
 typedef enum s_direction
@@ -50,11 +51,13 @@ typedef struct s_ray
     t_direction x_dir;
     t_direction y_dir;
     double angle;
+    bool contact;
 } t_ray;
 typedef struct s_player
 {
     int x;
     int y;
+    t_vect2 pos;
     float angle;
     int grid_x;
     int grid_y;
@@ -78,3 +81,9 @@ typedef struct s_cube
 }   t_cube;
 
 #endif
+
+
+
+
+t_vect2 hori_first_point(t_cube *cube);
+t_vect2 vert_first_point(t_cube *cube);

@@ -1,6 +1,6 @@
 NAME = cub3d
 
-SRC = src/cub3d.c
+SRC = src/cub3d.c src/raycasting.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -13,7 +13,10 @@ LIBFT_INC = -I$(LIBFT_DIR)
 
 CC = cc
 CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
+CFLAGS = -g -O1 -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
 # CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC) -fsanitize=address
+
+# ASAN_OPTIONS=detect_leaks=0:halt_on_error=1 ./cub3d
 
 $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
 	cc $(CFLAGS) $(SRC) $(MLX_LIB) $(LIBFT_LIB) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)

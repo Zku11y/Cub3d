@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/14 18:23:33 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/15 18:12:55 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ void draw_grid(t_cube *cube)
             if(cube->map[y][x] == 1)
             {
                 if(y == 0 || cube->map[y - 1][x] == 0)
-                    grid_line(cube, x * 50, (x + 1) * 50, y * 50, true);
+                    grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, y * GRID_SIZE, true);
                 if(y == cube->map_y - 1 || cube->map[y + 1][x] == 0)
-                    grid_line(cube, x * 50, (x + 1) * 50, (y + 1) * 50, true);
+                    grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
                 if(x == 0 || cube->map[y][x - 1] == 0)
-                    grid_line(cube, y * 50, (y + 1) * 50, x * 50, false);
+                    grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, x * GRID_SIZE, false);
                 if(x == cube->map_x - 1 || cube->map[y][x + 1] == 0)
-                    grid_line(cube, y * 50, (y + 1) * 50, (x + 1) * 50, false);
+                    grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
             }
             x++;
         }
@@ -111,8 +111,8 @@ void ft_mouvement(t_cube *cube)
         cube->player.x -= round(cos(cube->player.angle) * 5);
         cube->player.y -= round(sin(cube->player.angle) * 5);
     }
-    cube->player.grid_x = (int)(cube->player.x / 50);
-    cube->player.grid_y = (int)(cube->player.y / 50);
+    cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
+    cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 }
 
 void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
@@ -120,7 +120,7 @@ void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
     t_vect2 add;
     t_vect2 mod;
 
-    mod.x = finish.x - start.x; // -50
+    mod.x = finish.x - start.x; // -GRID_SIZE
     mod.y = finish.y - start.y; // -100
     if(fabs(mod.x) >= fabs(mod.y))
     {
@@ -146,8 +146,6 @@ void ft_ray_init(t_cube *cube)
 {
     cube->player.ray.start.x = cube->player.x;
     cube->player.ray.start.y = cube->player.y;
-    cube->player.ray.end.x = cube->player.x + round(cos(cube->player.angle) * 300);
-    cube->player.ray.end.y = cube->player.y + round(sin(cube->player.angle) * 300);
     cube->player.ray.angle = cube->player.angle;
     if(cube->player.ray.angle >= PI && cube->player.ray.angle <= 2 * PI)
         cube->player.ray.y_dir = UP;
@@ -157,7 +155,17 @@ void ft_ray_init(t_cube *cube)
         cube->player.ray.x_dir = LEFT;
     else
         cube->player.ray.x_dir = RIGHT;
-}
+    if(cube->player.ray.y_dir == UP && cube->player.ray.x_dir == RIGHT)
+        cube->player.ray.angle = (2 * PI) - cube->player.angle;
+    else if(cube->player.ray.y_dir == UP && cube->player.ray.x_dir == LEFT)
+        cube->player.ray.angle = cube->player.angle - PI;
+    else if(cube->player.ray.y_dir == DOWN && cube->player.ray.x_dir == LEFT)
+        cube->player.ray.angle = PI - cube->player.angle;
+    cube->player.ray.end = hori_first_point(cube);
+    // cube->player.ray.end = vert_first_point(cube);
+    // cube->player.ray.end.x = cube->player.x + round(cos(cube->player.angle) * 300);
+    // cube->player.ray.end.y = cube->player.y + round(sin(cube->player.angle) * 300);
+    }
 
 void ft_update(void *param)
 {
@@ -183,11 +191,13 @@ void ft_update(void *param)
     ft_ray_init(cube);
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d\n", cube->fps);
+        printf("fps : %d, ray angle : %lf, player angle : %lf\n", cube->fps, cube->player.ray.angle / PI, cube->player.angle / PI);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
-    ft_draw_line(cube, cube->player.ray.start, cube->player.ray.end);
+    cube->player.pos.x = cube->player.x;
+    cube->player.pos.y = cube->player.y;
+    ft_draw_line(cube, cube->player.pos, cube->player.ray.end);
 }  
 
 void ft_parse(t_cube *cube)

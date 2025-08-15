@@ -3,6 +3,7 @@
         "cub3d.h": "c",
         "random": "c",
         "error.h": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "time.h": "c"
     }
 }
