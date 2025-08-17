@@ -4,6 +4,21 @@
         "random": "c",
         "error.h": "c",
         "chrono": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "unistd.h": "c",
+        "array": "c",
+        "deque": "c",
+        "forward_list": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c",
+        "string_view": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "ranges": "c",
+        "span": "c",
+        "text_encoding": "c"
     }
 }
