@@ -19,6 +19,9 @@
         "initializer_list": "c",
         "ranges": "c",
         "span": "c",
-        "text_encoding": "c"
+        "text_encoding": "c",
+        "stdbool.h": "c",
+        "mlx42.h": "c",
+        "stdio.h": "c"
     }
 }

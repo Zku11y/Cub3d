@@ -10,6 +10,7 @@ MLX_INC = -I$(MLX_DIR)
 LIBFT_DIR = libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 LIBFT_INC = -I$(LIBFT_DIR)
+CUB3D_HEADER = includes/cub3d.h
 
 CC = cc
 CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
@@ -27,7 +28,7 @@ $(MLX_LIB):
 $(LIBFT_LIB):
 	make -C $(LIBFT_DIR)
 
-%.o: %.c
+%.o: %.c $(CUB3D_HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/16 19:33:09 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/18 12:33:27 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@
 #define SCREEN_HEIGHT 800
 #define PI 3.14159265359
 #define GRID_SIZE 50
+#define WALL_DST 2
+#define TURN_SPEED 0.02
+#define PLAYER_SPEED 2
 #define HORI 0
 #define VERT 1
 

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/17 15:26:54 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/18 12:32:00 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,36 @@ void draw_grid(t_cube *cube)
     }
 }
 
+void ft_mouvement_limits(t_cube *cube)
+{
+    printf("grid cords : (%d, %d), cords : (%d, %d)\n", cube->player.grid_x, cube->player.grid_y, cube->player.x, cube->player.y);
+    if(cube->map[cube->player.grid_y][cube->player.grid_x - 1] == 1)
+    {
+        if(cube->player.x <= (GRID_SIZE * cube->player.grid_x) + WALL_DST)
+            cube->player.x = (GRID_SIZE * cube->player.grid_x) + WALL_DST;
+    }
+    if(cube->map[cube->player.grid_y][cube->player.grid_x + 1] == 1)
+    {
+        if(cube->player.x >= (GRID_SIZE * (cube->player.grid_x + 1)) - WALL_DST)
+            cube->player.x = (GRID_SIZE * (cube->player.grid_x + 1)) - WALL_DST;
+    }
+    if(cube->map[cube->player.grid_y - 1][cube->player.grid_x] == 1)
+    {
+        if(cube->player.y <= (GRID_SIZE * cube->player.grid_y) + WALL_DST)
+            cube->player.y = (GRID_SIZE * cube->player.grid_y) + WALL_DST;
+    }
+    if(cube->map[cube->player.grid_y + 1][cube->player.grid_x] == 1)
+    {
+        if(cube->player.y >= (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST)
+            cube->player.y = (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST;
+    }
+}
+
 void ft_mouvement(t_cube *cube)
 {
     float angle_mod;
 
-    angle_mod = 0.01;
+    angle_mod = TURN_SPEED;
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
         cube->player.angle += angle_mod;
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
@@ -103,14 +128,15 @@ void ft_mouvement(t_cube *cube)
         cube->player.angle = (2 * PI) - cube->player.angle;
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
-        cube->player.x += round(cos(cube->player.angle) * 2);
-        cube->player.y += round(sin(cube->player.angle) * 2);
+        cube->player.x += round(cos(cube->player.angle) * PLAYER_SPEED);
+        cube->player.y += round(sin(cube->player.angle) * PLAYER_SPEED);
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
-        cube->player.x -= round(cos(cube->player.angle) * 2);
-        cube->player.y -= round(sin(cube->player.angle) * 2);
+        cube->player.x -= round(cos(cube->player.angle) * PLAYER_SPEED);
+        cube->player.y -= round(sin(cube->player.angle) * PLAYER_SPEED);
     }
+    ft_mouvement_limits(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 }
@@ -206,7 +232,7 @@ void ft_update(void *param)
     ft_ray_init(cube);
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d\n", cube->fps);
+        printf("fps : %d, grid cords : (%d, %d)\n", cube->fps, cube->player.grid_x, cube->player.grid_y);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
@@ -271,6 +297,8 @@ void ft_init(t_cube *cube)
     cube->moving = false;
     cube->player.x = SCREEN_WIDTH / 2;
     cube->player.y = SCREEN_HEIGHT / 2;
+    cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
+    cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
     cube->mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d", true);
     if(cube->mlx == NULL)
