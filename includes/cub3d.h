@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/18 12:33:27 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/18 19:43:55 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,12 @@
 #include <stdbool.h>
 #include <math.h>
 
+#define RES 1920
+#define FOV 60
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
 #define PI 3.14159265359
+#define RADIANT_RATE PI / 180
 #define GRID_SIZE 50
 #define WALL_DST 2
 #define TURN_SPEED 0.02
@@ -55,7 +58,6 @@ typedef struct s_ray
     t_direction x_dir;
     t_direction y_dir;
     double angle;
-    bool contact;
 } t_ray;
 typedef struct s_player
 {
@@ -73,6 +75,7 @@ typedef struct s_cube
     mlx_t *mlx;
 
     char **map;
+    t_ray *rays;
     mlx_image_t *image;
     t_vect2 pos;
     t_player player;
@@ -82,6 +85,7 @@ typedef struct s_cube
     unsigned long init_t;
     unsigned long final_t;
     int fps;
+    double mod_rate;
 }   t_cube;
 
 #endif
@@ -89,5 +93,5 @@ typedef struct s_cube
 
 
 
-t_vect2 hori_first_point(t_cube *cube);
-t_vect2 vert_first_point(t_cube *cube);
+t_vect2 hori_first_point(t_cube *cube, t_ray *ray);
+t_vect2 vert_first_point(t_cube *cube, t_ray *ray);
