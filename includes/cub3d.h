@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/18 19:43:55 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/19 20:40:32 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,20 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define RES 1920
-#define FOV 60
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+#define RES 200
+#define FOV 90
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
-#define GRID_SIZE 50
+#define GRID_SIZE 20
 #define WALL_DST 2
 #define TURN_SPEED 0.02
 #define PLAYER_SPEED 2
 #define HORI 0
 #define VERT 1
+#define MAP_X 20
+#define MAP_Y 20
 
 typedef enum s_direction
 {
@@ -58,6 +60,7 @@ typedef struct s_ray
     t_direction x_dir;
     t_direction y_dir;
     double angle;
+    double real_angle;
 } t_ray;
 typedef struct s_player
 {
@@ -80,12 +83,11 @@ typedef struct s_cube
     t_vect2 pos;
     t_player player;
     bool moving;
-    int map_x;
-    int map_y;
     unsigned long init_t;
     unsigned long final_t;
     int fps;
     double mod_rate;
+    int line_girth;
 }   t_cube;
 
 #endif

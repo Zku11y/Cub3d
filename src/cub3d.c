@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/18 20:05:03 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/19 20:43:19 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,20 +66,20 @@ void draw_grid(t_cube *cube)
     int y = 0;
     int x = 0;
 
-    while(y < cube->map_y)
+    while(y < MAP_Y)
     {
         x = 0;
-        while(x < cube->map_x)
+        while(x < MAP_X)
         {
             if(cube->map[y][x] == 1)
             {
                 if(y == 0 || cube->map[y - 1][x] == 0)
                     grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, y * GRID_SIZE, true);
-                if(y == cube->map_y - 1 || cube->map[y + 1][x] == 0)
+                if(y == MAP_Y - 1 || cube->map[y + 1][x] == 0)
                     grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
                 if(x == 0 || cube->map[y][x - 1] == 0)
                     grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, x * GRID_SIZE, false);
-                if(x == cube->map_x - 1 || cube->map[y][x + 1] == 0)
+                if(x == MAP_X - 1 || cube->map[y][x + 1] == 0)
                     grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
             }
             x++;
@@ -141,7 +141,7 @@ void ft_mouvement(t_cube *cube)
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 }
 
-void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
+void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
 {
     t_vect2 add;
     t_vect2 mod;
@@ -158,11 +158,13 @@ void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish)
         add.x = mod.x / fabs(mod.y); // -0.5
         add.y = mod.y / fabs(mod.y); // -1
     }
-    while(round(start.x) != finish.x && round(start.y) != finish.y)
+    while (fabs(start.x - finish.x) > 0.5 || fabs(start.y - finish.y) > 0.5)
     {
-        if(start.x > SCREEN_WIDTH || start.x < 0 || start.y > SCREEN_HEIGHT || start.y < 0)
-            return;
-        mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), 0x00ff44ff);
+        if (start.x >= 0 && start.x < SCREEN_WIDTH &&
+            start.y >= 0 && start.y < SCREEN_HEIGHT)
+        {
+            mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), color);
+        }
         start.x += add.x;
         start.y += add.y;
     }
@@ -176,8 +178,13 @@ t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
     len_hori = (fabs(hori.x - cube->player.x) / cos(ray->angle));
     len_vert = (fabs(vert.y - cube->player.y) / sin(ray->angle));
     if(len_hori < len_vert)
-        return hori;
-    return vert;
+    {
+        ray->length = len_hori;
+        ray->length = ray->length * cos(ray->real_angle - cube->player.angle);
+        return (hori);
+    }
+    ray->length = len_vert;
+    return (vert);
 }
 
 void ft_ray_init(t_cube *cube, t_ray *ray, double angle)
@@ -218,10 +225,73 @@ void ft_draw_rays(t_cube *cube)
         else if(start_angle > (PI * 2))
             start_angle = (2 * PI) - start_angle;
         // printf("start angle : %lf\n", start_angle);
+        cube->rays[i].real_angle = start_angle;
         ft_ray_init(cube, &(cube->rays[i]), start_angle);
-        ft_draw_line(cube, cube->rays[i].start, cube->rays[i].end);
+        // ft_draw_line(cube, cube->rays[i].start, cube->rays[i].end, 0xfff700ff);
         i++;
         start_angle += cube->mod_rate;
+    }
+}
+
+bool check_screen_limits(t_vect2 len)
+{
+    if(len.x > SCREEN_WIDTH)
+        return true;
+    else if(len.x < 0)
+        return true;
+    if(len.y > SCREEN_HEIGHT)
+        return true;
+    else if(len.y < 0)
+        return true;
+    return false;
+}
+
+uint32_t shade_color(uint32_t base, double distance)
+{
+    // Extract RGBA
+    uint8_t r = (base >> 24) & 0xFF;
+    uint8_t g = (base >> 16) & 0xFF;
+    uint8_t b = (base >> 8) & 0xFF;
+    uint8_t a = base & 0xFF;
+
+    // Fade factor: closer = brighter, farther = darker
+    double factor = 1.0 / (1.0 + distance * 0.01); // tweak 0.01
+    if(factor < 0.2) factor = 0.2; // keep minimum brightness
+
+    r = (uint8_t)(r * factor);
+    g = (uint8_t)(g * factor);
+    b = (uint8_t)(b * factor);
+
+    return (r << 24 | g << 16 | b << 8 | a);
+}
+
+void ft_draw_world(t_cube *cube)
+{
+    t_vect2 start;
+    t_vect2 end;
+    double len;
+    int j;
+    int i;
+
+    start.x = (SCREEN_WIDTH - (cube->line_girth * RES)) / 2;
+    start.y = SCREEN_HEIGHT / 2;
+    i = 0;
+    while(i < RES)
+    {
+        j = 0;
+        len = SCREEN_HEIGHT - cube->rays[i].length;
+        start.y = cube->rays[i].length / 2;
+        end.x = start.x;
+        end.y = start.y + len;
+        while(j < cube->line_girth)
+        {
+            if(!check_screen_limits(start) && !check_screen_limits(end))
+                ft_draw_line(cube, start, end, shade_color(0xff5e00ff, cube->rays[i].length));
+            start.x++;
+            end.x++;
+            j++;
+        }
+        i++;
     }
 }
 
@@ -232,23 +302,24 @@ void ft_update(void *param)
 
     cube = (t_cube *)param;
     clear_image(cube);
-    draw_grid(cube);
+    // draw_grid(cube);
     ft_mouvement(cube);
-    draw_player(cube);
+    // draw_player(cube);
     cube->fps++;
     gettimeofday(&tv, NULL);
     cube->final_t = tv.tv_sec;
     ft_ray_init(cube, &cube->player.ray, cube->player.angle);
     ft_draw_rays(cube);
+    ft_draw_world(cube);
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d, grid cords : (%d, %d)\n", cube->fps, cube->player.grid_x, cube->player.grid_y);
+        printf("fps : %d, ray len : %lf\n", cube->fps, cube->player.ray.length);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
     cube->player.pos.x = cube->player.x;
     cube->player.pos.y = cube->player.y;
-    ft_draw_line(cube, cube->player.pos, cube->player.ray.end);
+    // ft_draw_line(cube, cube->player.pos, cube->player.ray.end, 0x00ff44ff);
 }  
 
 void ft_parse(t_cube *cube)
@@ -269,9 +340,7 @@ void ft_parse(t_cube *cube)
 
 void ft_map_init(t_cube *cube)
 {
-    cube->map_x = 10;
-    cube->map_y = 10;
-    cube->map = ft_calloc(cube->map_y + 1, sizeof(char *));
+    cube->map = ft_calloc(MAP_Y + 1, sizeof(char *));
     if(cube->map == NULL)
     {
         mlx_terminate(cube->mlx);
@@ -279,23 +348,23 @@ void ft_map_init(t_cube *cube)
         exit(EXIT_FAILURE);
     }
     int i = 0;
-    while(i < cube->map_y)
+    while(i < MAP_Y)
     {
-        cube->map[i] = ft_calloc(cube->map_x + 1, sizeof(char));
+        cube->map[i] = ft_calloc(MAP_X + 1, sizeof(char));
         i++;
     }
     i = 0;
-    while(i < cube->map_x)
+    while(i < MAP_X)
     {
         cube->map[0][i] = 1;
         cube->map[i][0] = 1;
-        cube->map[cube->map_y - 1][i] = 1;
-        cube->map[i][cube->map_x - 1] = 1;
+        cube->map[MAP_Y - 1][i] = 1;
+        cube->map[i][MAP_X - 1] = 1;
         i++;
     }
-    cube->map[cube->map_y / 2][cube->map_x / 2] = 1;
-    cube->map[(cube->map_y / 2) + 1][(cube->map_y / 2) - 1] = 1;
-    cube->map[(cube->map_y / 2) + 1][(cube->map_y / 2) + 1] = 1;
+    cube->map[MAP_Y / 2][MAP_X / 2] = 1;
+    cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) - 1] = 1;
+    cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) + 1] = 1;
 }
 
 void ft_init(t_cube *cube)
@@ -309,11 +378,14 @@ void ft_init(t_cube *cube)
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
     cube->moving = false;
-    cube->player.x = SCREEN_WIDTH / 2;
-    cube->player.y = SCREEN_HEIGHT / 2;
+    cube->player.x = (GRID_SIZE * MAP_X) / 2;
+    cube->player.y = (GRID_SIZE * MAP_Y) / 2;
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
+    cube->line_girth = (int)(SCREEN_WIDTH / RES);
+    if(cube->line_girth == 0)
+        cube->line_girth = 1;
     cube->mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d", true);
     if(cube->mlx == NULL)
     {

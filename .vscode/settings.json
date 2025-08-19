@@ -22,6 +22,8 @@
         "text_encoding": "c",
         "stdbool.h": "c",
         "mlx42.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "libft.h": "c",
+        "fcntl.h": "c"
     }
 }
