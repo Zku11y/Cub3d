@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/19 20:43:19 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/21 11:55:38 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,13 @@ void ft_mouvement(t_cube *cube)
         cube->player.angle = (2 * PI) - cube->player.angle;
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
-        cube->player.x += round(cos(cube->player.angle) * PLAYER_SPEED);
-        cube->player.y += round(sin(cube->player.angle) * PLAYER_SPEED);
+        cube->player.x += cos(cube->player.angle) * PLAYER_SPEED;
+        cube->player.y += sin(cube->player.angle) * PLAYER_SPEED;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
-        cube->player.x -= round(cos(cube->player.angle) * PLAYER_SPEED);
-        cube->player.y -= round(sin(cube->player.angle) * PLAYER_SPEED);
+        cube->player.x -= cos(cube->player.angle) * PLAYER_SPEED;
+        cube->player.y -= sin(cube->player.angle) * PLAYER_SPEED;
     }
     ft_mouvement_limits(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
@@ -180,7 +180,7 @@ t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
     if(len_hori < len_vert)
     {
         ray->length = len_hori;
-        ray->length = ray->length * cos(ray->real_angle - cube->player.angle);
+        // ray->length = ray->length * cos(ray->real_angle - cube->player.angle);
         return (hori);
     }
     ray->length = len_vert;
@@ -223,7 +223,7 @@ void ft_draw_rays(t_cube *cube)
         if(start_angle < 0)
             start_angle = (2 * PI) + start_angle;
         else if(start_angle > (PI * 2))
-            start_angle = (2 * PI) - start_angle;
+            start_angle = start_angle - (2 * PI);
         // printf("start angle : %lf\n", start_angle);
         cube->rays[i].real_angle = start_angle;
         ft_ray_init(cube, &(cube->rays[i]), start_angle);
@@ -244,6 +244,18 @@ bool check_screen_limits(t_vect2 len)
     else if(len.y < 0)
         return true;
     return false;
+}
+
+void set_screen_limits(t_vect2 *len)
+{
+    if(len->x > SCREEN_WIDTH)
+        len->x = SCREEN_WIDTH;
+    else if(len->x < 0)
+        len->x = 0;
+    if(len->y > SCREEN_HEIGHT)
+        len->y = SCREEN_HEIGHT;
+    else if(len->y < 0)
+        len->y = 0;
 }
 
 uint32_t shade_color(uint32_t base, double distance)
@@ -279,14 +291,20 @@ void ft_draw_world(t_cube *cube)
     while(i < RES)
     {
         j = 0;
-        len = SCREEN_HEIGHT - cube->rays[i].length;
-        start.y = cube->rays[i].length / 2;
+        cube->rays[i].length *= cos(cube->rays[i].real_angle - cube->player.angle);
+        // len = SCREEN_HEIGHT - cube->rays[i].length;
+        // len = (SCREEN_HEIGHT * WALL_SCALE) / cube->rays[i].length;
+        // len = 0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE);
+        len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
+        start.y = (SCREEN_HEIGHT - len) / 2;
         end.x = start.x;
         end.y = start.y + len;
         while(j < cube->line_girth)
         {
-            if(!check_screen_limits(start) && !check_screen_limits(end))
-                ft_draw_line(cube, start, end, shade_color(0xff5e00ff, cube->rays[i].length));
+            // if(!check_screen_limits(start) && !check_screen_limits(end))
+            set_screen_limits(&start);
+            set_screen_limits(&end);
+            ft_draw_line(cube, start, end, shade_color(0xff5e00ff, cube->rays[i].length));
             start.x++;
             end.x++;
             j++;

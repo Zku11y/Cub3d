@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/19 20:40:32 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/21 11:00:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,17 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 800
 #define RES 200
-#define FOV 90
+#define FOV 60
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
-#define GRID_SIZE 20
+#define GRID_SIZE 30
 #define WALL_DST 2
+#define WALL_SCALE SCREEN_HEIGHT / 2
 #define TURN_SPEED 0.02
-#define PLAYER_SPEED 2
+#define PLAYER_SPEED 3
 #define HORI 0
 #define VERT 1
 #define MAP_X 20
@@ -64,8 +65,8 @@ typedef struct s_ray
 } t_ray;
 typedef struct s_player
 {
-    int x;
-    int y;
+    double x;
+    double y;
     t_vect2 pos;
     float angle;
     int grid_x;
