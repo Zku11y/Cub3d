@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/23 15:00:30 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/23 15:45:22 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,17 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1200
+#define SCREEN_HEIGHT 700
 #define RES 500
-#define FOV 60
+#define FOV 50
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
 #define GRID_SIZE 20
 #define WALL_DST 2
 #define WALL_SCALE SCREEN_HEIGHT / 2
-#define TURN_SPEED 0.0002
-#define PLAYER_SPEED 2
+#define TURN_SPEED 0.0009
+#define PLAYER_SPEED 1.2
 #define HORI 0
 #define VERT 1
 #define MAP_X 30

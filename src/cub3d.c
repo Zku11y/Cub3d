@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/23 15:01:49 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/23 15:47:28 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,23 @@ void clear_image(t_cube *cube)
 {
     int buffer_size = SCREEN_HEIGHT * SCREEN_WIDTH * 4;
     ft_memset(cube->image->pixels, 0, buffer_size);
+}
+
+void ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int color)
+{
+    int start_temp;
+
+    start_temp = start_cords.x;
+    while(start_cords.y < end_cords.y)
+    {
+        start_cords.x = start_temp;
+        while(start_cords.x < end_cords.x)
+        {
+            mlx_put_pixel(cube->image, (int)start_cords.x, (int)start_cords.y, color);
+            start_cords.x++;
+        }
+        start_cords.y++;
+    }
 }
 
 void ft_angle_limit(double *angle)
@@ -311,6 +328,8 @@ void ft_draw_world(t_cube *cube)
 
     start.x = (SCREEN_WIDTH - (cube->line_girth * RES)) / 2;
     start.y = SCREEN_HEIGHT / 2;
+    ft_rectangle(cube, (t_vect2){0, 0}, (t_vect2){start.x, SCREEN_HEIGHT}, 0x000000ff);
+    ft_rectangle(cube, (t_vect2){SCREEN_WIDTH - start.x, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT}, 0x000000ff);
     i = 0;
     while(i < RES)
     {
@@ -328,7 +347,7 @@ void ft_draw_world(t_cube *cube)
             // if(!check_screen_limits(start) && !check_screen_limits(end))
             set_screen_limits(&start);
             set_screen_limits(&end);
-            ft_draw_line(cube, start, end, shade_color(0xff5e00ff, cube->rays[i].length));
+            ft_draw_line(cube, start, end, shade_color(0x00a1d6ff, cube->rays[i].length));
             start.x++;
             end.x++;
             j++;
@@ -337,6 +356,24 @@ void ft_draw_world(t_cube *cube)
     }
 }
 
+
+
+
+
+    // while(cords.y < y_limit)
+    // {
+    //     cords.x = 0;
+    //     while(cords.x < x_limit)
+    //     {
+    //         if(cords.y < SCREEN_HEIGHT / 2)
+    //             mlx_put_pixel(cube->image, (int)cords.x, (int)cords.y, 0x5d4811ff);
+    //         else
+    //             mlx_put_pixel(cube->image, (int)cords.x, (int)cords.y, 0x74601bff);
+    //         cords.x++;
+    //     }
+    //     cords.y++;
+    // }
+
 void ft_update(void *param)
 {
     t_cube *cube;
@@ -344,6 +381,8 @@ void ft_update(void *param)
 
     cube = (t_cube *)param;
     clear_image(cube);
+    ft_rectangle(cube, (t_vect2){0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2}, 0x70faffff);
+    ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT}, 0x42ab05ff);
     // draw_grid(cube);
     ft_mouvement(cube);
     // draw_player(cube);
