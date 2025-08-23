@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/21 11:55:38 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/23 15:01:49 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@ void clear_image(t_cube *cube)
 {
     int buffer_size = SCREEN_HEIGHT * SCREEN_WIDTH * 4;
     ft_memset(cube->image->pixels, 0, buffer_size);
+}
+
+void ft_angle_limit(double *angle)
+{
+    if(*angle < 0)
+        *angle = (2 * PI) + *angle;
+    else if(*angle > (PI * 2))
+        *angle = (2 * PI) - *angle;
 }
 
 void draw_player(t_cube *cube)
@@ -113,19 +121,35 @@ void ft_mouvement_limits(t_cube *cube)
     }
 }
 
+void ft_turn(t_cube *cube)
+{
+    int mouse_x;
+    int mouse_y;
+
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    mouse_x = mouse_x - (SCREEN_WIDTH / 2);
+    cube->player.angle += mouse_x * TURN_SPEED;
+    mlx_set_mouse_pos(cube->mlx, SCREEN_WIDTH / 2, mouse_y);
+}
+
 void ft_mouvement(t_cube *cube)
 {
-    float angle_mod;
-
-    angle_mod = TURN_SPEED;
+    // if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
+    //     cube->player.angle += TURN_SPEED;
+    // else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
+    //     cube->player.angle -= TURN_SPEED;
+    ft_angle_limit(&cube->player.angle);
+    ft_turn(cube);
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
-        cube->player.angle += angle_mod;
+    {
+        cube->player.x += -1 * sin(cube->player.angle) * PLAYER_SPEED;
+        cube->player.y += cos(cube->player.angle) * PLAYER_SPEED;
+    }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
-        cube->player.angle -= angle_mod;
-    if(cube->player.angle < 0)
-        cube->player.angle = (2 * PI) + cube->player.angle;
-    else if(cube->player.angle > (PI * 2))
-        cube->player.angle = (2 * PI) - cube->player.angle;
+    {
+        cube->player.x -= -1 * sin(cube->player.angle) * PLAYER_SPEED;
+        cube->player.y -= cos(cube->player.angle) * PLAYER_SPEED;
+    }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
         cube->player.x += cos(cube->player.angle) * PLAYER_SPEED;
@@ -329,9 +353,12 @@ void ft_update(void *param)
     ft_ray_init(cube, &cube->player.ray, cube->player.angle);
     ft_draw_rays(cube);
     ft_draw_world(cube);
+    int32_t mouse_x;    
+    int32_t mouse_y;    
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d, ray len : %lf\n", cube->fps, cube->player.ray.length);
+        printf("fps : %d, mouse_pos (%d, %d)\n", cube->fps, mouse_x, mouse_y);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
@@ -384,7 +411,6 @@ void ft_map_init(t_cube *cube)
     cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) - 1] = 1;
     cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) + 1] = 1;
 }
-
 void ft_init(t_cube *cube)
 {
     struct timeval tv;
@@ -418,6 +444,7 @@ void ft_init(t_cube *cube)
         exit(EXIT_FAILURE);
     }
     mlx_image_to_window(cube->mlx, cube->image, 0, 0);
+    mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_DISABLED);
 }
 
 int main()
