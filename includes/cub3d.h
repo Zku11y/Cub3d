@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/23 15:45:22 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/29 00:07:05 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 #include <math.h>
 
 #define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 700
-#define RES 500
+#define SCREEN_HEIGHT 600
+#define RES 600
 #define FOV 50
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
@@ -51,6 +51,8 @@ typedef struct s_vect2
 {
     double x;
     double y;
+    int grid_x;
+    int grid_y;
 }   t_vect2;
 
 typedef struct s_ray
@@ -62,6 +64,7 @@ typedef struct s_ray
     t_direction y_dir;
     double angle;
     double real_angle;
+    double normal_dst;
 } t_ray;
 typedef struct s_player
 {
@@ -89,6 +92,7 @@ typedef struct s_cube
     int fps;
     double mod_rate;
     int line_girth;
+    mlx_texture_t *texture;
 }   t_cube;
 
 #endif

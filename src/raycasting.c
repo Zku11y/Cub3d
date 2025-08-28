@@ -6,13 +6,13 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 12:21:29 by skully            #+#    #+#             */
-/*   Updated: 2025/08/21 10:41:07 by skully           ###   ########.fr       */
+/*   Updated: 2025/08/28 10:45:39 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-bool check_collision(t_cube *cube, t_vect2 cords, bool hori_vert, t_ray *ray)
+bool check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert, t_ray *ray)
 {
     t_vect2 grid_cords;
 
@@ -22,13 +22,13 @@ bool check_collision(t_cube *cube, t_vect2 cords, bool hori_vert, t_ray *ray)
     {
         if(ray->y_dir == DOWN)
         {
-            grid_cords.y = cords.y / GRID_SIZE;             
-            grid_cords.x = cords.x / GRID_SIZE;
+            grid_cords.y = cords->y / GRID_SIZE;             
+            grid_cords.x = cords->x / GRID_SIZE;
         }
         else if(ray->y_dir == UP)
         {
-            grid_cords.y = cords.y / GRID_SIZE;
-            grid_cords.x = cords.x / GRID_SIZE;
+            grid_cords.y = cords->y / GRID_SIZE;
+            grid_cords.x = cords->x / GRID_SIZE;
             if(grid_cords.y > 0)
                 grid_cords.y -= 1;
         }
@@ -37,13 +37,13 @@ bool check_collision(t_cube *cube, t_vect2 cords, bool hori_vert, t_ray *ray)
     {
         if(ray->x_dir == RIGHT)
         {
-            grid_cords.y = cords.y / GRID_SIZE;             
-            grid_cords.x = cords.x / GRID_SIZE;
+            grid_cords.y = cords->y / GRID_SIZE;             
+            grid_cords.x = cords->x / GRID_SIZE;
         }
         else
         {
-            grid_cords.y = cords.y / GRID_SIZE;
-            grid_cords.x = cords.x / GRID_SIZE;
+            grid_cords.y = cords->y / GRID_SIZE;
+            grid_cords.x = cords->x / GRID_SIZE;
             if(grid_cords.x > 0)
                 grid_cords.x -= 1;
         }
@@ -52,9 +52,8 @@ bool check_collision(t_cube *cube, t_vect2 cords, bool hori_vert, t_ray *ray)
         grid_cords.x = MAP_X - 1;
     if((int)grid_cords.y >= MAP_Y)
         grid_cords.y = MAP_Y - 1;
-    // printf("grid : (%d, %d), cords : (%d, %d)\n", (int)grid_cords.x, (int)grid_cords.y, (int)cords.x, (int)cords.y);
     if(cube->map[(int)grid_cords.y][(int)grid_cords.x] == 1)
-        return true;
+        return (cords->grid_x = grid_cords.x, cords->grid_y = grid_cords.y, true);
     return false;
 }
 
@@ -87,7 +86,7 @@ void vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
 {
     while(ft_check_limits(*start) == false)
     {
-        if(check_collision(cube, *start, VERT, ray) == true)
+        if(check_collision(cube, start, VERT, ray) == true)
             return;
         if(ray->x_dir == RIGHT)
             start->x = start->x + GRID_SIZE;
@@ -104,7 +103,7 @@ void hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
 {
     while(ft_check_limits(*start) == false)
     {
-        if(check_collision(cube, *start, HORI, ray) == true)
+        if(check_collision(cube, start, HORI, ray) == true)
             return;
         if(ray->y_dir == DOWN)
             start->y = start->y + GRID_SIZE;
