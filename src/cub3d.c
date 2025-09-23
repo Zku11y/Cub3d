@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/08/29 00:11:51 by skully           ###   ########.fr       */
+/*   Updated: 2025/09/23 11:46:57 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,15 +324,22 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
     t_vect2 ratio;
     t_vect2 cords;
 
+    if(cube->texture == NULL)
+    {
+        printf("black african american individual :)\n");
+        exit(1);
+    }
     cords.x = cube->texture->width * ray->normal_dst;
     if(cords.x >= cube->texture->width)
         cords.x = cube->texture->width - 1;
     // printf("cords.x : %lf, ray normal : %lf\n", cords.x, ray->normal_dst);
     ratio.y = cube->texture->height / len;
     cords.y = 0;
-    while(start.y < end.y && cords.y < cube->texture->height - 4)
+    // if(len > SCREEN_HEIGHT)
+    //     cords.y += (len - SCREEN_HEIGHT) / 2;
+    while(start.y < end.y && cords.y < cube->texture->height)
     {
-        int k = (int)((int)cords.x * cube->texture->bytes_per_pixel) + (int)(cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
+        int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
         // printf("bytes : %d\n", cube->texture->bytes_per_pixel);
         uint8_t r = cube->texture->pixels[k + 0];
         uint8_t g = cube->texture->pixels[k + 1];
@@ -370,13 +377,15 @@ void ft_draw_world(t_cube *cube)
         // len = 0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE);
         len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         start.y = (SCREEN_HEIGHT - len) / 2;
+        if(len > SCREEN_HEIGHT)
+            start.y = -1 * ((len - SCREEN_HEIGHT) / 2);
         end.x = start.x;
         end.y = start.y + len;
         while(j < cube->line_girth)
         {
             // if(!check_screen_limits(start) && !check_screen_limits(end))
-            set_screen_limits(&start);
-            set_screen_limits(&end);
+            // set_screen_limits(&start);
+            // set_screen_limits(&end);
             // ft_draw_line(cube, start, end, shade_color(0x00a1d6ff, cube->rays[i].length));
             ft_draw_texture(cube, &cube->rays[i], start, end, len);
             start.x++;
@@ -523,7 +532,7 @@ void ft_init(t_cube *cube)
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
-    cube->texture = mlx_load_png("/home/skully/work/1337/Cub3d/backrooms_0.png");
+    cube->texture = mlx_load_png("/Users/mdakni/projects/Cub3d/brick.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;

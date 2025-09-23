@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/08/29 00:07:05 by skully           ###   ########.fr       */
+/*   Updated: 2025/09/23 10:35:53 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,23 @@
 #include "../MLX42/include/MLX42/MLX42.h"
 #include <stdio.h>
 #include <fcntl.h>
-#include <error.h>
+// #include <error.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdbool.h>
 #include <math.h>
 
-#define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 600
-#define RES 600
-#define FOV 50
+#define SCREEN_WIDTH 1080
+#define SCREEN_HEIGHT 720
+#define RES 400
+#define FOV 60
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
-#define GRID_SIZE 20
-#define WALL_DST 2
+#define GRID_SIZE 30
+#define WALL_DST 0
 #define WALL_SCALE SCREEN_HEIGHT / 2
-#define TURN_SPEED 0.0009
-#define PLAYER_SPEED 1.2
+#define TURN_SPEED 0.001
+#define PLAYER_SPEED 2
 #define HORI 0
 #define VERT 1
 #define MAP_X 30
