@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 12:21:29 by skully            #+#    #+#             */
-/*   Updated: 2025/09/11 15:50:26 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/09/29 17:54:47 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,8 @@ t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
             len.x = cube->player.x - len.x;
     }
     ft_limit_cords(&len);
-    // check_collision(cube, len, HORI);
+    // if(check_collision(cube, &len, HORI, ray) == true)
+    //     return len;
     hori_check_next_point(cube, &len, ray);
     return len;
 }
@@ -172,6 +173,8 @@ t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
             len.y += cube->player.y;
     }
     ft_limit_cords(&len);
+    // if(check_collision(cube, &len, VERT, ray) == true)
+    //     return len;
     vert_check_next_point(cube, &len, ray);
     return len;
 }

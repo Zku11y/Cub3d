@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/09/23 10:35:53 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/09/29 19:49:20 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,17 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define SCREEN_WIDTH 1080
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 500
+#define SCREEN_HEIGHT 500
 #define RES 400
-#define FOV 60
+#define FOV 90
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
-#define GRID_SIZE 30
-#define WALL_DST 0
+#define GRID_SIZE 20
+#define WALL_DST 2
 #define WALL_SCALE SCREEN_HEIGHT / 2
 #define TURN_SPEED 0.001
-#define PLAYER_SPEED 2
+#define PLAYER_SPEED 1
 #define HORI 0
 #define VERT 1
 #define MAP_X 30
