@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 22:21:14 by mdakni            #+#    #+#             */
-/*   Updated: 2025/03/12 12:32:31 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/02/04 19:27:32 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define LIBFT_H
 
 # include <limits.h>
-# include <stdbool.h>
 # include <stdlib.h>
 # include <unistd.h>
 

@@ -12,6 +12,7 @@ ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c
 
 NAME = libft.a
 CC = cc
+FLAGS = -Wall -Wextra -Werror
 OBJS = $(SRCS:.c=.o)
 BOBJS = $(BSRCS:.c=.o)
 
@@ -21,11 +22,11 @@ all:$(NAME)
 $(NAME):$(OBJS)
 	ar rcs $(NAME) $(OBJS)
 
-bonus: $(OBJS) $(BOBJS)
-	ar rcs $(NAME) $(OBJS) $(BOBJS)
+bonus: $(BOBJS)
+	ar rcs $(NAME) $(BOBJS)
 
 %.o: %.c libft.h
-	$(CC) -c $< -o $@
+	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS) $(BOBJS)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/09/29 19:49:20 by skully           ###   ########.fr       */
+/*   Updated: 2025/10/02 09:26:35 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define SCREEN_WIDTH 500
-#define SCREEN_HEIGHT 500
-#define RES 400
-#define FOV 90
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+#define RES 800
+#define FOV 70
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
 #define GRID_SIZE 20
@@ -38,6 +38,7 @@
 #define VERT 1
 #define MAP_X 30
 #define MAP_Y 30
+#define PERP_DST SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE))
 
 typedef enum s_direction
 {
@@ -99,6 +100,7 @@ typedef struct s_cube
 
 
 
-
+bool ft_check_limits(t_vect2 len);
+void ft_limit_cords(t_vect2 *len);
 t_vect2 hori_first_point(t_cube *cube, t_ray *ray);
 t_vect2 vert_first_point(t_cube *cube, t_ray *ray);

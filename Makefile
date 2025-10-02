@@ -19,23 +19,23 @@ CC = cc
 # Linux Compilation
 
 # CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
-CFLAGS = -g -O3 $(MLX_INC) $(LIBFT_INC)
+# CFLAGS = -g -O3 $(MLX_INC) $(LIBFT_INC)
 # CFLAGS = -g -O1 -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
 
-$(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
-	cc $(CFLAGS) $(SRC) $(MLX_LIB) $(LIBFT_LIB) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
+# $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
+# 	cc $(CFLAGS) $(SRC) $(MLX_LIB) $(LIBFT_LIB) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
 
 # MacOS Compilation :
 
-# CFLAGS = -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC) \
-#          -I/Users/mdakni/.brew/opt/glfw/include 
+CFLAGS = -g -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC) \
+         -I/Users/mdakni/.brew/opt/glfw/include 
 
-# LDFLAGS = -L"/Users/mdakni/.brew/opt/glfw/lib" -lglfw \
-#           -framework Cocoa -framework OpenGL -framework IOKit \
-# 		-fsanitize=address -g3 -O3
+LDFLAGS = -L"/Users/mdakni/.brew/opt/glfw/lib" -lglfw \
+          -framework Cocoa -framework OpenGL -framework IOKit \
+		-fsanitize=address -g
 
-# $(NAME): $(OBJ) $(LIBFT_LIB)
-# 	$(CC) $(CFLAGS) $(OBJ) $(MLX_LIB) $(LIBFT_LIB) $(LDFLAGS) -o $(NAME)
+$(NAME): $(OBJ) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(OBJ) $(MLX_LIB) $(LIBFT_LIB) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT_LIB):
 	make -C $(LIBFT_DIR)

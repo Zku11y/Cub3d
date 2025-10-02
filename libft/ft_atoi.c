@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 19:01:03 by mdakni            #+#    #+#             */
-/*   Updated: 2025/02/25 17:34:26 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/02/03 15:10:52 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	ft_atoi(const char *str)
 	}
 	while ((str[i] >= '0' && str[i] <= '9'))
 		answer = (answer * 10) + (str[i++] - '0');
-	if (answer > INT_MAX || (answer * sign) < INT_MIN)
+	if (answer > LONG_MAX)
 	{
 		if (sign == 1)
 			return (-1);

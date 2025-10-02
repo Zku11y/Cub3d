@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/09/29 20:32:00 by skully           ###   ########.fr       */
+/*   Updated: 2025/10/02 09:11:19 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,8 @@ void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
     t_vect2 add;
     t_vect2 mod;
 
+    ft_limit_cords(&start);
+    ft_limit_cords(&finish);
     mod.x = finish.x - start.x; // -GRID_SIZE
     mod.y = finish.y - start.y; // -100
     if(fabs(mod.x) >= fabs(mod.y))
@@ -199,11 +201,7 @@ void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
     }
     while (fabs(start.x - finish.x) > 0.5 || fabs(start.y - finish.y) > 0.5)
     {
-        if (start.x >= 0 && start.x < SCREEN_WIDTH &&
-            start.y >= 0 && start.y < SCREEN_HEIGHT)
-        {
-            mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), color);
-        }
+        mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), color);
         start.x += add.x;
         start.y += add.y;
     }
@@ -333,12 +331,18 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         printf("black african american individual :)\n");
         exit(1);
     }
+    cords.y = 0;
+    ratio.y = cube->texture->height / len;
+    if(check_screen_limits(start) && start.y <= 0)
+    {
+        cords.y = ratio.y * ((-1) * start.y);
+        start.y = 0;
+        // printf("cords.y = %f, start.y = %f\n", cords.y, start.y);
+    }
     cords.x = cube->texture->width * ray->normal_dst;
     if(cords.x >= cube->texture->width)
         cords.x = cube->texture->width - 1;
-    ratio.y = cube->texture->height / len;
-    cords.y = 0;
-    while(start.y < end.y && cords.y < cube->texture->height)
+    while(start.y < SCREEN_HEIGHT && start.y < end.y && cords.y < cube->texture->height)
     {
         int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
         uint8_t r = cube->texture->pixels[k + 0];
@@ -346,9 +350,9 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         uint8_t b = cube->texture->pixels[k + 2];
         uint8_t a = cube->texture->pixels[k + 3];
         uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
-        if(!check_screen_limits(start))
             // mlx_put_pixel(cube->image, start.x, start.y, 0xfc6f03ff);
-            mlx_put_pixel(cube->image, start.x, start.y, shade_color(color, ray->length));
+        // if(!check_screen_limits(start))
+        mlx_put_pixel(cube->image, start.x, start.y, color);
         cords.y += ratio.y;
         start.y++;
     }
@@ -363,7 +367,7 @@ void ft_draw_world(t_cube *cube)
     int i;
 
     start.x = (SCREEN_WIDTH - (cube->line_girth * RES)) / 2;
-    start.y = SCREEN_HEIGHT / 2;
+    // start.y = SCREEN_HEIGHT / 2;
     ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
     ft_rectangle(cube, (t_vect2){SCREEN_WIDTH - start.x, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
     i = 0;
@@ -371,9 +375,9 @@ void ft_draw_world(t_cube *cube)
     {
         j = 0;
         cube->rays[i].length *= cos(cube->rays[i].real_angle - cube->player.angle);
-        len = (SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         // len = (GRID_SIZE * (0.5 * SCREEN_WIDTH / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         // len = (SCREEN_HEIGHT * GRID_SIZE / SCREEN_WIDTH) / cube->rays[i].length;
+        len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         start.y = (SCREEN_HEIGHT - len) / 2;
         if(len > SCREEN_HEIGHT)
             start.y = -1 * ((len - SCREEN_HEIGHT) / 2);
@@ -381,7 +385,10 @@ void ft_draw_world(t_cube *cube)
         end.y = start.y + len;
         while(j < cube->line_girth)
         {
+            // set_screen_limits(&start);
+            // set_screen_limits(&end);
             ft_draw_texture(cube, &cube->rays[i], start, end, len);
+            // ft_draw_line(cube, start, end, 0xfc6f03ff);
             start.x++;
             end.x++;
             j++;
@@ -464,6 +471,7 @@ void ft_map_init(t_cube *cube)
     cube->map[MAP_Y / 2][MAP_X / 2] = 1;
     cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) - 1] = 1;
     cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) + 1] = 1;
+    cube->map[(MAP_Y / 2) + 2][(MAP_Y / 2) + 2] = 1;
 }
 void ft_init(t_cube *cube)
 {
@@ -481,7 +489,7 @@ void ft_init(t_cube *cube)
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
-    cube->texture = mlx_load_png("./lain_2.png");
+    cube->texture = mlx_load_png("./backrooms_0.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
