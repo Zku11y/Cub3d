@@ -12,7 +12,7 @@ ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c
 
 NAME = libft.a
 CC = cc
-FLAGS = -Wall -Wextra -Werror
+FLAGS =
 OBJS = $(SRCS:.c=.o)
 BOBJS = $(BSRCS:.c=.o)
 
