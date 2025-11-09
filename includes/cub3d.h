@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/10/02 09:26:35 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/06 19:49:51 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 #define RES 800
-#define FOV 70
+#define FOV 66
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
-#define GRID_SIZE 20
 #define WALL_DST 2
 #define WALL_SCALE SCREEN_HEIGHT / 2
 #define TURN_SPEED 0.001
-#define PLAYER_SPEED 1
+#define GRID_SIZE 30
+#define PLAYER_SPEED GRID_SIZE / 10
 #define HORI 0
 #define VERT 1
 #define MAP_X 30
@@ -94,6 +94,8 @@ typedef struct s_cube
     double mod_rate;
     int line_girth;
     mlx_texture_t *texture;
+    mlx_texture_t *texture2;
+    double min_length;
 }   t_cube;
 
 #endif

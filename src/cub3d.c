@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/10/02 09:11:19 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/09 15:27:52 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,7 @@ void ft_draw_rays(t_cube *cube)
     int i;
 
     i = 0;
+    cube->min_length = 99999999;
     start_angle = cube->player.angle - ((FOV / 2) * RADIANT_RATE);
     while(i < RES)
     {
@@ -271,6 +272,7 @@ void ft_draw_rays(t_cube *cube)
         // printf("start angle : %lf\n", start_angle);
         cube->rays[i].real_angle = start_angle;
         ft_ray_init(cube, &(cube->rays[i]), start_angle);
+        if(cube->rays[i].length < cube->min_length) cube->min_length = cube->rays[i].length;
         // ft_draw_line(cube, cube->rays[i].start, cube->rays[i].end, 0xfff700ff);
         i++;
         start_angle += cube->mod_rate;
@@ -311,8 +313,8 @@ uint32_t shade_color(uint32_t base, double distance)
     uint8_t a = base & 0xFF;
 
     // Fade factor: closer = brighter, farther = darker
-    double factor = 1.0 / (1.0 + distance * 0.02); // tweak 0.01
-    if(factor < 0.2) factor = 0.2; // keep minimum brightness
+    double factor = 1.0 / (1.0 + distance * 0.03); // tweak 0.01
+    // if(factor < 0.2) factor = 0.2; // keep minimum brightness
 
     r = (uint8_t)(r * factor);
     g = (uint8_t)(g * factor);
@@ -351,8 +353,9 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         uint8_t a = cube->texture->pixels[k + 3];
         uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
             // mlx_put_pixel(cube->image, start.x, start.y, 0xfc6f03ff);
-        // if(!check_screen_limits(start))
-        mlx_put_pixel(cube->image, start.x, start.y, color);
+        // mlx_put_pixel(cube->image, start.x, start.y, shade_color(color, ray->length));
+        if(!check_screen_limits(start))
+            mlx_put_pixel(cube->image, start.x, start.y, color);
         cords.y += ratio.y;
         start.y++;
     }
@@ -378,6 +381,9 @@ void ft_draw_world(t_cube *cube)
         // len = (GRID_SIZE * (0.5 * SCREEN_WIDTH / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         // len = (SCREEN_HEIGHT * GRID_SIZE / SCREEN_WIDTH) / cube->rays[i].length;
         len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
+        // len = (GRID_SIZE / cube->rays[i].length) * (SCREEN_WIDTH / 2) / tan(((FOV / 2) * RADIANT_RATE));
+        // double posZ = SCREEN_HEIGHT / 2.0;
+        // len = round((posZ * GRID_SIZE) / cube->rays[i].length);
         start.y = (SCREEN_HEIGHT - len) / 2;
         if(len > SCREEN_HEIGHT)
             start.y = -1 * ((len - SCREEN_HEIGHT) / 2);
@@ -397,15 +403,192 @@ void ft_draw_world(t_cube *cube)
     }
 }
 
+// void ft_floor(t_cube *cube)
+// {
+//     double dirX = cos(cube->player.angle);
+//     double dirY = sin(cube->player.angle);
+
+//     // Camera plane (perpendicular to dir)
+//     double planeX = -dirY * (FOV / 10);
+//     double planeY =  dirX * (FOV / 10);
+
+//     double playerX = cube->player.x / GRID_SIZE;
+//     double playerY = cube->player.y / GRID_SIZE;
+
+//     double posZ = 0.5 * SCREEN_HEIGHT; // cameraHeight = 0.5
+
+//     for (int i = SCREEN_HEIGHT / 2; i < SCREEN_HEIGHT; i++)
+//     {
+//         double p = i - SCREEN_HEIGHT / 2.0;
+//         double rowDist = posZ / p;
+
+//         // World positions at left & right
+//         double floorXLeft  = playerX + rowDist * (dirX - planeX);
+//         double floorYLeft  = playerY + rowDist * (dirY - planeY);
+//         double floorXRight = playerX + rowDist * (dirX + planeX);
+//         double floorYRight = playerY + rowDist * (dirY + planeY);
+
+//         double stepX = (floorXRight - floorXLeft) / SCREEN_WIDTH;
+//         double stepY = (floorYRight - floorYLeft) / SCREEN_WIDTH;
+
+//         double floorX = floorXLeft;
+//         double floorY = floorYLeft;
+
+//         for (int j = 0; j < SCREEN_WIDTH; j++)
+//         {
+//             // fractional parts → texture coords
+//             double fracX = fmod(floorX, 1.0);
+//             double fracY = fmod(floorY, 1.0);
+//             if (fracX < 0) fracX += 1.0;
+//             if (fracY < 0) fracY += 1.0;
+
+//             int texX = (int)(fracX * cube->texture->width);
+//             int texY = (int)(fracY * cube->texture->height);
+
+//             int idx = (texY * cube->texture->width + texX) * cube->texture->bytes_per_pixel;
+
+//             uint8_t r = cube->texture->pixels[idx + 0];
+//             uint8_t g = cube->texture->pixels[idx + 1];
+//             uint8_t b = cube->texture->pixels[idx + 2];
+//             uint8_t a = cube->texture->pixels[idx + 3];
+
+//             uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+
+//             mlx_put_pixel(cube->image, j, i, color);
+
+//             floorX += stepX;
+//             floorY += stepY;
+//         }
+//     }
+// }
+#include <string.h>
+// void ft_shader(t_cube *cube)
+// {
+//     int x;
+//     int y;
+
+//     x = 0;
+//     while(x < SCREEN_WIDTH)
+//     {
+//         y = 0;
+//         while(y < SCREEN_HEIGHT)
+//         {
+            
+//             y++;
+//         }
+//         x++;
+//     }
+// }
+
+void ft_floor(t_cube *cube)
+{
+    
+    double DirX = cos(cube->player.angle);
+    double DirY = sin(cube->player.angle);
+    double PlaneX = -DirY * 0.66;
+    double PlaneY = DirX * 0.66;
+    t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
+    t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
+    t_vect2 PlayerPos = (t_vect2){(cube->player.x / GRID_SIZE) + 10, (cube->player.y / GRID_SIZE) + 10, 0, 0};
+    // t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
+    double posZ = SCREEN_HEIGHT / 2.0;
+    int i = posZ + 1;
+    while(i < SCREEN_HEIGHT)
+    {
+        double p = i - SCREEN_HEIGHT / 2.0;   // distance from horizon in screen pixels
+        double rowDst = (posZ - 0.5) / p;   
+        t_vect2 floorL = (t_vect2){PlayerPos.x + rowDst * RayDirL.x, PlayerPos.y + rowDst * RayDirL.y, 0, 0};
+        t_vect2 floorR = (t_vect2){PlayerPos.x + rowDst * RayDirR.x, PlayerPos.y + rowDst * RayDirR.y, 0, 0};
+
+        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+
+        t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
+
+        int j = 0;
+        while(j < SCREEN_WIDTH)
+        {
+            double fracX = fmod(ft_floor.x, 1.0);
+            double fracY = fmod(ft_floor.y, 1.0);
+            if (fracX < 0) fracX += 1.0;
+            if (fracY < 0) fracY += 1.0;
+
+            int texX = (int)(fracX * cube->texture2->width);
+            int texY = (int)(fracY * cube->texture2->height);
+            int k = ((cube->texture2->bytes_per_pixel * texY * cube->texture2->width) + (texX * cube->texture2->bytes_per_pixel));
+            uint8_t r = cube->texture2->pixels[k + 0];
+            uint8_t g = cube->texture2->pixels[k + 1];
+            uint8_t b = cube->texture2->pixels[k + 2];
+            uint8_t a = cube->texture2->pixels[k + 3];
+            uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+            t_vect2 coords = (t_vect2){j, i, 0, 0};
+            if(!check_screen_limits(coords))
+                mlx_put_pixel(cube->image, j, i, color);
+            ft_floor.x += step.x;
+            ft_floor.y += step.y;
+            j++;
+        }
+        i++;
+    }
+}
+
+// texX = (int)((floorX - floor(floorX)) * texW);
+// texY = (int)((floorY - floor(floorY)) * texH);
+
+void ft_crt_vhs_effect(t_cube *cube)
+{
+    int x, y;
+    int tmp, src_tmp;
+    uint8_t *tmp_pixels;
+    int width = cube->image->width;
+    int height = cube->image->height;
+    int bpp = 4;
+
+    srand(time(NULL));
+    tmp_pixels = malloc(width * height * bpp);
+    if (!tmp_pixels)
+        return;
+    memcpy(tmp_pixels, cube->image->pixels, width * height * bpp);
+    for (y = 0; y < height; y++)
+    {
+        for (x = 0; x < width; x++)
+        {
+            tmp = (y * width + x) * bpp;
+            float scanline = (y % 2 == 0) ? 0.01f : 0.8f;
+            int r_x = x - 10;
+            int g_x = x;
+            int b_x = x + 10;
+            if (r_x < 0) r_x = 0;
+            if (b_x >= width) b_x = width - 1;
+            src_tmp = (y * width + r_x) * bpp;
+            uint8_t r = tmp_pixels[src_tmp + 0];
+            src_tmp = (y * width + g_x) * bpp;
+            uint8_t g = tmp_pixels[src_tmp + 1];
+            src_tmp = (y * width + b_x) * bpp;
+            uint8_t b = tmp_pixels[src_tmp + 2];
+            uint8_t a = tmp_pixels[(y * width + x) * bpp + 3];
+            int noise = (rand() % 20);
+            r = (uint8_t)fmax(0, fmin(255, r * scanline + noise));
+            g = (uint8_t)fmax(0, fmin(255, g * scanline + noise));
+            b = (uint8_t)fmax(0, fmin(255, b * scanline + noise));
+            cube->image->pixels[tmp + 0] = r;
+            cube->image->pixels[tmp + 1] = g;
+            cube->image->pixels[tmp + 2] = b;
+            cube->image->pixels[tmp + 3] = a;
+        }
+    }
+    free(tmp_pixels);
+}
+
+
 void ft_update(void *param)
 {
     t_cube *cube;
     struct timeval tv;
 
     cube = (t_cube *)param;
-    // clear_image(cube);
+    clear_image(cube);
     ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x252625ff);
-    ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x57493eff);
+    // ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x57493eff);
     // draw_grid(cube);
     ft_mouvement(cube);
     // draw_player(cube);
@@ -413,6 +596,7 @@ void ft_update(void *param)
     cube->final_t = tv.tv_sec;
     // ft_ray_init(cube, &cube->player.ray, cube->player.angle);
     ft_draw_rays(cube);
+    ft_floor(cube);
     ft_draw_world(cube);
     int32_t mouse_x;    
     int32_t mouse_y;
@@ -426,6 +610,8 @@ void ft_update(void *param)
     }
     cube->player.pos.x = cube->player.x;
     cube->player.pos.y = cube->player.y;
+    // ft_shader(cube);
+    // ft_crt_vhs_effect(cube);
 }  
 
 void ft_parse(t_cube *cube)
@@ -490,6 +676,7 @@ void ft_init(t_cube *cube)
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
     cube->texture = mlx_load_png("./backrooms_0.png");
+    cube->texture2 = mlx_load_png("./floor_tile.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
