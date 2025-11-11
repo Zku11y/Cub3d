@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/11/09 15:27:52 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/11 16:46:08 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,7 +380,8 @@ void ft_draw_world(t_cube *cube)
         cube->rays[i].length *= cos(cube->rays[i].real_angle - cube->player.angle);
         // len = (GRID_SIZE * (0.5 * SCREEN_WIDTH / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         // len = (SCREEN_HEIGHT * GRID_SIZE / SCREEN_WIDTH) / cube->rays[i].length;
-        len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
+        // len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
+        len = GRID_SIZE * SCREEN_HEIGHT / cube->rays[i].length;
         // len = (GRID_SIZE / cube->rays[i].length) * (SCREEN_WIDTH / 2) / tan(((FOV / 2) * RADIANT_RATE));
         // double posZ = SCREEN_HEIGHT / 2.0;
         // len = round((posZ * GRID_SIZE) / cube->rays[i].length);
@@ -485,20 +486,20 @@ void ft_floor(t_cube *cube)
     
     double DirX = cos(cube->player.angle);
     double DirY = sin(cube->player.angle);
-    double PlaneX = -DirY * 0.66;
-    double PlaneY = DirX * 0.66;
+    double PlaneX = -DirY * (tan((FOV / 2.0) * RADIANT_RATE));
+    double PlaneY = DirX * (tan((FOV / 2.0) * RADIANT_RATE));
     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
-    t_vect2 PlayerPos = (t_vect2){(cube->player.x / GRID_SIZE) + 10, (cube->player.y / GRID_SIZE) + 10, 0, 0};
+    t_vect2 PlayerPos = (t_vect2){(cube->player.x / GRID_SIZE), (cube->player.y / GRID_SIZE), 0, 0};
     // t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
     double posZ = SCREEN_HEIGHT / 2.0;
     int i = posZ + 1;
     while(i < SCREEN_HEIGHT)
     {
-        double p = i - SCREEN_HEIGHT / 2.0;   // distance from horizon in screen pixels
-        double rowDst = (posZ - 0.5) / p;   
-        t_vect2 floorL = (t_vect2){PlayerPos.x + rowDst * RayDirL.x, PlayerPos.y + rowDst * RayDirL.y, 0, 0};
-        t_vect2 floorR = (t_vect2){PlayerPos.x + rowDst * RayDirR.x, PlayerPos.y + rowDst * RayDirR.y, 0, 0};
+        double p = (float)i - SCREEN_HEIGHT / 2.0;   // distance from horizon in screen pixels
+        double rowDst = posZ / p;
+        t_vect2 floorL = (t_vect2){(PlayerPos.x) + rowDst * RayDirL.x, (PlayerPos.y) + rowDst * RayDirL.y, 0, 0};
+        t_vect2 floorR = (t_vect2){(PlayerPos.x) + rowDst * RayDirR.x, (PlayerPos.y) + rowDst * RayDirR.y, 0, 0};
 
         t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
 

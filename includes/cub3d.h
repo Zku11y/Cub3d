@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/11/06 19:49:51 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/11 16:49:00 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-#define RES 800
-#define FOV 66
+#define RES 400
+#define FOV 90
 #define PI 3.14159265359
 #define RADIANT_RATE PI / 180
 #define WALL_DST 2
 #define WALL_SCALE SCREEN_HEIGHT / 2
 #define TURN_SPEED 0.001
-#define GRID_SIZE 30
+#define GRID_SIZE 64.0f
 #define PLAYER_SPEED GRID_SIZE / 10
 #define HORI 0
 #define VERT 1
