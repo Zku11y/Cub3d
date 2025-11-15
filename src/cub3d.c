@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/11/11 16:46:08 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/15 23:58:21 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,8 +212,10 @@ t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
     double len_hori;
     double len_vert;
 
-    len_hori = (fabs(hori.x - cube->player.x) / cos(ray->angle));
-    len_vert = (fabs(vert.y - cube->player.y) / sin(ray->angle));
+    // len_hori = (fabs(hori.x - cube->player.x) / cos(ray->angle));
+    // len_vert = (fabs(vert.y - cube->player.y) / sin(ray->angle));
+    len_hori = (fabs(hori.y - cube->player.y) / sin(ray->angle));
+    len_vert = (fabs(vert.x - cube->player.x) / cos(ray->angle));
     if(len_hori < len_vert)
     {
         ray->length = len_hori;
@@ -257,27 +259,53 @@ void ft_ray_init(t_cube *cube, t_ray *ray, double angle)
 
 void ft_draw_rays(t_cube *cube)
 {
-    double start_angle;
-    int i;
+    double DirX = cos(cube->player.angle);
+    double DirY = sin(cube->player.angle);
+    double PlaneX = -DirY * tan((FOV / 2.0) * RADIANT_RATE);
+    double PlaneY =  DirX * tan((FOV / 2.0) * RADIANT_RATE);
 
-    i = 0;
-    cube->min_length = 99999999;
-    start_angle = cube->player.angle - ((FOV / 2) * RADIANT_RATE);
-    while(i < RES)
+    for (int i = 0; i < RES; i++)
     {
-        if(start_angle < 0)
-            start_angle = (2 * PI) + start_angle;
-        else if(start_angle > (PI * 2))
-            start_angle = start_angle - (2 * PI);
-        // printf("start angle : %lf\n", start_angle);
-        cube->rays[i].real_angle = start_angle;
-        ft_ray_init(cube, &(cube->rays[i]), start_angle);
-        if(cube->rays[i].length < cube->min_length) cube->min_length = cube->rays[i].length;
-        // ft_draw_line(cube, cube->rays[i].start, cube->rays[i].end, 0xfff700ff);
-        i++;
-        start_angle += cube->mod_rate;
+        double cameraX = 2.0 * i / (double)RES - 1.0;
+
+        double rayDirX = DirX + PlaneX * cameraX;
+        double rayDirY = DirY + PlaneY * cameraX;
+
+        double rayAngle = atan2(rayDirY, rayDirX);
+
+        if (rayAngle < 0)
+            rayAngle += 2 * PI;
+        else if (rayAngle > 2 * PI)
+            rayAngle -= 2 * PI;
+
+        cube->rays[i].real_angle = rayAngle;
+        ft_ray_init(cube, &(cube->rays[i]), rayAngle);
     }
 }
+
+// void ft_draw_rays(t_cube *cube)
+// {
+//     double start_angle;
+//     int i;
+
+//     i = 0;
+//     cube->min_length = 99999999;
+//     start_angle = cube->player.angle - ((FOV / 2) * RADIANT_RATE);
+//     while(i < RES)
+//     {
+//         if(start_angle < 0)
+//             start_angle = (2 * PI) + start_angle;
+//         else if(start_angle > (PI * 2))
+//             start_angle = start_angle - (2 * PI);
+//         // printf("start angle : %lf\n", start_angle);
+//         cube->rays[i].real_angle = start_angle;
+//         ft_ray_init(cube, &(cube->rays[i]), start_angle);
+//         if(cube->rays[i].length < cube->min_length) cube->min_length = cube->rays[i].length;
+//         // ft_draw_line(cube, cube->rays[i].start, cube->rays[i].end, 0xfff700ff);
+//         i++;
+//         start_angle += cube->mod_rate;
+//     }
+// }
 
 bool check_screen_limits(t_vect2 len)
 {
@@ -344,13 +372,19 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
     cords.x = cube->texture->width * ray->normal_dst;
     if(cords.x >= cube->texture->width)
         cords.x = cube->texture->width - 1;
+    double tmp = 1.0 - (ray->length / MAX_DST);
+    if(tmp > 1.0)
+        tmp = 1.0;
+    else if(tmp < 0.0)
+        tmp = 0.0;
     while(start.y < SCREEN_HEIGHT && start.y < end.y && cords.y < cube->texture->height)
     {
         int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
-        uint8_t r = cube->texture->pixels[k + 0];
-        uint8_t g = cube->texture->pixels[k + 1];
-        uint8_t b = cube->texture->pixels[k + 2];
+        uint8_t r = cube->texture->pixels[k + 0] * tmp * 0.5;
+        uint8_t g = cube->texture->pixels[k + 1] * tmp * 0.5;
+        uint8_t b = cube->texture->pixels[k + 2] * tmp * 0.5;
         uint8_t a = cube->texture->pixels[k + 3];
+
         uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
             // mlx_put_pixel(cube->image, start.x, start.y, 0xfc6f03ff);
         // mlx_put_pixel(cube->image, start.x, start.y, shade_color(color, ray->length));
@@ -369,6 +403,8 @@ void ft_draw_world(t_cube *cube)
     int j;
     int i;
 
+
+    
     start.x = (SCREEN_WIDTH - (cube->line_girth * RES)) / 2;
     // start.y = SCREEN_HEIGHT / 2;
     ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
@@ -377,12 +413,19 @@ void ft_draw_world(t_cube *cube)
     while(i < RES)
     {
         j = 0;
-        cube->rays[i].length *= cos(cube->rays[i].real_angle - cube->player.angle);
+        // if(cube->rays[i].length > MAX_DST){
+        //     start.x++;
+        //     i++;
+        //     continue;
+        // }
+        double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
+        // cube->rays[i].length *= cos(cube->rays[i].real_angle - cube->player.angle);
         // len = (GRID_SIZE * (0.5 * SCREEN_WIDTH / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
         // len = (SCREEN_HEIGHT * GRID_SIZE / SCREEN_WIDTH) / cube->rays[i].length;
         // len = round(SCREEN_HEIGHT * (0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE)) / cube->rays[i].length);
-        len = GRID_SIZE * SCREEN_HEIGHT / cube->rays[i].length;
-        // len = (GRID_SIZE / cube->rays[i].length) * (SCREEN_WIDTH / 2) / tan(((FOV / 2) * RADIANT_RATE));
+        // len = GRID_SIZE * SCREEN_HEIGHT / cube->rays[i].length;
+        // len = (GRID_SIZE * V_PROJ_DST) / cube->rays[i].length;
+        len = (GRID_SIZE / length) * (SCREEN_WIDTH / 2) / tan(((FOV / 2) * RADIANT_RATE));
         // double posZ = SCREEN_HEIGHT / 2.0;
         // len = round((posZ * GRID_SIZE) / cube->rays[i].length);
         start.y = (SCREEN_HEIGHT - len) / 2;
@@ -481,44 +524,117 @@ void ft_draw_world(t_cube *cube)
 //     }
 // }
 
+// void ft_floor(t_cube *cube)
+// {
+    
+//     double DirX = cos(cube->player.angle);
+//     double DirY = sin(cube->player.angle);
+//     double PlaneX = -DirY * (tan((FOV / 2.0) * RADIANT_RATE));
+//     double PlaneY = DirX * (tan((FOV / 2.0) * RADIANT_RATE));
+//     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
+//     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
+//     t_vect2 PlayerPos = (t_vect2){(cube->player.x), (cube->player.y), 0, 0};
+//     // t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
+//     // double posZ = SCREEN_HEIGHT / 2.0;
+//     // double posZ = (GRID_SIZE / 2.0) * PROJ_DST;
+//     double posZ = V_PROJ_DST;
+//     int i = posZ + 1;
+//     while(i < SCREEN_HEIGHT)
+//     {
+//         double p = (float)i - SCREEN_HEIGHT / 2.0;   // distance from horizon in screen pixels
+//         double rowDst = posZ / p;
+//         t_vect2 floorL = (t_vect2){(PlayerPos.x) + rowDst * RayDirL.x, (PlayerPos.y) + rowDst * RayDirL.y, 0, 0};
+//         t_vect2 floorR = (t_vect2){(PlayerPos.x) + rowDst * RayDirR.x, (PlayerPos.y) + rowDst * RayDirR.y, 0, 0};
+
+//         t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+
+//         t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
+
+//         int j = 0;
+//         while(j < SCREEN_WIDTH)
+//         {
+//             double fracX = fmod(ft_floor.x, 1.0);
+//             double fracY = fmod(ft_floor.y, 1.0);
+//             if (fracX < 0) fracX += 1.0;
+//             if (fracY < 0) fracY += 1.0;
+
+//             // printf("ft_floorX : %lf, ft_floorY : %lf, gridX : %lf, gridY : %lf\n", ft_floor.x, ft_floor.y, fracX, fracY);
+
+//             int texX = (int)(fracX * cube->texture2->width);
+//             int texY = (int)(fracY * cube->texture2->height);
+//             int k = ((cube->texture2->bytes_per_pixel * texY * cube->texture2->width) + (texX * cube->texture2->bytes_per_pixel));
+//             uint8_t r = cube->texture2->pixels[k + 0];
+//             uint8_t g = cube->texture2->pixels[k + 1];
+//             uint8_t b = cube->texture2->pixels[k + 2];
+//             uint8_t a = cube->texture2->pixels[k + 3];
+//             uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+//             t_vect2 coords = (t_vect2){j, i, 0, 0};
+//             if(!check_screen_limits(coords))
+//                 mlx_put_pixel(cube->image, j, i, color);
+//             ft_floor.x += step.x;
+//             ft_floor.y += step.y;
+//             j++;
+//         }
+//         i++;
+//     }
+// }
+
 void ft_floor(t_cube *cube)
 {
-    
     double DirX = cos(cube->player.angle);
     double DirY = sin(cube->player.angle);
     double PlaneX = -DirY * (tan((FOV / 2.0) * RADIANT_RATE));
     double PlaneY = DirX * (tan((FOV / 2.0) * RADIANT_RATE));
     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
-    t_vect2 PlayerPos = (t_vect2){(cube->player.x / GRID_SIZE), (cube->player.y / GRID_SIZE), 0, 0};
-    // t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
-    double posZ = SCREEN_HEIGHT / 2.0;
-    int i = posZ + 1;
+
+    // FIX 1: Use world-pixel coordinates, NOT grid coordinates
+    t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
+
+    // FIX 2: Use the new VERTICAL focal length
+    // double posZ = V_PROJ_DST;
+    double posZ = (0.5 * SCREEN_WIDTH) / tan((FOV / 2.0) * RADIANT_RATE);
+
+    // FIX 3: Define camera height in world units
+    double camera_height_world = GRID_SIZE / 2.0;
+
+    int i = (SCREEN_HEIGHT / 2) + 1;
     while(i < SCREEN_HEIGHT)
     {
+        // if replace SCREEN_HEIGHT with SCREEN_WIDTH you get ceiling textures PS: found it by accident :P
         double p = (float)i - SCREEN_HEIGHT / 2.0;   // distance from horizon in screen pixels
-        double rowDst = posZ / p;
+        // FIX 4: Use the correct projection formula
+        double rowDst = (camera_height_world * posZ) / p;
+
         t_vect2 floorL = (t_vect2){(PlayerPos.x) + rowDst * RayDirL.x, (PlayerPos.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(PlayerPos.x) + rowDst * RayDirR.x, (PlayerPos.y) + rowDst * RayDirR.y, 0, 0};
 
         t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
-
         t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
+
+        double tmp = 1.0 - (rowDst / MAX_DST);
+        if(tmp > 1.0)
+            tmp = 1.0;
+        else if(tmp < 0.0)
+            tmp = 0.0;
 
         int j = 0;
         while(j < SCREEN_WIDTH)
         {
-            double fracX = fmod(ft_floor.x, 1.0);
-            double fracY = fmod(ft_floor.y, 1.0);
+            // FIX 5: Convert world-pixel coords to texture coords
+            double fracX = fmod(ft_floor.x / GRID_SIZE, 1.0);
+            double fracY = fmod(ft_floor.y / GRID_SIZE, 1.0);
+            
             if (fracX < 0) fracX += 1.0;
             if (fracY < 0) fracY += 1.0;
 
             int texX = (int)(fracX * cube->texture2->width);
             int texY = (int)(fracY * cube->texture2->height);
+            
             int k = ((cube->texture2->bytes_per_pixel * texY * cube->texture2->width) + (texX * cube->texture2->bytes_per_pixel));
-            uint8_t r = cube->texture2->pixels[k + 0];
-            uint8_t g = cube->texture2->pixels[k + 1];
-            uint8_t b = cube->texture2->pixels[k + 2];
+            uint8_t r = cube->texture2->pixels[k + 0] * tmp * 0.5;
+            uint8_t g = cube->texture2->pixels[k + 1] * tmp * 0.5;
+            uint8_t b = cube->texture2->pixels[k + 2] * tmp * 0.5;
             uint8_t a = cube->texture2->pixels[k + 3];
             uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
             t_vect2 coords = (t_vect2){j, i, 0, 0};
@@ -587,12 +703,12 @@ void ft_update(void *param)
     struct timeval tv;
 
     cube = (t_cube *)param;
-    clear_image(cube);
-    ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x252625ff);
+    // clear_image(cube);
+    ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x000000ff);
     // ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x57493eff);
     // draw_grid(cube);
     ft_mouvement(cube);
-    // draw_player(cube);
+    // draw_player(cub/e);
     gettimeofday(&tv, NULL);
     cube->final_t = tv.tv_sec;
     // ft_ray_init(cube, &cube->player.ray, cube->player.angle);
