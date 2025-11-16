@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 12:21:29 by skully            #+#    #+#             */
-/*   Updated: 2025/09/30 23:24:15 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/16 16:31:56 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,13 +113,12 @@ void hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
             start->x = start->x + (GRID_SIZE * (1 / tan(ray->angle)));
         else
             start->x = start->x - (GRID_SIZE * (1 / tan(ray->angle)));
-        // mlx_put_pixel(cube->image, start->x, start->y, 0x0d00ff00);
     }
 }
 
 t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
 {
-    t_vect2 len;
+    t_vect2 len = {0};
 
     if(ray->y_dir == DOWN)
     {
@@ -142,15 +141,13 @@ t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
             len.x = cube->player.x - len.x;
     }
     ft_limit_cords(&len);
-    // if(check_collision(cube, &len, HORI, ray) == true)
-    //     return len;
     hori_check_next_point(cube, &len, ray);
     return len;
 }
 
 t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
 {
-    t_vect2 len;
+    t_vect2 len = {0};
 
     if(ray->x_dir == RIGHT)
     {
@@ -173,8 +170,6 @@ t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
             len.y += cube->player.y;
     }
     ft_limit_cords(&len);
-    // if(check_collision(cube, &len, VERT, ray) == true)
-    //     return len;
     vert_check_next_point(cube, &len, ray);
     return len;
 }

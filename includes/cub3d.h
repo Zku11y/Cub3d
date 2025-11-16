@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/11/15 23:59:48 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/16 17:56:00 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,22 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-# define SCREEN_WIDTH 1920
-# define SCREEN_HEIGHT 1080
-# define RES SCREEN_WIDTH
-# define FOV 66
+# define SCREEN_WIDTH 1280
+# define SCREEN_HEIGHT 720
+# define RES 1280
+# define FOV 70
 # define PI 3.14159265359
 # define RADIANT_RATE PI / 180
 # define WALL_DST 2
 # define WALL_SCALE SCREEN_HEIGHT / 2
-# define TURN_SPEED 0.001
+# define TURN_SPEED 0.002
 # define GRID_SIZE 64.0f
-# define PLAYER_SPEED GRID_SIZE / 10
+# define PLAYER_SPEED 100.0f
 # define HORI 0
 # define VERT 1
-# define MAP_X 80
-# define MAP_Y 80
-# define MAX_DST 1000
+# define MAP_X 25
+# define MAP_Y 25
+# define MAX_DST 500
 # define PERP_DST SCREEN_HEIGHT *(0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE))
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define V_PROJ_DST PROJ_DST / ((double)SCREEN_WIDTH / (double)SCREEN_HEIGHT)
@@ -69,6 +69,7 @@ typedef struct s_ray
 	double			angle;
 	double			real_angle;
 	double			normal_dst;
+	bool			collision;
 }					t_ray;
 typedef struct s_player
 {
@@ -98,6 +99,7 @@ typedef struct s_cube
 	int				line_girth;
 	mlx_texture_t	*texture;
 	mlx_texture_t	*texture2;
+	mlx_texture_t	*texture3;
 	double			min_length;
 }					t_cube;
 

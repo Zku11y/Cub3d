@@ -86,4 +86,24 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "cmake.ignoreCMakeListsMissing": true
+
+  "highlight.regexes": {
+    // This finds all standalone "1"s (your walls)
+    "\\b(1)\\b": {
+      "decorations": [
+        {
+          "color": "#ff6347", // A "tomato" red
+          "fontWeight": "bold"
+        }
+      ]
+    },
+    // This finds all standalone "0"s (your floor)
+    "\\b(0)\\b": {
+      "decorations": [
+        {
+          "color": "#666666" // A dark gray
+        }
+      ]
+    }
+  }
 }

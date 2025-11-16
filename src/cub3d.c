@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/11/15 23:58:21 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/16 17:57:35 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,25 +155,25 @@ void ft_mouvement(t_cube *cube)
     ft_turn(cube);
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
     {
-        cube->player.x += -1 * sin(cube->player.angle) * PLAYER_SPEED;
-        cube->player.y += cos(cube->player.angle) * PLAYER_SPEED;
+        cube->player.x += -1 * sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+        cube->player.y += cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
         // cube->player.angle += (0.02 * PLAYER_SPEED);
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
     {
-        cube->player.x -= -1 * sin(cube->player.angle) * PLAYER_SPEED;
-        cube->player.y -= cos(cube->player.angle) * PLAYER_SPEED;
+        cube->player.x -= -1 * sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+        cube->player.y -= cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
         // cube->player.angle -= (0.02 * PLAYER_SPEED);
     }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
-        cube->player.x += cos(cube->player.angle) * PLAYER_SPEED;
-        cube->player.y += sin(cube->player.angle) * PLAYER_SPEED;
+        cube->player.x += cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+        cube->player.y += sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
-        cube->player.x -= cos(cube->player.angle) * PLAYER_SPEED;
-        cube->player.y -= sin(cube->player.angle) * PLAYER_SPEED;
+        cube->player.x -= cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+        cube->player.y -= sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
     }
     ft_mouvement_limits(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
@@ -216,6 +216,7 @@ t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
     // len_vert = (fabs(vert.y - cube->player.y) / sin(ray->angle));
     len_hori = (fabs(hori.y - cube->player.y) / sin(ray->angle));
     len_vert = (fabs(vert.x - cube->player.x) / cos(ray->angle));
+    // printf("len_hori (%lf, %lf) == %lf, len_vert (%lf, %lf) == %lf\n", hori.x, hori.y, len_hori, vert.x, vert.y, len_vert);
     if(len_hori < len_vert)
     {
         ray->length = len_hori;
@@ -370,6 +371,8 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         // printf("cords.y = %f, start.y = %f\n", cords.y, start.y);
     }
     cords.x = cube->texture->width * ray->normal_dst;
+    if(cords.x < 0)
+        cords.x = 0;
     if(cords.x >= cube->texture->width)
         cords.x = cube->texture->width - 1;
     double tmp = 1.0 - (ray->length / MAX_DST);
@@ -380,9 +383,10 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
     while(start.y < SCREEN_HEIGHT && start.y < end.y && cords.y < cube->texture->height)
     {
         int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
-        uint8_t r = cube->texture->pixels[k + 0] * tmp * 0.5;
-        uint8_t g = cube->texture->pixels[k + 1] * tmp * 0.5;
-        uint8_t b = cube->texture->pixels[k + 2] * tmp * 0.5;
+        // printf("k: %d, map_tex: %lf, normal_dst: %lf, cords(%lf, %lf)\n", k, map_tex, ray->normal_dst, cords.x, cords.y);
+        uint8_t r = cube->texture->pixels[k + 0] * tmp;
+        uint8_t g = cube->texture->pixels[k + 1] * tmp;
+        uint8_t b = cube->texture->pixels[k + 2] * tmp;
         uint8_t a = cube->texture->pixels[k + 3];
 
         uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
@@ -578,7 +582,73 @@ void ft_draw_world(t_cube *cube)
 //         i++;
 //     }
 // }
+void ft_ceiling(t_cube *cube)
+{
+    double DirX = cos(cube->player.angle);
+    double DirY = sin(cube->player.angle);
+    double PlaneX = -DirY * (tan((FOV / 2.0) * RADIANT_RATE));
+    double PlaneY = DirX * (tan((FOV / 2.0) * RADIANT_RATE));
+    t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
+    t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
 
+    t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
+
+    // double posZ = V_PROJ_DST;
+    double posZ = (0.5 * SCREEN_WIDTH) / tan((FOV / 2.0) * RADIANT_RATE);
+
+    double camera_height_world = GRID_SIZE / 2.0;
+
+    int i = 0;
+    while(i < SCREEN_HEIGHT / 2)
+    {
+        // if replace SCREEN_HEIGHT with SCREEN_WIDTH you get ceiling textures PS: found it by accident :P
+        double p = (SCREEN_HEIGHT / 2.0) - (float)i;   // distance from horizon in screen pixels
+        double rowDst = (camera_height_world * posZ) / p;
+
+        t_vect2 floorL = (t_vect2){(PlayerPos.x) + rowDst * RayDirL.x, (PlayerPos.y) + rowDst * RayDirL.y, 0, 0};
+        t_vect2 floorR = (t_vect2){(PlayerPos.x) + rowDst * RayDirR.x, (PlayerPos.y) + rowDst * RayDirR.y, 0, 0};
+
+        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+        t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
+
+        double tmp = 1.0 - (rowDst / MAX_DST);
+        if(tmp > 1.0)
+            tmp = 1.0;
+        else if(tmp < 0.0)
+            tmp = 0.0;
+
+        int j = 0;
+        while(j < SCREEN_WIDTH)
+        {
+            double fracX = fmod(ft_floor.x / GRID_SIZE, 1.0);
+            double fracY = fmod(ft_floor.y / GRID_SIZE, 1.0);
+            
+            if (fracX < 0) fracX += 1.0;
+            if (fracY < 0) fracY += 1.0;
+
+            int texX = (int)(fracX * cube->texture3->width);
+            int texY = (int)(fracY * cube->texture3->height);
+            
+            int k = ((cube->texture3->bytes_per_pixel * texY * cube->texture3->width) + (texX * cube->texture3->bytes_per_pixel));
+            uint8_t r = cube->texture3->pixels[k + 0] * tmp;
+            uint8_t g = cube->texture3->pixels[k + 1] * tmp;
+            uint8_t b = cube->texture3->pixels[k + 2] * tmp;
+            uint8_t a = cube->texture3->pixels[k + 3];
+            uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+            t_vect2 coords = (t_vect2){j, i, 0, 0};
+            int iter = 0;
+            while(iter < cube->line_girth){
+                if(!check_screen_limits(coords))
+                    mlx_put_pixel(cube->image, j, i, color);
+                ft_floor.x += step.x;
+                ft_floor.y += step.y;
+                j++;
+                iter++;
+            }
+        }
+        i++;
+    }
+}
 void ft_floor(t_cube *cube)
 {
     double DirX = cos(cube->player.angle);
@@ -632,17 +702,21 @@ void ft_floor(t_cube *cube)
             int texY = (int)(fracY * cube->texture2->height);
             
             int k = ((cube->texture2->bytes_per_pixel * texY * cube->texture2->width) + (texX * cube->texture2->bytes_per_pixel));
-            uint8_t r = cube->texture2->pixels[k + 0] * tmp * 0.5;
-            uint8_t g = cube->texture2->pixels[k + 1] * tmp * 0.5;
-            uint8_t b = cube->texture2->pixels[k + 2] * tmp * 0.5;
+            uint8_t r = cube->texture2->pixels[k + 0] * tmp;
+            uint8_t g = cube->texture2->pixels[k + 1] * tmp;
+            uint8_t b = cube->texture2->pixels[k + 2] * tmp;
             uint8_t a = cube->texture2->pixels[k + 3];
             uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
             t_vect2 coords = (t_vect2){j, i, 0, 0};
-            if(!check_screen_limits(coords))
-                mlx_put_pixel(cube->image, j, i, color);
-            ft_floor.x += step.x;
-            ft_floor.y += step.y;
-            j++;
+            int iter = 0;
+            while(iter < cube->line_girth){
+                if(!check_screen_limits(coords))
+                    mlx_put_pixel(cube->image, j, i, color);
+                ft_floor.x += step.x;
+                ft_floor.y += step.y;
+                j++;
+                iter++;
+            }
         }
         i++;
     }
@@ -670,10 +744,10 @@ void ft_crt_vhs_effect(t_cube *cube)
         for (x = 0; x < width; x++)
         {
             tmp = (y * width + x) * bpp;
-            float scanline = (y % 2 == 0) ? 0.01f : 0.8f;
-            int r_x = x - 10;
+            float scanline = (y % 2 == 0) ? 0.01f : 1.5f;
+            int r_x = x - 0;
             int g_x = x;
-            int b_x = x + 10;
+            int b_x = x + 0;
             if (r_x < 0) r_x = 0;
             if (b_x >= width) b_x = width - 1;
             src_tmp = (y * width + r_x) * bpp;
@@ -704,20 +778,18 @@ void ft_update(void *param)
 
     cube = (t_cube *)param;
     // clear_image(cube);
-    ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x000000ff);
+    // ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x000000ff);
     // ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x57493eff);
     // draw_grid(cube);
-    ft_mouvement(cube);
     // draw_player(cub/e);
     gettimeofday(&tv, NULL);
-    cube->final_t = tv.tv_sec;
     // ft_ray_init(cube, &cube->player.ray, cube->player.angle);
     ft_draw_rays(cube);
+    ft_ceiling(cube);
     ft_floor(cube);
     ft_draw_world(cube);
-    int32_t mouse_x;    
-    int32_t mouse_y;
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    cube->final_t = tv.tv_sec;
+    ft_mouvement(cube);
     cube->fps++;
     if(cube->final_t - cube->init_t == 1)
     {
@@ -747,34 +819,68 @@ void ft_parse(t_cube *cube)
     }
 }
 
+static const int g_map_template[MAP_Y][MAP_X] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
+
 void ft_map_init(t_cube *cube)
 {
     cube->map = ft_calloc(MAP_Y + 1, sizeof(char *));
-    if(cube->map == NULL)
+    if (cube->map == NULL)
     {
         mlx_terminate(cube->mlx);
         perror("Alloc error : ");
         exit(EXIT_FAILURE);
     }
+
     int i = 0;
-    while(i < MAP_Y)
+    while (i < MAP_Y)
     {
         cube->map[i] = ft_calloc(MAP_X + 1, sizeof(char));
+        if (cube->map[i] == NULL)
+        {
+            mlx_terminate(cube->mlx);
+            perror("Alloc error : ");
+            exit(EXIT_FAILURE);
+        }
         i++;
     }
-    i = 0;
-    while(i < MAP_X)
+
+    int y = 0;
+    while (y < MAP_Y)
     {
-        cube->map[0][i] = 1;
-        cube->map[i][0] = 1;
-        cube->map[MAP_Y - 1][i] = 1;
-        cube->map[i][MAP_X - 1] = 1;
-        i++;
+        int x = 0;
+        while (x < MAP_X)
+        {
+            cube->map[y][x] = (char)g_map_template[y][x];
+            x++;
+        }
+        y++;
     }
-    cube->map[MAP_Y / 2][MAP_X / 2] = 1;
-    cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) - 1] = 1;
-    cube->map[(MAP_Y / 2) + 1][(MAP_Y / 2) + 1] = 1;
-    cube->map[(MAP_Y / 2) + 2][(MAP_Y / 2) + 2] = 1;
 }
 void ft_init(t_cube *cube)
 {
@@ -792,8 +898,9 @@ void ft_init(t_cube *cube)
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
-    cube->texture = mlx_load_png("./backrooms_0.png");
-    cube->texture2 = mlx_load_png("./floor_tile.png");
+    cube->texture = mlx_load_png("./backrooms_3.png");
+    cube->texture2 = mlx_load_png("./carpet.png");
+    cube->texture3 = mlx_load_png("./ceiling_tiles_color.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
