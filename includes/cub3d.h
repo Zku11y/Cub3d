@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/11/16 17:56:00 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/17 21:44:56 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 # define SCREEN_WIDTH 1280
 # define SCREEN_HEIGHT 720
-# define RES 1280
+# define RES 150
 # define FOV 70
 # define PI 3.14159265359
 # define RADIANT_RATE PI / 180
@@ -39,10 +39,10 @@
 # define MAP_X 25
 # define MAP_Y 25
 # define MAX_DST 500
-# define PERP_DST SCREEN_HEIGHT *(0.5 * GRID_SIZE / tan((FOV / 2) * RADIANT_RATE))
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
-# define V_PROJ_DST PROJ_DST / ((double)SCREEN_WIDTH / (double)SCREEN_HEIGHT)
-
+# define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
+# define CAM_H GRID_SIZE / 2.0
+# define LERP 0.15
 typedef enum s_direction
 {
 	UP,
@@ -101,6 +101,7 @@ typedef struct s_cube
 	mlx_texture_t	*texture2;
 	mlx_texture_t	*texture3;
 	double			min_length;
+	int8_t			*prev_buffer;
 }					t_cube;
 
 #endif
