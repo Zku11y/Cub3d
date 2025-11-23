@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/11/17 21:52:06 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/11/21 12:40:29 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void ft_angle_limit(double *angle)
     if(*angle < 0)
         *angle = (2 * PI) + *angle;
     else if(*angle > (PI * 2))
-        *angle = (2 * PI) - *angle;
+        *angle = *angle - (2 * PI);
 }
 
 uint8_t ft_lerp_pixels(uint8_t new, uint8_t old){
@@ -225,16 +225,20 @@ t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
     {
         ray->length = len_hori;
         if(ray->y_dir == UP)
-            ray->normal_dst = (hori.x / GRID_SIZE) - hori.grid_x;
+            // ray->normal_dst = (hori.x / GRID_SIZE) - hori.grid_x;
+            ray->normal_dst = fmod(hori.x, GRID_SIZE) / GRID_SIZE;
         else
-            ray->normal_dst = 1 - ((hori.x / GRID_SIZE) - hori.grid_x);
+            // ray->normal_dst = 1 - ((hori.x / GRID_SIZE) - hori.grid_x);
+            ray->normal_dst = 1 - (fmod(hori.x, GRID_SIZE) / GRID_SIZE);
         return (hori);
     }
     ray->length = len_vert;
     if(ray->x_dir == RIGHT)
-        ray->normal_dst = (vert.y / GRID_SIZE) - vert.grid_y;
+        // ray->normal_dst = (vert.y / GRID_SIZE) - vert.grid_y;
+        ray->normal_dst = fmod(vert.y, GRID_SIZE) / GRID_SIZE;
     else
-        ray->normal_dst = 1 - ((vert.y / GRID_SIZE) - vert.grid_y);
+        // ray->normal_dst = 1 - ((vert.y / GRID_SIZE) - vert.grid_y);
+        ray->normal_dst = 1 - (fmod(vert.y, GRID_SIZE) / GRID_SIZE);
     return (vert);
 }
 
@@ -385,16 +389,28 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         tmp = 0.0;
     while(start.y < SCREEN_HEIGHT && start.y < end.y && cords.y < cube->texture->height)
     {
-        int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
-        uint8_t r = cube->texture->pixels[k + 0] * tmp;
-        uint8_t g = cube->texture->pixels[k + 1] * tmp;
-        uint8_t b = cube->texture->pixels[k + 2] * tmp;
-        uint8_t a = cube->texture->pixels[k + 3];
 
-        uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+        // if ((((int)start.x + (int)start.y) % 2) != cube->grain)
+        // {
+        //     // We skip drawing, BUT we must keep the texture aligned!
+        //     cords.y += ratio.y;
+        //     start.y++;
+        //     continue; 
+        // }
 
+        // uint8_t r = cube->texture->pixels[k + 0] * (tmp);
+        // uint8_t g = cube->texture->pixels[k + 1] * (tmp);
+        // uint8_t b = cube->texture->pixels[k + 2] * (tmp);
+        // uint8_t a = cube->texture->pixels[k + 3];
+
+        // uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
         if(!check_screen_limits(start)){
-            mlx_put_pixel(cube->image, start.x, start.y, color);
+            int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
+            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 0] = cube->texture->pixels[k + 0] * (tmp);
+            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 1] = cube->texture->pixels[k + 1] * (tmp);
+            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 2] = cube->texture->pixels[k + 2] * (tmp);
+            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 3] = cube->texture->pixels[k + 3];
+            // mlx_put_pixel(cube->image, start.x, start.y, color);
         }
         cords.y += ratio.y;
         start.y++;
@@ -413,7 +429,7 @@ void ft_draw_world(t_cube *cube)
     ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
     ft_rectangle(cube, (t_vect2){SCREEN_WIDTH - start.x, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
     i = 0;
-    while(i < RES)
+    while(i <= RES)
     {
         j = 0;
         double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
@@ -705,10 +721,10 @@ void ft_crt_vhs_effect(t_cube *cube)
         for (x = 0; x < width; x++)
         {
             tmp = (y * width + x) * bpp;
-            float scanline = (y % 2 == 0) ? 0.01f : 1.5f;
-            int r_x = x - 0;
+            float scanline = (y % 2 == 0) ? 0.1f : 1.5f;
+            int r_x = x - 2;
             int g_x = x;
-            int b_x = x + 0;
+            int b_x = x + 2;
             if (r_x < 0) r_x = 0;
             if (b_x >= width) b_x = width - 1;
             src_tmp = (y * width + r_x) * bpp;
@@ -768,6 +784,14 @@ void ft_floor_ceiling(t_cube *cube){
         int j = 0;
         while(j < SCREEN_WIDTH)
         {
+            // if ((j + i) % 2 != cube->grain) 
+            // {
+            //     // Skip this pixel. The "Old" pixel remains on screen.
+            //     ft_floor.x += step.x;
+            //     ft_floor.y += step.y;
+            //     j++;
+            //     continue;
+            // }
             double fracX = fmod(ft_floor.x / GRID_SIZE, 1.0);
             double fracY = fmod(ft_floor.y / GRID_SIZE, 1.0);
             
@@ -778,17 +802,23 @@ void ft_floor_ceiling(t_cube *cube){
             int texY = (int)(fracY * tex->height);
             
             int k = ((tex->bytes_per_pixel * texY * tex->width) + (texX * tex->bytes_per_pixel));
-            uint8_t r = tex->pixels[k + 0] * tmp;
-            uint8_t g = tex->pixels[k + 1] * tmp;
-            uint8_t b = tex->pixels[k + 2] * tmp;
+            uint8_t r = tex->pixels[k + 0] * (tmp);
+            uint8_t g = tex->pixels[k + 1] * (tmp);
+            uint8_t b = tex->pixels[k + 2] * (tmp);
             uint8_t a = tex->pixels[k + 3];
 
-            uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+            // uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+            int y_iter = SCREEN_WIDTH * i * 4;
             t_vect2 coords = (t_vect2){j, i, 0, 0};
             int iter = 0;
             while(iter < cube->line_girth){
-                if(!check_screen_limits(coords))
-                    mlx_put_pixel(cube->image, j, i, color);
+                if(!check_screen_limits(coords)){
+                    cube->prev_buffer[(y_iter) + (j * 4) + 0] = r;
+                    cube->prev_buffer[(y_iter) + (j * 4) + 1] = g;
+                    cube->prev_buffer[(y_iter) + (j * 4) + 2] = b;
+                    cube->prev_buffer[(y_iter) + (j * 4) + 3] = a;
+                }
+                    // mlx_put_pixel(cube->image, j, i, color);
                 ft_floor.x += step.x;
                 ft_floor.y += step.y;
                 j++;
@@ -799,17 +829,36 @@ void ft_floor_ceiling(t_cube *cube){
     }
 }
 
+void ft_upscaling(t_cube *cube){
+    uint32_t *prev = (uint32_t *)cube->prev_buffer;
+    uint32_t *new = (uint32_t *)cube->image->pixels;
+    int y = 0;
+    while(y < SCREEN_HEIGHT){
+        int x = 0;
+        while(x < SCREEN_WIDTH){
+            int index = (y * SCREEN_WIDTH) + x;
+            int i = 0;
+            while(i < UPSCALING_RATE){
+                int j = 0;
+                while(j < UPSCALING_RATE){
+                    new[((y * UPSCALING_RATE + i) * SCREEN_WIDTH_BUFF) + (x * UPSCALING_RATE + j)] = prev[index];
+                    j++;
+                }
+                i++;
+            }
+            x++;
+        }
+        y++;
+    }
+}
+
 void ft_update(void *param)
 {
     t_cube *cube;
     struct timeval tv;
 
     cube = (t_cube *)param;
-    int i = 0;
-    while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
-        cube->prev_buffer[i] = cube->image->pixels[i];
-        i++;
-    }
+    // cube->grain = !cube->grain;
     // clear_image(cube);
     // ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x000000ff);
     // ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x57493eff);
@@ -822,17 +871,23 @@ void ft_update(void *param)
     // ft_floor(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    i = 0;
-    while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
-        cube->image->pixels[i] = ft_lerp_pixels(cube->image->pixels[i], cube->prev_buffer[i]);
-        i++;
-    }
+    // int i = 0;
+    // while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
+    //     cube->prev_buffer[i] = cube->image->pixels[i];
+    //     i++;
+    // }
+    // i = 0;
+    // while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
+    //     cube->image->pixels[i] = ft_lerp_pixels(cube->image->pixels[i], cube->prev_buffer[i]);
+    //     i++;
+    // }
+    ft_upscaling(cube);
     cube->final_t = tv.tv_sec;
     ft_mouvement(cube);
     cube->fps++;
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d, normal_dst : (%lf)\n", cube->fps, cube->player.ray.normal_dst);
+        printf("fps : %d, player_angle : (%lf)\n", cube->fps, cube->player.angle / (2 * PI));
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
@@ -929,6 +984,7 @@ void ft_init(t_cube *cube)
     cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->mod_rate = (FOV * RADIANT_RATE) / RES;
     cube->fps = 0;
+    cube->grain = true;
     cube->rays = ft_calloc(RES + 1, sizeof(t_ray));
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
@@ -938,19 +994,19 @@ void ft_init(t_cube *cube)
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
-    cube->texture = mlx_load_png("./backrooms_3.png");
+    cube->texture = mlx_load_png("./backrooms_final.png");
     cube->texture2 = mlx_load_png("./carpet.png");
     cube->texture3 = mlx_load_png("./ceiling_tiles_color.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
-    cube->mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d", true);
+    cube->mlx = mlx_init(SCREEN_WIDTH_BUFF, SCREEN_HEIGHT_BUFF, "cub3d", true);
     if(cube->mlx == NULL)
     {
         perror("mlx init error :");
         exit(EXIT_FAILURE);
     }
-    cube->image = mlx_new_image(cube->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
+    cube->image = mlx_new_image(cube->mlx, SCREEN_WIDTH_BUFF, SCREEN_HEIGHT_BUFF);
     if(cube->image == NULL)
     {
         mlx_terminate(cube->mlx);
