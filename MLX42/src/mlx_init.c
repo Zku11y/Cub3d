@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   mlx_init.c                                         :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2021/12/28 00:24:30 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2023/06/08 18:16:19 by XEDGit        ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   mlx_init.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/28 00:24:30 by W2Wizard          #+#    #+#             */
+/*   Updated: 2025/11/27 20:46:29 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,8 @@ static bool mlx_init_render(mlx_t* mlx)
     glfwMakeContextCurrent(mlx->window);
     glfwSetFramebufferSizeCallback(mlx->window, framebuffer_callback);
     glfwSetWindowUserPointer(mlx->window, mlx);
-    glfwSwapInterval(MLX_SWAP_INTERVAL);
+    glfwSwapInterval(0);
+    // glfwSwapInterval(MLX_SWAP_INTERVAL);
 
     // Load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

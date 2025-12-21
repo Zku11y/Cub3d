@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 12:21:29 by skully            #+#    #+#             */
-/*   Updated: 2025/09/30 23:24:15 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/12/16 11:05:21 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ bool ft_check_limits(t_vect2 len)
     return false;
 }
 
-void vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
+void vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add)
 {
     while(ft_check_limits(*start) == false)
     {
@@ -93,13 +93,13 @@ void vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
         else
             start->x = start->x - GRID_SIZE;
         if(ray->y_dir == UP)
-            start->y = start->y - GRID_SIZE * tan(ray->angle);
+            start->y = start->y - add;
         else
-            start->y = start->y + GRID_SIZE * tan(ray->angle);
+            start->y = start->y + add;
     }
 }
 
-void hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
+void hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add)
 {
     while(ft_check_limits(*start) == false)
     {
@@ -110,16 +110,16 @@ void hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray)
         else
             start->y = start->y - GRID_SIZE;
         if(ray->x_dir == RIGHT)
-            start->x = start->x + (GRID_SIZE * (1 / tan(ray->angle)));
+            start->x = start->x + add;
         else
-            start->x = start->x - (GRID_SIZE * (1 / tan(ray->angle)));
-        // mlx_put_pixel(cube->image, start->x, start->y, 0x0d00ff00);
+            start->x = start->x - add;
     }
 }
 
 t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
 {
-    t_vect2 len;
+    t_vect2 len = {0};
+    double add;
 
     if(ray->y_dir == DOWN)
     {
@@ -142,15 +142,15 @@ t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
             len.x = cube->player.x - len.x;
     }
     ft_limit_cords(&len);
-    // if(check_collision(cube, &len, HORI, ray) == true)
-    //     return len;
-    hori_check_next_point(cube, &len, ray);
+    add = (GRID_SIZE) * (1.0 / tan(ray->angle));
+    hori_check_next_point(cube, &len, ray, add);
     return len;
 }
 
 t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
 {
-    t_vect2 len;
+    t_vect2 len = {0};
+    double add;
 
     if(ray->x_dir == RIGHT)
     {
@@ -173,10 +173,7 @@ t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
             len.y += cube->player.y;
     }
     ft_limit_cords(&len);
-    // if(check_collision(cube, &len, VERT, ray) == true)
-    //     return len;
-    vert_check_next_point(cube, &len, ray);
+    add = GRID_SIZE * tan(ray->angle);
+    vert_check_next_point(cube, &len, ray, add);
     return len;
 }
-
-

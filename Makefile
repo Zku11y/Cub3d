@@ -18,9 +18,9 @@ CC = cc
 
 # Linux Compilation
 
-CFLAGS = -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
-# CFLAGS = -g -O3 $(MLX_INC) $(LIBFT_INC)
-# CFLAGS = -g -O1 -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
+# CFLAGS = -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
+# CFLAGS = -g -O0 $(MLX_INC) $(LIBFT_INC)
+CFLAGS = -g -O2 -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address $(MLX_INC) $(LIBFT_INC)
 
 $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
 	cc $(CFLAGS) $(SRC) $(MLX_LIB) $(LIBFT_LIB) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
