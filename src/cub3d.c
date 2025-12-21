@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/11/21 12:40:29 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/12/21 16:46:07 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,14 @@ void ft_turn(t_cube *cube)
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     mouse_x = mouse_x - (SCREEN_WIDTH / 2);
+    mouse_y = mouse_y - (SCREEN_HEIGHT / 2);
     cube->player.angle += mouse_x * TURN_SPEED;
-    mlx_set_mouse_pos(cube->mlx, SCREEN_WIDTH / 2, mouse_y);
+    cube->pitch += (-1 * mouse_y) * (TURN_SPEED * SCREEN_HEIGHT);
+    if(cube->pitch > PITCH_MAX)
+        cube->pitch = PITCH_MAX;
+    if(cube->pitch < -PITCH_MAX)
+        cube->pitch = -PITCH_MAX;
+    mlx_set_mouse_pos(cube->mlx, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 }
 
 void ft_mouvement(t_cube *cube)
@@ -318,11 +324,11 @@ void ft_draw_rays(t_cube *cube)
 
 bool check_screen_limits(t_vect2 len)
 {
-    if(len.x > SCREEN_WIDTH)
+    if(len.x >= SCREEN_WIDTH)
         return true;
     else if(len.x < 0)
         return true;
-    if(len.y > SCREEN_HEIGHT)
+    if(len.y >= SCREEN_HEIGHT)
         return true;
     else if(len.y < 0)
         return true;
@@ -367,7 +373,7 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
 
     if(cube->texture == NULL)
     {
-        printf("black african american individual :)\n");
+        printf("textuh aint loadin twin :)\n");
         exit(1);
     }
     cords.y = 0;
@@ -433,10 +439,8 @@ void ft_draw_world(t_cube *cube)
     {
         j = 0;
         double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
-        len = (GRID_SIZE / length) * PROJ_DST;
-        start.y = (SCREEN_HEIGHT - len) / 2;
-        if(len > SCREEN_HEIGHT)
-            start.y = -1 * ((len - SCREEN_HEIGHT) / 2);
+        len = ((GRID_SIZE) / length) * PROJ_DST;
+        start.y = ((SCREEN_HEIGHT - len) / 2) + cube->pitch;
         end.x = start.x;
         end.y = start.y + len;
         while(j < cube->line_girth)
@@ -449,6 +453,202 @@ void ft_draw_world(t_cube *cube)
         i++;
     }
 }
+
+void ft_enemy(t_cube *cube){
+    double angle_diff = atan2(cube->enemy.y - cube->player.y, cube->enemy.x - cube->player.x);
+    double tetha_delta = angle_diff - cube->player.angle;
+    while(tetha_delta > PI)
+        tetha_delta -= 2 * PI;
+    while(tetha_delta < -PI)
+        tetha_delta += 2 * PI;
+    
+    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * PROJ_DST);
+    double dst = sqrt((cube->enemy.x - cube->player.x) * (cube->enemy.x - cube->player.x) + (cube->enemy.y - cube->player.y) * (cube->enemy.y - cube->player.y)) * cos(tetha_delta);
+
+    if(dst < 0.1) 
+    return;
+
+    double tmp = 1.0 - (dst / MAX_DST);
+    if(tmp > 1.0)
+        tmp = 1.0;
+    else if(tmp < 0.0)
+        tmp = 0.0;
+
+    double height = (GRID_SIZE / dst) * PROJ_DST;
+
+    double scale_ratio = cube->texture4->height / height;
+
+    int start_x = midX - (cube->texture4->width / scale_ratio) / 2;
+    int start_y = ((SCREEN_HEIGHT / 2.0) + cube->pitch) - (cube->texture4->height / scale_ratio) / 2;
+    int const_y = start_y;
+    int end_x = start_x + (cube->texture4->width / scale_ratio);
+    int end_y = start_y + (cube->texture4->height / scale_ratio);
+
+    double tex_x = 0;
+    double tex_y = 0;
+
+    if (start_x < 0) {
+        tex_x += (-start_x) * scale_ratio;
+        start_x = 0;
+    }
+
+    if (start_x >= SCREEN_WIDTH) return;
+    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
+
+    if (start_y < 0) {
+        tex_y = (-start_y) * scale_ratio;
+        start_y = 0;
+    }
+    if (start_y >= SCREEN_HEIGHT) return;
+
+    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
+    if (end_y > SCREEN_HEIGHT) end_y = SCREEN_HEIGHT;
+
+    while(start_x < end_x){
+        start_y = const_y;
+        int x = (int)tex_x;
+        if (x >= (int)cube->texture4->width) x = cube->texture4->width - 1;
+        if (x < 0) x = 0;
+        tex_y = 0;
+        while(start_y < end_y){
+            int y = (int)tex_y;
+            if (y >= (int)cube->texture4->height) y = cube->texture4->height - 1;
+            if (y < 0) y = 0;
+
+            if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0})){
+                int k = (x * cube->texture4->bytes_per_pixel) + (cube->texture4->width * cube->texture4->bytes_per_pixel * y);
+                if(cube->texture4->pixels[k + 3] > 128){
+                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = cube->texture4->pixels[k + 0] * tmp;
+                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 1] = cube->texture4->pixels[k + 1] * tmp;
+                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 2] = cube->texture4->pixels[k + 2] * tmp;
+                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 3] = cube->texture4->pixels[k + 3];
+                }
+            }
+            start_y++;
+            tex_y += scale_ratio;
+        }
+
+        tex_x += scale_ratio;
+        start_x++;
+    }
+}
+
+// void ft_draw_sprite_stripe(t_cube *cube, t_vect2 start, double len, int tex_x)
+// {
+//     t_vect2 ratio;
+//     t_vect2 cords;
+//     int     tex_y;
+//     int     pixel_index;
+//     int     tex_index;
+
+//     // 1. Setup Scaling (Same as your wall logic)
+//     ratio.y = (double)cube->texture4->height / len;
+//     cords.y = 0;
+    
+//     // 2. Vertical Clipping (Top) - Handle when sprite is taller than screen
+//     if (start.y < 0)
+//     {
+//         cords.y = ratio.y * ((-1) * start.y);
+//         start.y = 0;
+//     }
+
+//     // 3. Draw Loop
+//     // Stop at bottom of screen OR end of sprite
+//     double end_y = start.y + len; 
+//     if (end_y > SCREEN_HEIGHT) 
+//         end_y = SCREEN_HEIGHT;
+
+//     while (start.y < end_y && cords.y < cube->texture4->height)
+//     {
+//         tex_y = (int)cords.y;
+        
+//         // Calculate index in texture array
+//         tex_index = (tex_x * cube->texture4->bytes_per_pixel) + 
+//                     (cube->texture4->width * cube->texture4->bytes_per_pixel * tex_y);
+
+//         // Get Alpha (Transparency)
+//         uint8_t color_a = cube->texture4->pixels[tex_index + 3];
+
+//         // Only draw if pixel is NOT transparent
+//         if (color_a != 0) 
+//         {
+//             pixel_index = (SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4);
+
+//             if (pixel_index >= 0 && pixel_index < SCREEN_WIDTH * SCREEN_HEIGHT * 4)
+//             {
+//                 cube->prev_buffer[pixel_index + 0] = cube->texture4->pixels[tex_index + 0];
+//                 cube->prev_buffer[pixel_index + 1] = cube->texture4->pixels[tex_index + 1];
+//                 cube->prev_buffer[pixel_index + 2] = cube->texture4->pixels[tex_index + 2];
+//                 cube->prev_buffer[pixel_index + 3] = 255;
+//             }
+//         }
+        
+//         cords.y += ratio.y;
+//         start.y++;
+//     }
+// }
+
+// void ft_render_enemy(t_cube *cube)
+// {
+//     // --- 1. CALC ANGLES ---
+//     double sprite_dir = atan2(cube->enemy.y - cube->player.y, cube->enemy.x - cube->player.x);
+//     double theta_delta = sprite_dir - cube->player.angle;
+
+//     // Fix 360 wrap-around (Normalize angle between -PI and +PI)
+//     if (theta_delta > PI) 
+//         theta_delta -= 2 * PI;
+//     if (theta_delta < -PI) 
+//         theta_delta += 2 * PI;
+
+//     // --- 2. CALC DISTANCE & HEIGHT ---
+//     double dist = sqrt(pow(cube->enemy.x - cube->player.x, 2) + pow(cube->enemy.y - cube->player.y, 2));
+    
+//     // Fix Fisheye
+//     double fixed_dist = dist * cos(theta_delta);
+
+//     // Safety: Don't divide by zero or draw if behind player
+//     if (fixed_dist < 0.1) 
+//         return; 
+
+//     // Calculate Height (Same formula as walls)
+//     double sprite_height = (GRID_SIZE / fixed_dist) * PROJ_DST;
+//     double sprite_width  = sprite_height; // Assume square sprite
+
+//     // --- 3. CALC SCREEN POSITIONS ---
+//     // Find where the MIDDLE of the sprite is on screen
+//     int screen_mid_x = (SCREEN_WIDTH / 2) + (tan(theta_delta) * PROJ_DST);
+    
+//     int start_x = screen_mid_x - (sprite_width / 2);
+//     int end_x   = screen_mid_x + (sprite_width / 2);
+//     int start_y = (SCREEN_HEIGHT - sprite_height) / 2;
+
+//     // --- 4. DRAW COLUMNS ---
+//     t_vect2 pos;
+//     pos.y = start_y;
+    
+//     int x = start_x;
+//     while (x < end_x)
+//     {
+//         // Only draw if column is within screen bounds
+//         if (x >= 0 && x < SCREEN_WIDTH)
+//         {
+//             pos.x = x;
+            
+//             // Calculate which column of the texture to use
+//             // logic: (current_x_offset / total_width) * texture_width
+//             int tex_x = (int)((x - start_x) * (double)cube->texture4->width / sprite_width);
+            
+//             // Safety clamp for texture index
+//             if (tex_x < 0) tex_x = 0;
+//             if (tex_x >= (int)cube->texture4->width) tex_x = (int)cube->texture4->width - 1;
+
+//             ft_draw_sprite_stripe(cube, pos, sprite_height, tex_x);
+//         }
+//         x++;
+//     }
+// }
+
+
 
 // void ft_floor(t_cube *cube)
 // {
@@ -754,19 +954,23 @@ void ft_floor_ceiling(t_cube *cube){
     double PlaneY = DirX * (HALF_FOV_RAD);
     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
+    double mid_point = (SCREEN_HEIGHT / 2.0) + cube->pitch;
 
     double p = 0;
     mlx_texture_t *tex;
     int i = 0;
     while(i < SCREEN_HEIGHT){
-        if(i < SCREEN_HEIGHT / 2){
-            p = (SCREEN_HEIGHT / 2.0) - (float)i;
+        if(i < mid_point){
+            p = (mid_point) - (float)i;
             tex = cube->texture3;
         }
         else{
-            p = (float)i - (SCREEN_HEIGHT / 2.0);
+            p = (float)i - (mid_point);
             tex = cube->texture2;
         }
+
+        if(p == 0.0) p = 1.0;
+
         double rowDst = (CAM_H * PROJ_DST) / p;
 
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
@@ -852,6 +1056,8 @@ void ft_upscaling(t_cube *cube){
     }
 }
 
+
+
 void ft_update(void *param)
 {
     t_cube *cube;
@@ -881,13 +1087,14 @@ void ft_update(void *param)
     //     cube->image->pixels[i] = ft_lerp_pixels(cube->image->pixels[i], cube->prev_buffer[i]);
     //     i++;
     // }
+    ft_enemy(cube);
     ft_upscaling(cube);
     cube->final_t = tv.tv_sec;
     ft_mouvement(cube);
     cube->fps++;
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d, player_angle : (%lf)\n", cube->fps, cube->player.angle / (2 * PI));
+        printf("fps : %d, pitch : (%lf)\n", cube->fps, cube->pitch);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
@@ -920,17 +1127,17 @@ static const int g_map_template[MAP_Y][MAP_X] = {
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -985,18 +1192,22 @@ void ft_init(t_cube *cube)
     cube->mod_rate = (FOV * RADIANT_RATE) / RES;
     cube->fps = 0;
     cube->grain = true;
+    cube->pitch = 0.0;
     cube->rays = ft_calloc(RES + 1, sizeof(t_ray));
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
     cube->moving = false;
     cube->player.x = (GRID_SIZE * MAP_X) / 2;
     cube->player.y = (GRID_SIZE * MAP_Y) / 2;
+    cube->enemy.x = ((GRID_SIZE * MAP_X) / 2) + 3;
+    cube->enemy.y = (GRID_SIZE * MAP_Y) / 2;
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
     cube->texture = mlx_load_png("./backrooms_final.png");
     cube->texture2 = mlx_load_png("./carpet.png");
     cube->texture3 = mlx_load_png("./ceiling_tiles_color.png");
+    cube->texture4 = mlx_load_png("./miku.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;

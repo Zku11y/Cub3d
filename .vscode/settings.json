@@ -26,7 +26,8 @@
     "libft.h": "c",
     "fcntl.h": "c",
     "mlx42_int.h": "c",
-    "math.h": "c"
+    "math.h": "c",
+    "stdint.h": "c"
   },
   "C_Cpp_Runner.cCompilerPath": "clang",
   "C_Cpp_Runner.cppCompilerPath": "clang++",
@@ -87,23 +88,37 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "cmake.ignoreCMakeListsMissing": true,
 
-  "highlight.regexes": {
-    // This finds all standalone "1"s (your walls)
-    "\\b(1)\\b": {
-      "decorations": [
-        {
-          "color": "#ff6347", // A "tomato" red
-          "fontWeight": "bold"
-        }
-      ]
+  "todohighlight.keywords": [
+    {
+        "text": "1",
+        "color": "#00e1ff",
+        "backgroundColor": "##b0bf24",
+        "overviewRulerColor": "red"
     },
-    // This finds all standalone "0"s (your floor)
-    "\\b(0)\\b": {
-      "decorations": [
-        {
-          "color": "#666666" // A dark gray
-        }
-      ]
-    }
+    {
+      "text": "0",
+      "color": "#700101",
+      "backgroundColor": "##b0bf24",
+      "overviewRulerColor": "red"
   }
+],
 }
+// "highlight.regexes": {
+//   // This finds all standalone "1"s (your walls)
+//   "\\b(1)\\b": {
+//     "decorations": [
+//       {
+//         "color": "#ff6347", // A "tomato" red
+//         "fontWeight": "bold"
+//       }
+//     ]
+//   },
+//   // This finds all standalone "0"s (your floor)
+//   "\\b(0)\\b": {
+//     "decorations": [
+//       {
+//         "color": "#666666" // A dark gray
+//       }
+//     ]
+//   }
+// }
