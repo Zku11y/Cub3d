@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/12/21 16:45:58 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/12/22 21:00:43 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
-# define FOV 120
+# define FOV 70
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 2
@@ -43,7 +43,7 @@
 # define VERT 1
 # define MAP_X 25
 # define MAP_Y 25
-# define MAX_DST 300
+# define MAX_DST 1000
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
@@ -112,6 +112,7 @@ typedef struct s_cube
 	t_vect2			enemy;
 	bool			grain;
 	double			pitch;
+	double			*z_buffer;
 }					t_cube;
 
 #endif

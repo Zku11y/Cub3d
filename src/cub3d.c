@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by skully            #+#    #+#             */
-/*   Updated: 2025/12/21 16:46:07 by mdakni           ###   ########.fr       */
+/*   Updated: 2025/12/22 20:59:42 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -445,6 +445,7 @@ void ft_draw_world(t_cube *cube)
         end.y = start.y + len;
         while(j < cube->line_girth)
         {
+            cube->z_buffer[(int)start.x] = length;
             ft_draw_texture(cube, &cube->rays[i], start, end, len);
             start.x++;
             end.x++;
@@ -515,7 +516,7 @@ void ft_enemy(t_cube *cube){
             if (y >= (int)cube->texture4->height) y = cube->texture4->height - 1;
             if (y < 0) y = 0;
 
-            if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0})){
+            if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0}) && cube->z_buffer[start_x] > dst){
                 int k = (x * cube->texture4->bytes_per_pixel) + (cube->texture4->width * cube->texture4->bytes_per_pixel * y);
                 if(cube->texture4->pixels[k + 3] > 128){
                     cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = cube->texture4->pixels[k + 0] * tmp;
@@ -1193,6 +1194,7 @@ void ft_init(t_cube *cube)
     cube->fps = 0;
     cube->grain = true;
     cube->pitch = 0.0;
+    cube->z_buffer = ft_calloc(SCREEN_WIDTH, sizeof(double));
     cube->rays = ft_calloc(RES + 1, sizeof(t_ray));
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
@@ -1207,7 +1209,7 @@ void ft_init(t_cube *cube)
     cube->texture = mlx_load_png("./backrooms_final.png");
     cube->texture2 = mlx_load_png("./carpet.png");
     cube->texture3 = mlx_load_png("./ceiling_tiles_color.png");
-    cube->texture4 = mlx_load_png("./miku.png");
+    cube->texture4 = mlx_load_png("./lain_2.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
