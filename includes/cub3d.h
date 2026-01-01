@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/12/21 12:37:02 by skully           ###   ########.fr       */
+/*   Updated: 2025/12/31 21:03:05 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,14 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
-# define UPSCALING_RATE 4
+# define UPSCALING_RATE 2
 # define SCREEN_WIDTH_BUFF 1920
 # define SCREEN_HEIGHT_BUFF 1080
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
 # define FOV 70
-// # define PI 3.14159265359
-# define PI 0.1
+# define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 2
 # define WALL_SCALE (SCREEN_HEIGHT / 2)
@@ -44,11 +43,15 @@
 # define VERT 1
 # define MAP_X 25
 # define MAP_Y 25
-# define MAX_DST 600
+# define MAX_DST 1000
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
 # define LERP 0.7
+# define PITCH_MAX (SCREEN_HEIGHT + 100)
+# define MAP_X 50
+# define MAP_Y 50
+# define MAP_SIZE 100
 typedef enum s_direction
 {
 	UP,
@@ -107,10 +110,16 @@ typedef struct s_cube
 	mlx_texture_t	*texture2;
 	mlx_texture_t	*texture3;
 	mlx_texture_t	*texture4;
+	mlx_texture_t	*texture5;
+	mlx_texture_t	*texture6;
 	double			min_length;
 	int8_t			*prev_buffer;
 	t_vect2			enemy;
+	t_vect2			enemy2;
+	t_vect2			enemy3;
 	bool			grain;
+	double			pitch;
+	double			*z_buffer;
 }					t_cube;
 
 #endif
