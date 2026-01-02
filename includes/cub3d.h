@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2025/12/22 21:00:43 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/02 17:24:07 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
-# define UPSCALING_RATE 3
+# define UPSCALING_RATE 2
 # define SCREEN_WIDTH_BUFF 1920
 # define SCREEN_HEIGHT_BUFF 1080
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -49,6 +49,14 @@
 # define CAM_H (GRID_SIZE / 2.0)
 # define LERP 0.7
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
+# define MINI_MAP_X 50
+# define MINI_MAP_Y 50
+# define MAP_SIZE 100
+# define ENEMY_RADIUS 300.0
+# define ENEMY_SPEED 4
+# define CROSSHAIR_LEN 10
+# define CROSSHAIR_GIRTH 2
+# define CROSSHAIR_COLOR 0x000000ff
 typedef enum s_direction
 {
 	UP,
@@ -107,12 +115,20 @@ typedef struct s_cube
 	mlx_texture_t	*texture2;
 	mlx_texture_t	*texture3;
 	mlx_texture_t	*texture4;
+	mlx_texture_t	*texture5;
+	mlx_texture_t	*texture6;
 	double			min_length;
 	int8_t			*prev_buffer;
 	t_vect2			enemy;
+	t_vect2			enemy2;
+	t_vect2			enemy3;
 	bool			grain;
 	double			pitch;
 	double			*z_buffer;
+	t_vect2			crosshair_vert_start;
+	t_vect2			crosshair_vert_end;
+	t_vect2			crosshair_hori_start;
+	t_vect2			crosshair_hori_end;
 }					t_cube;
 
 #endif
