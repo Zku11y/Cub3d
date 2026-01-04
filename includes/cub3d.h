@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/02 17:24:07 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/04 17:17:41 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
-# define UPSCALING_RATE 2
+# define UPSCALING_RATE 3
 # define SCREEN_WIDTH_BUFF 1920
 # define SCREEN_HEIGHT_BUFF 1080
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -54,9 +54,10 @@
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 300.0
 # define ENEMY_SPEED 4
-# define CROSSHAIR_LEN 10
-# define CROSSHAIR_GIRTH 2
-# define CROSSHAIR_COLOR 0x000000ff
+# define CROSSHAIR_LEN 7.0
+# define CROSSHAIR_GIRTH 1.0
+# define CROSSHAIR_COLOR 0xff0000ff
+# define MIN_ATK_DST 10
 typedef enum s_direction
 {
 	UP,
@@ -65,6 +66,12 @@ typedef enum s_direction
 	RIGHT
 }					t_direction;
 
+typedef enum s_state
+{
+	GAME,
+	MENU,
+	DIED
+}					t_state;
 typedef struct s_vect2
 {
 	double			x;
@@ -89,12 +96,28 @@ typedef struct s_player
 {
 	double			x;
 	double			y;
-	t_vect2			pos;
 	double			angle;
 	int				grid_x;
 	int				grid_y;
 	t_ray			ray;
+	int				HP;
+	int				DMG;
+	int				atk_delay;
+	unsigned long	atk_time;
+	bool			delay;
 }					t_player;
+
+typedef struct s_enemy
+{
+	double 			x;
+	double 			y;
+	int				HP;
+	int				DMG;
+	int				atk_delay;
+	unsigned long	atk_time;
+	bool			delay;
+	bool			dead;
+}					t_enemy;
 
 typedef struct s_cube
 {
@@ -103,6 +126,8 @@ typedef struct s_cube
 	char			**map;
 	t_ray			*rays;
 	mlx_image_t		*image;
+	mlx_image_t		*image_death;
+	mlx_image_t		*image_menu;
 	t_vect2			pos;
 	t_player		player;
 	bool			moving;
@@ -117,11 +142,10 @@ typedef struct s_cube
 	mlx_texture_t	*texture4;
 	mlx_texture_t	*texture5;
 	mlx_texture_t	*texture6;
+	mlx_texture_t	*texture_died;
 	double			min_length;
 	int8_t			*prev_buffer;
-	t_vect2			enemy;
-	t_vect2			enemy2;
-	t_vect2			enemy3;
+	t_enemy			enemy;
 	bool			grain;
 	double			pitch;
 	double			*z_buffer;
@@ -129,6 +153,8 @@ typedef struct s_cube
 	t_vect2			crosshair_vert_end;
 	t_vect2			crosshair_hori_start;
 	t_vect2			crosshair_hori_end;
+	t_state			state;
+	t_state			prev_state;
 }					t_cube;
 
 #endif
