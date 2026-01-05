@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/05 21:48:35 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/05 21:58:39 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 # define UPSCALING_RATE 5
-# define SCREEN_WIDTH_BUFF 1240
-# define SCREEN_HEIGHT_BUFF 1180
+# define SCREEN_WIDTH_BUFF 1920
+# define SCREEN_HEIGHT_BUFF 1080
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
