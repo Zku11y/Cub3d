@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/05 18:15:32 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/05 21:48:36 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,10 @@ void ft_angle_limit(double *angle)
 
 uint8_t ft_lerp_pixels(uint8_t new, uint8_t old){
     return (new * LERP) + (old * (1.0 - LERP));
+}
+
+double ft_lerp_speed(double dst, double current){
+    return (dst * SPEED_LERP) + (current * (1.0 - SPEED_LERP));
 }
 
 void draw_player(t_cube *cube)
@@ -172,28 +176,39 @@ void ft_mouvement(t_cube *cube)
 {
     ft_angle_limit(&cube->player.angle);
     ft_turn(cube);
+    double max_cos_speed = cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+    double max_sin_speed = sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+    double dst_speed_LR_X = 0.0;
+    double dst_speed_LR_Y = 0.0;
+    double dst_speed_FB_X = 0.0;
+    double dst_speed_FB_Y = 0.0;
+
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
     {
-        cube->player.x += -1 * sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-        cube->player.y += cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-        // cube->player.angle += (0.02 * PLAYER_SPEED);
+        dst_speed_LR_X = -1 * max_sin_speed;
+        dst_speed_LR_Y = max_cos_speed;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
     {
-        cube->player.x -= -1 * sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-        cube->player.y -= cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-        // cube->player.angle -= (0.02 * PLAYER_SPEED);
+        dst_speed_LR_X = max_sin_speed;
+        dst_speed_LR_Y = -1 * max_cos_speed;
     }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
-        cube->player.x += cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-        cube->player.y += sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+        dst_speed_FB_X = max_cos_speed;
+        dst_speed_FB_Y = max_sin_speed;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
-        cube->player.x -= cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-        cube->player.y -= sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
+        dst_speed_FB_X = -1 * max_cos_speed;
+        dst_speed_FB_Y = -1 * max_sin_speed;
     }
+    cube->player.current_speed_FB_X = ft_lerp_speed(dst_speed_FB_X, cube->player.current_speed_FB_X);
+    cube->player.current_speed_FB_Y = ft_lerp_speed(dst_speed_FB_Y, cube->player.current_speed_FB_Y);
+    cube->player.current_speed_LR_X = ft_lerp_speed(dst_speed_LR_X, cube->player.current_speed_LR_X);
+    cube->player.current_speed_LR_Y = ft_lerp_speed(dst_speed_LR_Y, cube->player.current_speed_LR_Y);
+    cube->player.x += cube->player.current_speed_FB_X + cube->player.current_speed_LR_X;
+    cube->player.y += cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y;
     ft_mouvement_limits(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
@@ -1393,6 +1408,12 @@ void ft_init(t_cube *cube)
     cube->player.delay = false;
     cube->player.atk_delay = 2;
     cube->player.DMG = 5;
+    cube->player.current_speed_LR_X = 0.0;
+    cube->player.current_speed_LR_Y = 0.0;
+    cube->player.current_speed_FB_X = 0.0;
+    cube->player.current_speed_FB_Y = 0.0;
+    cube->player.last_FB = UP;
+    cube->player.last_LR = LEFT;
     cube->state = GAME;
     cube->prev_state = GAME;
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};

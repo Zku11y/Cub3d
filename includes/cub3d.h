@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/05 18:12:32 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/05 21:48:35 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
-# define UPSCALING_RATE 3
+# define UPSCALING_RATE 5
 # define SCREEN_WIDTH_BUFF 1240
 # define SCREEN_HEIGHT_BUFF 1180
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -39,7 +39,7 @@
 # define WALL_SCALE (SCREEN_HEIGHT / 2)
 # define TURN_SPEED 0.001
 # define GRID_SIZE 64.0f
-# define PLAYER_SPEED 500.0f
+# define PLAYER_SPEED 1000.0f
 # define HORI 0
 # define VERT 1
 # define MAP_X 25
@@ -48,7 +48,8 @@
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
-# define LERP 0.2
+# define LERP 0.8
+# define SPEED_LERP 0.05
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
@@ -101,6 +102,12 @@ typedef struct s_player
 	int				grid_x;
 	int				grid_y;
 	t_ray			ray;
+	double			current_speed_LR_X; 
+	double			current_speed_LR_Y;
+	double			current_speed_FB_X; 
+	double			current_speed_FB_Y;
+	t_direction		last_LR;
+	t_direction		last_FB;
 	int				HP;
 	int				DMG;
 	int				atk_delay;
