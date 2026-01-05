@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/04 17:17:41 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/05 18:12:32 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 # define UPSCALING_RATE 3
-# define SCREEN_WIDTH_BUFF 1920
-# define SCREEN_HEIGHT_BUFF 1080
+# define SCREEN_WIDTH_BUFF 1240
+# define SCREEN_HEIGHT_BUFF 1180
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
 # define FOV 70
 # define PI 3.14159265359
+// # define PI 420.67
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 2
 # define WALL_SCALE (SCREEN_HEIGHT / 2)
@@ -47,13 +48,13 @@
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
-# define LERP 0.7
+# define LERP 0.2
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
 # define MAP_SIZE 100
-# define ENEMY_RADIUS 300.0
-# define ENEMY_SPEED 4
+# define ENEMY_RADIUS 10.0
+# define ENEMY_SPEED 1
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
@@ -145,6 +146,7 @@ typedef struct s_cube
 	mlx_texture_t	*texture_died;
 	double			min_length;
 	int8_t			*prev_buffer;
+	int8_t			*lerp_buffer;
 	t_enemy			enemy;
 	bool			grain;
 	double			pitch;

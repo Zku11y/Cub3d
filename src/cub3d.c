@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/04 17:40:17 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/05 18:15:32 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void ft_angle_limit(double *angle)
 }
 
 uint8_t ft_lerp_pixels(uint8_t new, uint8_t old){
-    return (new * LERP) + (old * (1.0 - LERP));    
+    return (new * LERP) + (old * (1.0 - LERP));
 }
 
 void draw_player(t_cube *cube)
@@ -313,7 +313,7 @@ void ft_draw_rays(t_cube *cube)
 //     int i;
 
 //     i = 0;
-//     cube->min_length = 99999999;
+//     cube->min_length = 99999999;ft_ene
 //     start_angle = cube->player.angle - ((FOV / 2) * RADIANT_RATE);
 //     while(i < RES)
 //     {
@@ -532,15 +532,14 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     player_dir.y *= ENEMY_SPEED;
 
     if(is_looking(cube, enemy)){
-        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
+        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (cube->player.delay == false)){
             enemy->HP -= cube->player.DMG;
             if(enemy->HP <= 0) enemy->dead = true;
             if(cube->player.delay == false){
                 cube->player.atk_time = tv.tv_sec;
                 cube->player.delay = true;
             }
-    }
-
+        }
     }
 
     if(player_dst < MIN_ATK_DST){
@@ -1041,10 +1040,10 @@ void ft_crt_vhs_effect(t_cube *cube)
         for (x = 0; x < width; x++)
         {
             tmp = (y * width + x) * bpp;
-            float scanline = (y % 2 == 0) ? 0.1f : 1.5f;
-            int r_x = x - 2;
+            float scanline = (y % 2 == 0) ? 0.5f : 1.0f;
+            int r_x = x - 7;
             int g_x = x;
-            int b_x = x + 2;
+            int b_x = x + 7;
             if (r_x < 0) r_x = 0;
             if (b_x >= width) b_x = width - 1;
             src_tmp = (y * width + r_x) * bpp;
@@ -1243,7 +1242,17 @@ void state_machine(t_cube *cube){
         ft_upscaling(cube, cube->image_menu);
     }   
     else if(cube->state == GAME){
+        int i = 0;
+        while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
+            cube->lerp_buffer[i] = cube->prev_buffer[i];
+            i++;
+        }
         ft_game(cube);
+        i = 0;
+        while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
+            cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i]);
+            i++;
+        }
         ft_upscaling(cube, cube->image);
     }
     else if(cube->state == DIED){
@@ -1276,16 +1285,6 @@ void ft_update(void *param)
     // ft_floor(cube);
     // ft_floor_ceiling(cube);
     // ft_draw_world(cube);
-    // int i = 0;
-    // while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
-    //     cube->prev_buffer[i] = cube->image->pixels[i];
-    //     i++;
-    // }
-    // i = 0;
-    // while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
-    //     cube->image->pixels[i] = ft_lerp_pixels(cube->image->pixels[i], cube->prev_buffer[i]);
-    //     i++;
-    // }
     // ft_enemy(cube, &cube->enemy, cube->texture4);
     // ft_enemy(cube, &cube->enemy2, cube->texture5);
     // ft_enemy(cube, &cube->enemy3, cube->texture6);
@@ -1401,6 +1400,7 @@ void ft_init(t_cube *cube)
     cube->crosshair_vert_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_LEN, 0, 0};
     cube->crosshair_vert_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_LEN, 0, 0};
     cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
+    cube->lerp_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->mod_rate = (FOV * RADIANT_RATE) / RES;
     cube->fps = 0;
     cube->grain = true;
