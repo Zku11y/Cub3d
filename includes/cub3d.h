@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/06 11:08:59 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/06 19:43:56 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
-# define UPSCALING_RATE 5
+# define UPSCALING_RATE 3
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -48,14 +48,15 @@
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
-# define LERP 0.2
-# define SPEED_LERP 0.15
+# define LERP 0.4
+# define SPEED_LERP 0.1
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 10.0
 # define ENEMY_SPEED 1
+# define ENEMY_NUM 10
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
@@ -132,6 +133,7 @@ typedef struct s_cube
 	mlx_t			*mlx;
 
 	char			**map;
+	char			**floor_map;
 	t_ray			*rays;
 	mlx_image_t		*image;
 	mlx_image_t		*image_death;
@@ -154,7 +156,7 @@ typedef struct s_cube
 	double			min_length;
 	int8_t			*prev_buffer;
 	int8_t			*lerp_buffer;
-	t_enemy			enemy;
+	t_enemy			*enemy;
 	bool			grain;
 	double			pitch;
 	double			*z_buffer;

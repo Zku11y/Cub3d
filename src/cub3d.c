@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/06 11:10:48 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/06 20:34:54 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@ void clear_image(t_cube *cube)
 {
     int buffer_size = SCREEN_HEIGHT * SCREEN_WIDTH * 4;
     ft_memset(cube->image->pixels, 0, buffer_size);
+}
+
+unsigned long ft_rand(unsigned long *seed){
+    *seed = (*seed * 1103515245 + 12345) & 0x7fffffff;
+    return (*seed);
 }
 
 void ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int color)
@@ -606,11 +611,11 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     int const_y = start_y;
     int end_x = start_x + (texture->width / scale_ratio);
     int end_y = start_y + (texture->height / scale_ratio);
-
+    
     if(is_looking(cube, enemy) && (((start_y + 12) < SCREEN_HEIGHT / 2) && ((end_y - 12) > SCREEN_HEIGHT / 2)) && (player_dst < cube->rays[RES / 2].length)){
         if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (cube->player.delay == false)){
+            printf("enemy attacked! enemy HP: %d\n", enemy->HP);
             enemy->HP -= cube->player.DMG;
-            if(enemy->HP <= 0) enemy->dead = true;
             if(cube->player.delay == false){
                 cube->player.atk_time = tv.tv_sec;
                 cube->player.delay = true;
@@ -618,6 +623,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
         }
     }
 
+    if(enemy->HP <= 0) enemy->dead = true;
 
     double tex_x = 0;
     double tex_y = 0;
@@ -645,22 +651,25 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
         if (x >= (int)texture->width) x = texture->width - 1;
         if (x < 0) x = 0;
         tex_y = 0;
-        while(start_y < end_y){
-            int y = (int)tex_y;
-            if (y >= (int)texture->height) y = texture->height - 1;
-            if (y < 0) y = 0;
-
-            if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0}) && cube->z_buffer[start_x] > dst){
-                int k = (x * texture->bytes_per_pixel) + (texture->width * texture->bytes_per_pixel * y);
-                if(texture->pixels[k + 3] > 128){
-                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
-                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
-                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
-                    cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
+        if(cube->z_buffer[start_x] > dst){
+            cube->z_buffer[start_x] = dst;
+            while(start_y < end_y){
+                int y = (int)tex_y;
+                if (y >= (int)texture->height) y = texture->height - 1;
+                if (y < 0) y = 0;
+    
+                if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0})){
+                    int k = (x * texture->bytes_per_pixel) + (texture->width * texture->bytes_per_pixel * y);
+                    if(texture->pixels[k + 3] > 128){
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
+                    }
                 }
+                start_y++;
+                tex_y += scale_ratio;
             }
-            start_y++;
-            tex_y += scale_ratio;
         }
 
         tex_x += scale_ratio;
@@ -1205,7 +1214,11 @@ void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    ft_enemy(cube, &cube->enemy, cube->texture4);
+    int i = 0;
+    while(i < ENEMY_NUM){
+        ft_enemy(cube, &cube->enemy[i], cube->texture4);
+        i++;
+    }
     ft_mouvement(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
@@ -1313,7 +1326,7 @@ void ft_update(void *param)
     cube->fps++;
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d, player HP : %d, enemy HP : %d\n", cube->fps, cube->player.HP, cube->enemy.HP);
+        printf("fps : %d, player HP : %d\n", cube->fps, cube->player.HP);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
@@ -1368,7 +1381,14 @@ static const int g_map_template[MAP_Y][MAP_X] = {
 void ft_map_init(t_cube *cube)
 {
     cube->map = ft_calloc(MAP_Y + 1, sizeof(char *));
+    cube->floor_map = ft_calloc(MAP_Y + 1, sizeof(char *));
     if (cube->map == NULL)
+    {
+        mlx_terminate(cube->mlx);
+        perror("Alloc error : ");
+        exit(EXIT_FAILURE);
+    }
+    if (cube->floor_map == NULL)
     {
         mlx_terminate(cube->mlx);
         perror("Alloc error : ");
@@ -1400,6 +1420,37 @@ void ft_map_init(t_cube *cube)
         y++;
     }
 }
+
+void ft_init_enemies(t_cube *cube){
+    int i = 0;
+    struct timeval tv;
+    unsigned long seed;
+
+    gettimeofday(&tv, NULL);
+    seed = (unsigned long)tv.tv_usec / 100;
+
+    while(i < ENEMY_NUM){
+        cube->enemy[i].HP = 1000;
+        cube->enemy[i].dead = false;
+        cube->enemy[i].delay = false;
+        cube->enemy[i].atk_delay = 2;
+        cube->enemy[i].DMG = 50;
+        int posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
+        int posY = (int)(ft_rand(&seed) % (int)(MAP_Y * GRID_SIZE));
+        // printf("1 : posX : %d, posY : %d\n", posX, posY);
+        while(cube->map[(int)(posY / GRID_SIZE)][(int)(posX / GRID_SIZE)] == 1 || (posX >= (MAP_X * GRID_SIZE) || posY >= (MAP_Y * GRID_SIZE))){
+            posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
+            posY = (int)(ft_rand(&seed) % (int)(MAP_Y * GRID_SIZE));
+            // printf("2 : posX : %d, posY : %d\n", posX, posY);
+        }
+        cube->enemy[i].x = (posX);
+        cube->enemy[i].y = (posY);
+        // printf("pos[%d] : (%d, %d)\n", i, (posX), (posY));
+        // printf("updated\n");
+        i++;
+    }
+}
+
 void ft_init(t_cube *cube)
 {
     struct timeval tv;
@@ -1408,7 +1459,7 @@ void ft_init(t_cube *cube)
     cube->player.HP = 150;
     cube->player.delay = false;
     cube->player.atk_delay = 2;
-    cube->player.DMG = 5;
+    cube->player.DMG = 20;
     cube->player.current_speed_LR_X = 0.0;
     cube->player.current_speed_LR_Y = 0.0;
     cube->player.current_speed_FB_X = 0.0;
@@ -1434,13 +1485,8 @@ void ft_init(t_cube *cube)
     cube->moving = false;
     cube->player.x = (GRID_SIZE * MAP_X) / 2;
     cube->player.y = (GRID_SIZE * MAP_Y) / 2;
-    cube->enemy.x = ((GRID_SIZE * MAP_X) / 2) + 3;
-    cube->enemy.y = (GRID_SIZE * MAP_Y) / 2;
-    cube->enemy.HP = 100;
-    cube->enemy.dead = false;
-    cube->enemy.delay = false;
-    cube->enemy.atk_delay = 2;
-    cube->enemy.DMG = 50;
+    cube->enemy = ft_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
+    ft_init_enemies(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
     cube->player.angle = 0;
