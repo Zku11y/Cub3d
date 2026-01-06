@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/05 22:50:53 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/06 11:10:48 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -546,17 +546,6 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     player_dir.x *= ENEMY_SPEED;
     player_dir.y *= ENEMY_SPEED;
 
-    if(is_looking(cube, enemy) && (player_dst < cube->rays[RES / 2].length)){
-        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (cube->player.delay == false)){
-            enemy->HP -= cube->player.DMG;
-            if(enemy->HP <= 0) enemy->dead = true;
-            if(cube->player.delay == false){
-                cube->player.atk_time = tv.tv_sec;
-                cube->player.delay = true;
-            }
-        }
-    }
-
     if(player_dst < MIN_ATK_DST){
         if(enemy->delay == false){
             printf("player attacked!\n");
@@ -617,6 +606,18 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     int const_y = start_y;
     int end_x = start_x + (texture->width / scale_ratio);
     int end_y = start_y + (texture->height / scale_ratio);
+
+    if(is_looking(cube, enemy) && (((start_y + 12) < SCREEN_HEIGHT / 2) && ((end_y - 12) > SCREEN_HEIGHT / 2)) && (player_dst < cube->rays[RES / 2].length)){
+        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (cube->player.delay == false)){
+            enemy->HP -= cube->player.DMG;
+            if(enemy->HP <= 0) enemy->dead = true;
+            if(cube->player.delay == false){
+                cube->player.atk_time = tv.tv_sec;
+                cube->player.delay = true;
+            }
+        }
+    }
+
 
     double tex_x = 0;
     double tex_y = 0;
