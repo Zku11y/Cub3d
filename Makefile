@@ -5,11 +5,9 @@ SRC = src/cub3d.c src/raycasting.c
 OBJ = $(SRC:.c=.o)
 
 MLX_DIR = includes
-MLX_LIB = ./lib/libmlx42.a
 MLX_INC = -I$(MLX_DIR)
 
 LIBFT_DIR = libft
-LIBFT_LIB = $(LIBFT_DIR)/libft.a
 LIBFT_INC = -I$(LIBFT_DIR)
 
 CUB3D_HEADER = includes/cub3d.h
@@ -35,7 +33,8 @@ FT_UNAME := $(shell uname -s)
 CFLAGS = -g -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
 
 ifeq ($(FT_UNAME), Darwin)
-
+	MLX_LIB = ./lib/libmlx42_mac.a
+	LIBFT_LIB = ./lib/libft_mac.a
 	LDFLAGS = -L"/Users/mdakni/.brew/opt/glfw/lib" -lglfw \
           -framework Cocoa -framework OpenGL -framework IOKit -fsanitize=address -g
 # LDFLAGS = -lglfw -framework Cocoa -framework OpenGL -framework IOKit \
@@ -44,12 +43,13 @@ ifeq ($(FT_UNAME), Darwin)
 endif
 
 ifeq ($(FT_UNAME), Linux)
-
+	MLX_LIB = ./lib/libmlx42_linux.a
+	LIBFT_LIB = ./lib/libft_linux.a
 	LDFLAGS = -ldl -lglfw -pthread -lm
 
 endif
 
-$(NAME): $(OBJ) $(LIBFT_LIB)
+$(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
 	$(CC) $(CFLAGS) $(OBJ) $(MLX_LIB) $(LIBFT_LIB) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT_LIB):
