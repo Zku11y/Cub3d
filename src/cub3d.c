@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/06 20:34:54 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/09 17:46:58 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -537,8 +537,6 @@ bool is_looking(t_cube *cube, t_enemy *enemy){
     return false;
 }
 
-
-
 void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
     if(enemy->dead)
@@ -546,12 +544,12 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    double player_dst = sqrt((cube->player.x - enemy->x) * (cube->player.x - enemy->x) + (cube->player.y - enemy->y) * (cube->player.y - enemy->y));
-    t_vect2 player_dir = (t_vect2){(cube->player.x - enemy->x) / player_dst, (cube->player.y - enemy->y) / player_dst, 0, 0};
+    enemy->player_dst = sqrt((cube->player.x - enemy->x) * (cube->player.x - enemy->x) + (cube->player.y - enemy->y) * (cube->player.y - enemy->y));
+    t_vect2 player_dir = (t_vect2){(cube->player.x - enemy->x) / enemy->player_dst, (cube->player.y - enemy->y) / enemy->player_dst, 0, 0};
     player_dir.x *= ENEMY_SPEED;
     player_dir.y *= ENEMY_SPEED;
 
-    if(player_dst < MIN_ATK_DST){
+    if(enemy->player_dst < MIN_ATK_DST){
         if(enemy->delay == false){
             printf("player attacked!\n");
             cube->player.HP -= enemy->DMG;
@@ -575,8 +573,8 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     // if(is_looking(cube, enemy) == true)
     //     printf("LOOKING AT ENEMY HITBOX!!\n");
 
-    // printf("player_dst : %lf, enemy : (%lf, %lf), player_dir : (%lf, %lf)\n", player_dst, enemy->x, enemy->y, player_dir.x, player_dir.y);
-    if(player_dst < ENEMY_RADIUS && player_dst > 10.0){
+    // printf("enemy->player_dst : %lf, enemy : (%lf, %lf), player_dir : (%lf, %lf)\n", enemy->player_dst, enemy->x, enemy->y, player_dir.x, player_dir.y);
+    if(enemy->player_dst < ENEMY_RADIUS && enemy->player_dst > 10.0){
         if(cube->map[(int)((enemy->y + player_dir.y) / GRID_SIZE)][(int)(enemy->x / GRID_SIZE)] != 1)
             enemy->y += player_dir.y;
         if(cube->map[(int)(enemy->y / GRID_SIZE)][(int)((enemy->x + player_dir.x) / GRID_SIZE)] != 1)
@@ -612,7 +610,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     int end_x = start_x + (texture->width / scale_ratio);
     int end_y = start_y + (texture->height / scale_ratio);
     
-    if(is_looking(cube, enemy) && (((start_y + 12) < SCREEN_HEIGHT / 2) && ((end_y - 12) > SCREEN_HEIGHT / 2)) && (player_dst < cube->rays[RES / 2].length)){
+    if(is_looking(cube, enemy) && (((start_y + 12) < SCREEN_HEIGHT / 2) && ((end_y - 12) > SCREEN_HEIGHT / 2)) && (enemy->player_dst < cube->rays[RES / 2].length)){
         if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (cube->player.delay == false)){
             printf("enemy attacked! enemy HP: %d\n", enemy->HP);
             enemy->HP -= cube->player.DMG;
@@ -1210,15 +1208,34 @@ void ft_menu(t_cube *cube){
     (void)cube;
 }
 
-void ft_game(t_cube *cube){
-    ft_draw_rays(cube);
-    ft_floor_ceiling(cube);
-    ft_draw_world(cube);
+void ft_draw_enemies(t_cube *cube){
     int i = 0;
+
+    i = 0;
+    while(i < ENEMY_NUM){
+        int j = i;
+        while(j < ENEMY_NUM){
+            if(cube->enemy[j].player_dst > cube->enemy[i].player_dst){
+                t_enemy tmp = cube->enemy[i];
+                cube->enemy[i] = cube->enemy[j];
+                cube->enemy[j] = tmp;
+            }
+            j++;
+        }
+        i++;
+    }
+    i = 0;
     while(i < ENEMY_NUM){
         ft_enemy(cube, &cube->enemy[i], cube->texture4);
         i++;
     }
+}
+
+void ft_game(t_cube *cube){
+    ft_draw_rays(cube);
+    ft_floor_ceiling(cube);
+    ft_draw_world(cube);
+    ft_draw_enemies(cube);
     ft_mouvement(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
@@ -1447,6 +1464,7 @@ void ft_init_enemies(t_cube *cube){
         cube->enemy[i].y = (posY);
         // printf("pos[%d] : (%d, %d)\n", i, (posX), (posY));
         // printf("updated\n");
+        cube->enemy[i].player_dst = sqrt((cube->player.x - cube->enemy[i].x) * (cube->player.x - cube->enemy[i].x) + (cube->player.y - cube->enemy[i].y) * (cube->player.y - cube->enemy[i].y));
         i++;
     }
 }

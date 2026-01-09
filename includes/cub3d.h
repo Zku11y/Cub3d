@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/06 19:43:56 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/09 17:47:02 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 10.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 10
+# define ENEMY_NUM 50
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
@@ -126,6 +126,7 @@ typedef struct s_enemy
 	unsigned long	atk_time;
 	bool			delay;
 	bool			dead;
+	double			player_dst;
 }					t_enemy;
 
 typedef struct s_cube
