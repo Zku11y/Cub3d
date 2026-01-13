@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/13 14:07:48 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/13 21:38:08 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -537,6 +537,133 @@ bool is_looking(t_cube *cube, t_enemy *enemy){
     return false;
 }
 
+void ft_projectile(t_cube *cube, t_projectile *projectile){
+
+    if(projectile->in_use == 0)
+        return;
+
+    double player_dst = sqrt((cube->player.x - projectile->x) * (cube->player.x - projectile->x) + (cube->player.y - projectile->y) * (cube->player.y - projectile->y));
+
+    if(player_dst < HITBOX_DST){
+        printf("player shot!\n");
+        cube->player.HP -= projectile->DMG;
+        projectile->in_use = 0;
+        return;
+    }
+
+    if(cube->map[(int)((projectile->y + (projectile->dir.y * projectile->speed)) / GRID_SIZE)][(int)(projectile->x / GRID_SIZE)] == 1)
+        return((void)(projectile->in_use = 0));
+    if(cube->map[(int)(projectile->y / GRID_SIZE)][(int)((projectile->x + (projectile->dir.x * projectile->speed)) / GRID_SIZE)] == 1)
+        return((void)(projectile->in_use = 0));
+
+
+    projectile->y += projectile->dir.y * projectile->speed;
+    projectile->x += projectile->dir.x * projectile->speed;
+
+    double angle_diff = atan2(projectile->y - cube->player.y, projectile->x - cube->player.x);
+    double tetha_delta = angle_diff - cube->player.angle;
+    while(tetha_delta > PI)
+        tetha_delta -= 2 * PI;
+    while(tetha_delta < -PI)
+        tetha_delta += 2 * PI;
+    
+    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * PROJ_DST);
+    double dst = sqrt((projectile->x - cube->player.x) * (projectile->x - cube->player.x) + (projectile->y - cube->player.y) * (projectile->y - cube->player.y)) * cos(tetha_delta);
+
+    if(dst < 0.1) 
+    return;
+
+    double tmp = 1.0 - (dst / MAX_DST);
+    if(tmp > 1.0)
+        tmp = 1.0;
+    else if(tmp < 0.0)
+        tmp = 0.0;
+
+    double height = (GRID_SIZE / dst) * PROJ_DST;
+
+    double scale_ratio = projectile->texture->height / height;
+
+    int start_x = midX - (projectile->texture->width / scale_ratio) / 2;
+    int start_y = ((SCREEN_HEIGHT / 2.0) + cube->pitch) - (projectile->texture->height / scale_ratio) / 2;
+    int const_y = start_y;
+    int end_x = start_x + (projectile->texture->width / scale_ratio);
+    int end_y = start_y + (projectile->texture->height / scale_ratio);
+    
+    double tex_x = 0;
+    double tex_y = 0;
+
+    if (start_x < 0) {
+        tex_x += (-start_x) * scale_ratio;
+        start_x = 0;
+    }
+
+    if (start_x >= SCREEN_WIDTH) return;
+    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
+
+    if (start_y < 0) {
+        tex_y = (-start_y) * scale_ratio;
+        start_y = 0;
+    }
+    if (start_y >= SCREEN_HEIGHT) return;
+
+    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
+    if (end_y > SCREEN_HEIGHT) end_y = SCREEN_HEIGHT;
+
+    while(start_x < end_x){
+        start_y = const_y;
+        int x = (int)tex_x;
+        if (x >= (int)projectile->texture->width) x = projectile->texture->width - 1;
+        if (x < 0) x = 0;
+        tex_y = 0;
+        if(cube->z_buffer[start_x] > dst){
+            cube->z_buffer[start_x] = dst;
+            while(start_y < end_y){
+                int y = (int)tex_y;
+                if (y >= (int)projectile->texture->height) y = projectile->texture->height - 1;
+                if (y < 0) y = 0;
+    
+                if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0})){
+                    int k = (x * projectile->texture->bytes_per_pixel) + (projectile->texture->width * projectile->texture->bytes_per_pixel * y);
+                    if(projectile->texture->pixels[k + 3] > 128){
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = projectile->texture->pixels[k + 0] * tmp;
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 1] = projectile->texture->pixels[k + 1] * tmp;
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 2] = projectile->texture->pixels[k + 2] * tmp;
+                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 3] = projectile->texture->pixels[k + 3];
+                    }
+                }
+                start_y++;
+                tex_y += scale_ratio;
+            }
+        }
+
+        tex_x += scale_ratio;
+        start_x++;
+    }
+}
+
+void ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir){
+    t_projectile proj;
+
+    proj.x = enemy->x;
+    proj.y = enemy->y;
+    // proj.dir = (t_vect2){-1 * dir->x, -1 * dir->y, 0, 0};
+    proj.dir = *dir;
+    proj.in_use = 1;
+    proj.DMG = enemy->DMG;
+    proj.texture = cube->texture6;
+    proj.dst_traveled = 0;
+    proj.speed = 2;
+
+    int i = 0;
+    while(i < MAX_PROJECTILES){
+        if(cube->projectiles[i].in_use == 0){
+            cube->projectiles[i] = proj;
+            break;
+        }
+        i++;
+    }
+}
+
 void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
     if(enemy->dead)
@@ -553,8 +680,8 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
     if(enemy->player_dst < MIN_ATK_DST){
         if(enemy->delay == false){
-            printf("player attacked!\n");
-            cube->player.HP -= enemy->DMG;
+            printf("enemy has shot!\n");
+            ft_init_projectile(cube, enemy, &player_dir);
             if(cube->player.HP < 0) cube->player.HP = 0;
             enemy->atk_time = tv.tv_sec;
             enemy->delay = true;
@@ -576,12 +703,12 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     //     printf("LOOKING AT ENEMY HITBOX!!\n");
 
     // printf("enemy->player_dst : %lf, enemy : (%lf, %lf), player_dir : (%lf, %lf)\n", enemy->player_dst, enemy->x, enemy->y, player_dir.x, player_dir.y);
-    if(enemy->player_dst < ENEMY_RADIUS && enemy->player_dst > 10.0){
-        if(cube->map[(int)((enemy->y + player_dir.y) / GRID_SIZE)][(int)(enemy->x / GRID_SIZE)] != 1)
-            enemy->y += player_dir.y;
-        if(cube->map[(int)(enemy->y / GRID_SIZE)][(int)((enemy->x + player_dir.x) / GRID_SIZE)] != 1)
-            enemy->x += player_dir.x;
-    }
+    // if(enemy->player_dst < ENEMY_RADIUS && enemy->player_dst > 10.0){
+    //     if(cube->map[(int)((enemy->y + player_dir.y) / GRID_SIZE)][(int)(enemy->x / GRID_SIZE)] != 1)
+    //         enemy->y += player_dir.y;
+    //     if(cube->map[(int)(enemy->y / GRID_SIZE)][(int)((enemy->x + player_dir.x) / GRID_SIZE)] != 1)
+    //         enemy->x += player_dir.x;
+    // }
 
     double angle_diff = atan2(enemy->y - cube->player.y, enemy->x - cube->player.x);
     double tetha_delta = angle_diff - cube->player.angle;
@@ -1233,11 +1360,21 @@ void ft_draw_enemies(t_cube *cube){
     }
 }
 
+void ft_draw_proj(t_cube *cube){
+    int i = 0;
+    while(i < MAX_PROJECTILES){
+        if(cube->projectiles[i].in_use == 1)
+            ft_projectile(cube, &cube->projectiles[i]);
+        i++;
+    }
+}
+
 void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
     ft_draw_enemies(cube);
+    ft_draw_proj(cube);
     ft_mouvement(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
@@ -1372,28 +1509,28 @@ void ft_parse(t_cube *cube)
 static const int g_map_template[MAP_Y][MAP_X] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
@@ -1449,7 +1586,7 @@ void ft_init_enemies(t_cube *cube){
     seed = (unsigned long)tv.tv_usec / 100;
 
     while(i < ENEMY_NUM){
-        cube->enemy[i].HP = 1000;
+        cube->enemy[i].HP = 100;
         cube->enemy[i].dead = false;
         cube->enemy[i].delay = false;
         cube->enemy[i].atk_delay = 2;
@@ -1479,8 +1616,8 @@ void ft_init(t_cube *cube)
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);    cube->player.HP = 150;
     cube->player.delay = false;
-    cube->player.atk_delay = 2;
-    cube->player.DMG = 20;
+    cube->player.atk_delay = 1;
+    cube->player.DMG = 50;
     cube->player.current_speed_LR_X = 0.0;
     cube->player.current_speed_LR_Y = 0.0;
     cube->player.current_speed_FB_X = 0.0;
@@ -1493,6 +1630,7 @@ void ft_init(t_cube *cube)
     cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_vert_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_LEN, 0, 0};
     cube->crosshair_vert_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_LEN, 0, 0};
+    cube->projectiles = ft_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
     cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->lerp_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->mod_rate = (FOV * RADIANT_RATE) / RES;
@@ -1514,7 +1652,7 @@ void ft_init(t_cube *cube)
     cube->texture3 = mlx_load_png("./ceiling_tiles_color.png");
     cube->texture4 = mlx_load_png("./miku.png");
     cube->texture5 = mlx_load_png("./Monster_1.png");
-    cube->texture6 = mlx_load_png("./lain_2.png");
+    cube->texture6 = mlx_load_png("./small_miku.png");
     cube->texture_died = mlx_load_png("./you_died.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)

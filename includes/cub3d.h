@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/13 14:09:21 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/13 21:37:35 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,15 @@
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
 # define MAP_SIZE 100
-# define ENEMY_RADIUS 10.0
+# define ENEMY_RADIUS 500.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 50
+# define ENEMY_NUM 20
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
-# define MIN_ATK_DST 10
+# define MIN_ATK_DST 300
+# define MAX_PROJECTILES 100
+# define HITBOX_DST 30
 typedef enum s_direction
 {
 	UP,
@@ -129,6 +131,18 @@ typedef struct s_enemy
 	double			player_dst;
 }					t_enemy;
 
+typedef struct s_projectile
+{
+	int				in_use;
+	double			x;
+	double 			y;
+	t_vect2			dir;
+	double			speed;
+	double			dst_traveled;
+	int 			DMG;
+	mlx_texture_t	*texture;
+}					t_projectile;
+
 typedef struct s_cube
 {
 	mlx_t			*mlx;
@@ -139,6 +153,7 @@ typedef struct s_cube
 	mlx_image_t		*image;
 	mlx_image_t		*image_death;
 	mlx_image_t		*image_menu;
+	t_projectile	*projectiles;
 	t_vect2			pos;
 	t_player		player;
 	bool			moving;
