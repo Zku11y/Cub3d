@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/09 17:46:58 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/13 14:07:48 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -545,6 +545,8 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     struct timeval tv;
     gettimeofday(&tv, NULL);
     enemy->player_dst = sqrt((cube->player.x - enemy->x) * (cube->player.x - enemy->x) + (cube->player.y - enemy->y) * (cube->player.y - enemy->y));
+    if(enemy->player_dst > MAX_DST)
+        return;
     t_vect2 player_dir = (t_vect2){(cube->player.x - enemy->x) / enemy->player_dst, (cube->player.y - enemy->y) / enemy->player_dst, 0, 0};
     player_dir.x *= ENEMY_SPEED;
     player_dir.y *= ENEMY_SPEED;
@@ -1375,14 +1377,14 @@ static const int g_map_template[MAP_Y][MAP_X] = {
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -1474,7 +1476,8 @@ void ft_init(t_cube *cube)
     struct timeval tv;
 
     gettimeofday(&tv, NULL);
-    cube->player.HP = 150;
+    cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
+    cube->player.y = GRID_SIZE + (GRID_SIZE / 2);    cube->player.HP = 150;
     cube->player.delay = false;
     cube->player.atk_delay = 2;
     cube->player.DMG = 20;
@@ -1501,8 +1504,6 @@ void ft_init(t_cube *cube)
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
     cube->moving = false;
-    cube->player.x = (GRID_SIZE * MAP_X) / 2;
-    cube->player.y = (GRID_SIZE * MAP_Y) / 2;
     cube->enemy = ft_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
     ft_init_enemies(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
