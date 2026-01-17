@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/13 21:37:35 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/16 22:56:58 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
+// # include "miniaudio.h"
 # include <fcntl.h>
 # include <stdio.h>
 // #include <error.h>
@@ -33,7 +34,6 @@
 # define RES SCREEN_WIDTH
 # define FOV 70
 # define PI 3.14159265359
-// # define PI 420.67
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 2
 # define WALL_SCALE (SCREEN_HEIGHT / 2)
@@ -63,6 +63,8 @@
 # define MIN_ATK_DST 300
 # define MAX_PROJECTILES 100
 # define HITBOX_DST 30
+# define TILT_ANGLE 5 * RADIANT_RATE
+# define SHEAR_FACTOR tan(TILT_ANGLE)
 typedef enum s_direction
 {
 	UP,
@@ -143,6 +145,13 @@ typedef struct s_projectile
 	mlx_texture_t	*texture;
 }					t_projectile;
 
+// typedef struct s_audio
+// {
+// 	ma_engine		engine;
+// 	ma_sound		bg_start;
+// 	ma_sound		bg_loop;
+// }					t_audio;
+
 typedef struct s_cube
 {
 	mlx_t			*mlx;
@@ -182,6 +191,7 @@ typedef struct s_cube
 	t_vect2			crosshair_hori_end;
 	t_state			state;
 	t_state			prev_state;
+	// t_audio			*audio;
 }					t_cube;
 
 #endif

@@ -6,10 +6,11 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/13 21:38:08 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/16 22:54:27 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// # define MINIAUDIO_IMPLEMENTATION
 #include "../includes/cub3d.h"
 
 void clear_image(t_cube *cube)
@@ -1369,12 +1370,52 @@ void ft_draw_proj(t_cube *cube){
     }
 }
 
+void ft_tilt(t_cube *cube){
+    int x;
+    int start_y;
+    int end_y;
+    int iter_y;
+    int dst_y;
+    int new_y;
+
+    x = 0;
+    while(x < SCREEN_WIDTH){
+        int x_pos = (x - (SCREEN_WIDTH / 2));
+        if(x_pos == 0)
+            dst_y = 0;
+        else
+            dst_y = SHEAR_FACTOR * x_pos;
+        if(dst_y > 0){
+            start_y = 0;
+            end_y = SCREEN_HEIGHT - 1;
+            iter_y = 1;
+        }
+        else{
+            start_y = SCREEN_HEIGHT - 1;
+            end_y = 0;
+            iter_y = -1;
+        }
+        while(start_y != end_y){
+            new_y = start_y + dst_y;
+            if(!check_screen_limits((t_vect2){x, new_y, 0, 0})){
+                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 0] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 0];
+                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 1] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 1];
+                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 2] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 2];
+                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 3] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 3];
+            }
+            start_y += iter_y;
+        }
+        x++;
+    }
+}
+
 void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
     ft_draw_enemies(cube);
     ft_draw_proj(cube);
+    ft_tilt(cube);
     ft_mouvement(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
@@ -1460,7 +1501,7 @@ void ft_update(void *param)
     // draw_grid(cube);
     // draw_player(cub/e);
     gettimeofday(&tv, NULL);
-
+ 
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
@@ -1608,10 +1649,33 @@ void ft_init_enemies(t_cube *cube){
     }
 }
 
+// void ft_init_audio(t_cube *cube){
+//     ma_uint64 length;
+//     ma_uint64 now;
+
+//     cube->audio = ft_calloc(1, sizeof(t_audio));
+//     if(ma_engine_init(NULL, &cube->audio->engine) != MA_SUCCESS){
+//         printf("failed to init audio engine :(\n");
+//         exit(1);
+//     }
+//     ma_sound_init_from_file(&cube->audio->engine, "/home/skully/work/mac/Psychosis_start.wav", 0, NULL, NULL, &cube->audio->bg_start);
+//     ma_sound_init_from_file(&cube->audio->engine, "/home/skully/work/mac/Psychosis_loop.wav", 0, NULL, NULL, &cube->audio->bg_loop);
+//     ma_sound_set_looping(&cube->audio->bg_loop, MA_TRUE);
+//     ma_sound_get_length_in_pcm_frames(&cube->audio->bg_start, &length);
+//     now = ma_engine_get_time_in_pcm_frames(&cube->audio->engine);
+//     ma_sound_set_start_time_in_pcm_frames(&cube->audio->bg_start, now);
+//     ma_sound_start(&cube->audio->bg_start);
+//     ma_sound_set_start_time_in_pcm_frames(&cube->audio->bg_loop, now + length + 5);
+//     ma_sound_start(&cube->audio->bg_loop);
+// }
+ 
+
+
 void ft_init(t_cube *cube)
 {
     struct timeval tv;
 
+    // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);    cube->player.HP = 150;
