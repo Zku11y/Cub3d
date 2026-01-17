@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/16 22:56:58 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/17 21:33:05 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
+
 # define UPSCALING_RATE 3
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
@@ -65,6 +66,8 @@
 # define HITBOX_DST 30
 # define TILT_ANGLE 5 * RADIANT_RATE
 # define SHEAR_FACTOR tan(TILT_ANGLE)
+# define TILT_ADDITION_HEIGHT fabs(SHEAR_FACTOR) * (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
+# define TILT_ADDITION_WIDTH fabs(SHEAR_FACTOR) * (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 typedef enum s_direction
 {
 	UP,
@@ -180,6 +183,7 @@ typedef struct s_cube
 	mlx_texture_t	*texture_died;
 	double			min_length;
 	int8_t			*prev_buffer;
+	int8_t			*new_buffer;
 	int8_t			*lerp_buffer;
 	t_enemy			*enemy;
 	bool			grain;

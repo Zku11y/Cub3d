@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/16 22:54:27 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/17 21:46:04 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1306,13 +1306,22 @@ void ft_floor_ceiling(t_cube *cube){
 }
 
 void ft_upscaling(t_cube *cube, mlx_image_t *image){
-    uint32_t *prev = (uint32_t *)cube->prev_buffer;
     uint32_t *new = (uint32_t *)image->pixels;
+    uint32_t *prev = (uint32_t *)cube->prev_buffer;
+    int screen_H = SCREEN_HEIGHT;
+    int screen_W = SCREEN_WIDTH;        
+
+    if(cube->state == GAME){
+        printf("im here!\n");
+        prev = (uint32_t *)cube->new_buffer;
+        screen_H = SCREEN_HEIGHT - (TILT_ADDITION_HEIGHT * 2);
+        screen_W = SCREEN_WIDTH - (TILT_ADDITION_WIDTH * 2);
+    }
     int y = 0;
-    while(y < SCREEN_HEIGHT){
+    while(y < screen_H){
         int x = 0;
-        while(x < SCREEN_WIDTH){
-            int index = (y * SCREEN_WIDTH) + x;
+        while(x < screen_W){
+            int index = (y * screen_W) + x;
             int i = 0;
             while(i < UPSCALING_RATE){
                 int j = 0;
@@ -1372,43 +1381,56 @@ void ft_draw_proj(t_cube *cube){
 
 void ft_tilt(t_cube *cube){
     int x;
-    int start_y;
-    int end_y;
-    int iter_y;
-    int dst_y;
-    int new_y;
+    int y;
+    int max_new_x;
+    int max_new_y;
+    double prev_x;
+    double prev_y;
+    double offset;
 
-    x = 0;
-    while(x < SCREEN_WIDTH){
-        int x_pos = (x - (SCREEN_WIDTH / 2));
-        if(x_pos == 0)
-            dst_y = 0;
-        else
-            dst_y = SHEAR_FACTOR * x_pos;
-        if(dst_y > 0){
-            start_y = 0;
-            end_y = SCREEN_HEIGHT - 1;
-            iter_y = 1;
-        }
-        else{
-            start_y = SCREEN_HEIGHT - 1;
-            end_y = 0;
-            iter_y = -1;
-        }
-        while(start_y != end_y){
-            new_y = start_y + dst_y;
-            if(!check_screen_limits((t_vect2){x, new_y, 0, 0})){
-                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 0] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 0];
-                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 1] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 1];
-                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 2] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 2];
-                cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)x * 4) + 3] = cube->prev_buffer[(SCREEN_WIDTH * (int)new_y * 4) + ((int)x * 4) + 3];
+    max_new_x = SCREEN_WIDTH - (TILT_ADDITION_WIDTH * 2);
+    max_new_y = SCREEN_HEIGHT - (TILT_ADDITION_HEIGHT * 2);
+
+   x = 0;
+    while(x < max_new_x){
+        y = 0;
+        prev_x = (double)x + TILT_ADDITION_WIDTH;
+        offset = (prev_x - (SCREEN_WIDTH / 2.0)) * SHEAR_FACTOR; 
+        while(y < max_new_y){
+            prev_y = ((double)y + TILT_ADDITION_HEIGHT) + offset;
+            if(prev_y >= 0 && prev_y < SCREEN_HEIGHT){
+                int new_dst = (max_new_x * y * 4) + (x * 4);
+                int prev_dst = (SCREEN_WIDTH * (int)prev_y * 4) + ((int)prev_x * 4);
+                cube->new_buffer[new_dst + 0] = cube->prev_buffer[prev_dst + 0];
+                cube->new_buffer[new_dst + 1] = cube->prev_buffer[prev_dst + 1];
+                cube->new_buffer[new_dst + 2] = cube->prev_buffer[prev_dst + 2];
+                cube->new_buffer[new_dst + 3] = cube->prev_buffer[prev_dst + 3];
             }
-            start_y += iter_y;
+            y++;
         }
         x++;
     }
 }
 
+// dst_y = abs(dst_y);
+// int i = 0;
+// int start_j = SCREEN_HEIGHT - 1 - dst_y;
+// int j = start_j;
+// while(i < SCREEN_WIDTH){
+//     j = SCREEN_HEIGHT - 1 - dst_y;
+//     while(j < SCREEN_HEIGHT){
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 0] = 0;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 1] = 0;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 2] = 0;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 3] = 255;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 0] = 0;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 1] = 0;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 2] = 0;
+//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 3] = 255;
+//         j++;
+//     }
+//     i++;
+// }
 void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
@@ -1678,7 +1700,8 @@ void ft_init(t_cube *cube)
     // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.y = GRID_SIZE + (GRID_SIZE / 2);    cube->player.HP = 150;
+    cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
+    cube->player.HP = 150;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
@@ -1696,6 +1719,7 @@ void ft_init(t_cube *cube)
     cube->crosshair_vert_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_LEN, 0, 0};
     cube->projectiles = ft_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
     cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
+    cube->new_buffer = ft_calloc((SCREEN_HEIGHT - TILT_ADDITION_HEIGHT) * (SCREEN_WIDTH - TILT_ADDITION_WIDTH), 4);
     cube->lerp_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->mod_rate = (FOV * RADIANT_RATE) / RES;
     cube->fps = 0;
