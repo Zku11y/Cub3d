@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/17 21:46:04 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/18 16:28:44 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ uint8_t ft_lerp_pixels(uint8_t new, uint8_t old){
 
 double ft_lerp_speed(double dst, double current){
     return (dst * SPEED_LERP) + (current * (1.0 - SPEED_LERP));
+}
+
+double ft_lerp_tilt(double dst, double current){
+    return (dst * TILT_LERP) + (current * (1.0 - TILT_LERP));
 }
 
 void draw_player(t_cube *cube)
@@ -188,16 +192,19 @@ void ft_mouvement(t_cube *cube)
     double dst_speed_LR_Y = 0.0;
     double dst_speed_FB_X = 0.0;
     double dst_speed_FB_Y = 0.0;
-
+    double target_angle = 0.0;
+    
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
     {
         dst_speed_LR_X = -1 * max_sin_speed;
         dst_speed_LR_Y = max_cos_speed;
+        target_angle = TILT_ANGLE;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
     {
         dst_speed_LR_X = max_sin_speed;
         dst_speed_LR_Y = -1 * max_cos_speed;
+        target_angle = -TILT_ANGLE;
     }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
@@ -209,6 +216,11 @@ void ft_mouvement(t_cube *cube)
         dst_speed_FB_X = -1 * max_cos_speed;
         dst_speed_FB_Y = -1 * max_sin_speed;
     }
+
+    cube->tilt_angle = ft_lerp_tilt(target_angle, cube->tilt_angle);
+    cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+    cube->tilt_addition_height = fabs(cube->shear_factor) * SCREEN_HEIGHT;
+    cube->tilt_addition_width = fabs(cube->shear_factor) * SCREEN_WIDTH;
     cube->player.current_speed_FB_X = ft_lerp_speed(dst_speed_FB_X, cube->player.current_speed_FB_X);
     cube->player.current_speed_FB_Y = ft_lerp_speed(dst_speed_FB_Y, cube->player.current_speed_FB_Y);
     cube->player.current_speed_LR_X = ft_lerp_speed(dst_speed_LR_X, cube->player.current_speed_LR_X);
@@ -1312,10 +1324,9 @@ void ft_upscaling(t_cube *cube, mlx_image_t *image){
     int screen_W = SCREEN_WIDTH;        
 
     if(cube->state == GAME){
-        printf("im here!\n");
         prev = (uint32_t *)cube->new_buffer;
-        screen_H = SCREEN_HEIGHT - (TILT_ADDITION_HEIGHT * 2);
-        screen_W = SCREEN_WIDTH - (TILT_ADDITION_WIDTH * 2);
+        screen_H = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
+        screen_W = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
     }
     int y = 0;
     while(y < screen_H){
@@ -1388,16 +1399,16 @@ void ft_tilt(t_cube *cube){
     double prev_y;
     double offset;
 
-    max_new_x = SCREEN_WIDTH - (TILT_ADDITION_WIDTH * 2);
-    max_new_y = SCREEN_HEIGHT - (TILT_ADDITION_HEIGHT * 2);
+    max_new_x = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
+    max_new_y = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
 
    x = 0;
     while(x < max_new_x){
         y = 0;
-        prev_x = (double)x + TILT_ADDITION_WIDTH;
-        offset = (prev_x - (SCREEN_WIDTH / 2.0)) * SHEAR_FACTOR; 
+        prev_x = (double)x + cube->tilt_addition_width;
+        offset = (prev_x - (SCREEN_WIDTH / 2.0)) * cube->shear_factor; 
         while(y < max_new_y){
-            prev_y = ((double)y + TILT_ADDITION_HEIGHT) + offset;
+            prev_y = ((double)y + cube->tilt_addition_height) + offset;
             if(prev_y >= 0 && prev_y < SCREEN_HEIGHT){
                 int new_dst = (max_new_x * y * 4) + (x * 4);
                 int prev_dst = (SCREEN_WIDTH * (int)prev_y * 4) + ((int)prev_x * 4);
@@ -1435,10 +1446,10 @@ void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    ft_draw_enemies(cube);
+    // ft_draw_enemies(cube);
     ft_draw_proj(cube);
-    ft_tilt(cube);
     ft_mouvement(cube);
+    ft_tilt(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
 }
@@ -1713,15 +1724,24 @@ void ft_init(t_cube *cube)
     cube->player.last_LR = LEFT;
     cube->state = GAME;
     cube->prev_state = GAME;
+
+
+    cube->tilt_angle = 0.0;
+    cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+    cube->tilt_addition_height = fabs(cube->shear_factor) * SCREEN_HEIGHT;
+    cube->tilt_addition_width = fabs(cube->shear_factor) * SCREEN_WIDTH;
+
+
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_vert_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_LEN, 0, 0};
     cube->crosshair_vert_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_LEN, 0, 0};
     cube->projectiles = ft_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
     cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
-    cube->new_buffer = ft_calloc((SCREEN_HEIGHT - TILT_ADDITION_HEIGHT) * (SCREEN_WIDTH - TILT_ADDITION_WIDTH), 4);
+    cube->new_buffer = ft_calloc((SCREEN_HEIGHT - cube->tilt_addition_height) * (SCREEN_WIDTH - cube->tilt_addition_width), 4);
     cube->lerp_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->mod_rate = (FOV * RADIANT_RATE) / RES;
+
     cube->fps = 0;
     cube->grain = true;
     cube->pitch = 0.0;

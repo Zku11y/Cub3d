@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/17 21:33:05 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/18 18:48:25 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
-# define UPSCALING_RATE 3
+# define UPSCALING_RATE 2
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -51,6 +51,7 @@
 # define CAM_H (GRID_SIZE / 2.0)
 # define LERP 0.4
 # define SPEED_LERP 0.1
+# define TILT_LERP 0.1
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
@@ -64,10 +65,7 @@
 # define MIN_ATK_DST 300
 # define MAX_PROJECTILES 100
 # define HITBOX_DST 30
-# define TILT_ANGLE 5 * RADIANT_RATE
-# define SHEAR_FACTOR tan(TILT_ANGLE)
-# define TILT_ADDITION_HEIGHT fabs(SHEAR_FACTOR) * (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
-# define TILT_ADDITION_WIDTH fabs(SHEAR_FACTOR) * (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
+# define TILT_ANGLE 2
 typedef enum s_direction
 {
 	UP,
@@ -195,6 +193,13 @@ typedef struct s_cube
 	t_vect2			crosshair_hori_end;
 	t_state			state;
 	t_state			prev_state;
+
+	double			tilt_angle;
+	double			shear_factor;
+	double			tilt_addition_height;
+	double			tilt_addition_width;
+
+
 	// t_audio			*audio;
 }					t_cube;
 
