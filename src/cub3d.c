@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/18 16:28:44 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/18 20:37:13 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1328,23 +1328,24 @@ void ft_upscaling(t_cube *cube, mlx_image_t *image){
         screen_H = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
         screen_W = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
     }
-    int y = 0;
-    while(y < screen_H){
-        int x = 0;
-        while(x < screen_W){
-            int index = (y * screen_W) + x;
-            int i = 0;
-            while(i < UPSCALING_RATE){
-                int j = 0;
-                while(j < UPSCALING_RATE){
-                    new[((y * UPSCALING_RATE + i) * SCREEN_WIDTH_BUFF) + (x * UPSCALING_RATE + j)] = prev[index];
-                    j++;
-                }
-                i++;
-            }
-            x++;
+    double iter_x = (double)screen_W / (double)SCREEN_WIDTH_BUFF;
+    double iter_y = (double)screen_H / (double)SCREEN_HEIGHT_BUFF;
+
+    double prev_x = 0.0;
+    double prev_y = 0.0;
+    int new_x = 0;
+    int new_y = 0;
+
+    while(new_y < SCREEN_HEIGHT_BUFF && prev_y < screen_H){
+        new_x = 0;
+        prev_x = 0.0;
+        while(new_x < SCREEN_WIDTH_BUFF && prev_x < screen_W){
+            new[(new_y * SCREEN_WIDTH_BUFF) + new_x] = prev[((int)prev_y * screen_W) + (int)prev_x];
+            new_x++;
+            prev_x += iter_x;
         }
-        y++;
+        new_y++;
+        prev_y += iter_y;
     }
 }
 
@@ -1443,13 +1444,12 @@ void ft_tilt(t_cube *cube){
 //     i++;
 // }
 void ft_game(t_cube *cube){
+    ft_mouvement(cube);
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    // ft_draw_enemies(cube);
+    ft_draw_enemies(cube);
     ft_draw_proj(cube);
-    ft_mouvement(cube);
-    ft_tilt(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
 }
@@ -1512,6 +1512,7 @@ void state_machine(t_cube *cube){
             cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i]);
             i++;
         }
+        ft_tilt(cube);
         ft_upscaling(cube, cube->image);
     }
     else if(cube->state == DIED){

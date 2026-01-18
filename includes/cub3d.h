@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/18 18:48:25 by skully           ###   ########.fr       */
+/*   Updated: 2026/01/18 20:37:08 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
-# define UPSCALING_RATE 2
+# define UPSCALING_RATE 3
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -49,7 +49,7 @@
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
-# define LERP 0.4
+# define LERP 0.2
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
@@ -65,7 +65,7 @@
 # define MIN_ATK_DST 300
 # define MAX_PROJECTILES 100
 # define HITBOX_DST 30
-# define TILT_ANGLE 2
+# define TILT_ANGLE 1
 typedef enum s_direction
 {
 	UP,
