@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/23 15:04:26 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/24 00:01:31 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
-# define FOV 70
+# define FOV 100
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 2
@@ -52,6 +52,8 @@
 # define LERP 0.7
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
+# define FOV_LERP 0.1
+# define RECOIL_LERP 0.5
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
@@ -84,8 +86,16 @@ typedef struct s_weapon{
 
 	int				DMG;
 	int				fire_rate;
+	int				delay;
+	suseconds_t		frame_delay;
 	mlx_texture_t	*texture;
-
+	mlx_texture_t	*idle_texture;
+	mlx_texture_t	*shoot_texture;
+	double			pitch_og;
+	double			pitch_increase;
+	bool			pitch_changed;
+	bool			pitch_back;
+	double			pitch_dst;
 }					t_weapon;
 
 typedef enum s_state
@@ -179,6 +189,10 @@ typedef struct s_cube
 {
 	mlx_t			*mlx;
 
+	int				fov;
+	int				prev_fov;
+	double			proj_dst;
+	double			half_fov_rad;
 	char			**map;
 	char			**floor_map;
 	t_ray			*rays;

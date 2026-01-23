@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/23 15:24:07 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/24 00:16:22 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ double ft_lerp_speed(double dst, double current){
 
 double ft_lerp_tilt(double dst, double current){
     return (dst * TILT_LERP) + (current * (1.0 - TILT_LERP));
+}
+
+double ft_lerp_fov(double dst, double current, double lerp_rate){
+    return (dst * lerp_rate) + (current * (1.0 - lerp_rate));
 }
 
 void draw_player(t_cube *cube)
@@ -325,8 +329,8 @@ void ft_draw_rays(t_cube *cube)
 {
     double DirX = cos(cube->player.angle);
     double DirY = sin(cube->player.angle);
-    double PlaneX = -DirY * HALF_FOV_RAD;
-    double PlaneY =  DirX * HALF_FOV_RAD;
+    double PlaneX = -DirY * cube->half_fov_rad;
+    double PlaneY =  DirX * cube->half_fov_rad;
 
     for (int i = 0; i < RES; i++)
     {
@@ -508,7 +512,7 @@ void ft_draw_world(t_cube *cube)
     {
         j = 0;
         double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
-        len = ((GRID_SIZE) / length) * PROJ_DST;
+        len = ((GRID_SIZE) / length) * cube->proj_dst;
         start.y = ((SCREEN_HEIGHT - len) / 2) + cube->pitch;
         end.x = start.x;
         end.y = start.y + len;
@@ -616,7 +620,7 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     while(tetha_delta < -PI)
         tetha_delta += 2 * PI;
     
-    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * PROJ_DST);
+    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * cube->proj_dst);
     double dst = sqrt((projectile->x - cube->player.x) * (projectile->x - cube->player.x) + (projectile->y - cube->player.y) * (projectile->y - cube->player.y)) * cos(tetha_delta);
 
     if(dst < 0.1) 
@@ -628,7 +632,7 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     else if(tmp < 0.0)
         tmp = 0.0;
 
-    double height = (GRID_SIZE / dst) * PROJ_DST;
+    double height = (GRID_SIZE / dst) * cube->proj_dst;
 
     double scale_ratio = projectile->texture->height / height;
 
@@ -766,7 +770,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     while(tetha_delta < -PI)
         tetha_delta += 2 * PI;
     
-    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * PROJ_DST);
+    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * cube->proj_dst);
     double dst = sqrt((enemy->x - cube->player.x) * (enemy->x - cube->player.x) + (enemy->y - cube->player.y) * (enemy->y - cube->player.y)) * cos(tetha_delta);
 
     if(dst < 0.1) 
@@ -778,7 +782,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     else if(tmp < 0.0)
         tmp = 0.0;
 
-    double height = (GRID_SIZE / dst) * PROJ_DST;
+    double height = (GRID_SIZE / dst) * cube->proj_dst;
 
     double scale_ratio = texture->height / height;
 
@@ -1275,8 +1279,8 @@ void ft_crt_vhs_effect(t_cube *cube)
 void ft_floor_ceiling(t_cube *cube){
     double DirX = cos(cube->player.angle);
     double DirY = sin(cube->player.angle);
-    double PlaneX = -DirY * (HALF_FOV_RAD);
-    double PlaneY = DirX * (HALF_FOV_RAD);
+    double PlaneX = -DirY * (cube->half_fov_rad);
+    double PlaneY = DirX * (cube->half_fov_rad);
     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
     double mid_point = (SCREEN_HEIGHT / 2.0) + cube->pitch;
@@ -1296,7 +1300,7 @@ void ft_floor_ceiling(t_cube *cube){
 
         if(p == 0.0) p = 1.0;
 
-        double rowDst = (CAM_H * PROJ_DST) / p;
+        double rowDst = (CAM_H * cube->proj_dst) / p;
 
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(cube->player.x) + rowDst * RayDirR.x, (cube->player.y) + rowDst * RayDirR.y, 0, 0};
@@ -1429,7 +1433,6 @@ void ft_draw_enemies(t_cube *cube){
     while(i < ENEMY_NUM){
         if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (SCREEN_HEIGHT / 2)) &&
                 (cube->enemy[ENEMY_NUM - 1 - i].end_y > (SCREEN_HEIGHT / 2)))
-            printf("looking at %d\n", ENEMY_NUM - 1 - i);
         if(cube->player.delay == true && cube->player.attacked == true){
             if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (SCREEN_HEIGHT / 2)) &&
                 (cube->enemy[ENEMY_NUM - 1 - i].end_y > (SCREEN_HEIGHT / 2)) && (cube->enemy[ENEMY_NUM - 1 - i].player_dst < cube->rays[RES / 2].length)){
@@ -1441,8 +1444,6 @@ void ft_draw_enemies(t_cube *cube){
         ft_enemy(cube, &cube->enemy[i], cube->texture4);
         i++;
     }
-    if(cube->player.attacked == true)
-        cube->player.attacked = false;
 }
 
 void ft_draw_proj(t_cube *cube){
@@ -1466,6 +1467,9 @@ void ft_tilt(t_cube *cube){
     max_new_x = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
     max_new_y = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
 
+    double flash = 1;
+    if(cube->player.weapon.delay == true)
+        flash = 1.3;
    x = 0;
     while(x < max_new_x){
         y = 0;
@@ -1476,10 +1480,10 @@ void ft_tilt(t_cube *cube){
             if(prev_y >= 0 && prev_y < SCREEN_HEIGHT){
                 int new_dst = (max_new_x * y * 4) + (x * 4);
                 int prev_dst = (SCREEN_WIDTH * (int)prev_y * 4) + ((int)prev_x * 4);
-                cube->new_buffer[new_dst + 0] = cube->prev_buffer[prev_dst + 0];
-                cube->new_buffer[new_dst + 1] = cube->prev_buffer[prev_dst + 1];
-                cube->new_buffer[new_dst + 2] = cube->prev_buffer[prev_dst + 2];
-                cube->new_buffer[new_dst + 3] = cube->prev_buffer[prev_dst + 3];
+                cube->new_buffer[new_dst + 0] = cube->prev_buffer[prev_dst + 0] * flash;
+                cube->new_buffer[new_dst + 1] = cube->prev_buffer[prev_dst + 1] * flash;
+                cube->new_buffer[new_dst + 2] = cube->prev_buffer[prev_dst + 2] * flash;
+                cube->new_buffer[new_dst + 3] = cube->prev_buffer[prev_dst + 3] * flash;
             }
             y++;
         }
@@ -1513,12 +1517,54 @@ void ft_weapon(t_cube *cube){
     int start_y = SCREEN_HEIGHT / 2;
     int y = start_y;
 
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+
+    if(cube->player.attacked == true){
+        // cube->player.weapon.pitch_dst = cube->pitch + 10;
+        cube->player.weapon.pitch_changed = true;
+        cube->player.weapon.pitch_back = false;
+        cube->player.weapon.pitch_og = cube->pitch;
+        cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
+        cube->fov = FOV + 30;
+        cube->player.weapon.texture = cube->player.weapon.shoot_texture;     
+        cube->player.weapon.frame_delay = current_time;
+        cube->player.weapon.delay = true;
+        cube->player.attacked = false;
+    }
+
+    if(cube->player.weapon.pitch_changed){
+        cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_dst, cube->pitch, RECOIL_LERP);
+    
+        if(!cube->player.weapon.pitch_back && fabs(cube->pitch - cube->player.weapon.pitch_dst) < 0.1){
+            cube->player.weapon.pitch_dst = cube->player.weapon.pitch_og;
+            cube->player.weapon.pitch_back = true;
+        }
+
+        if(cube->player.weapon.pitch_back && fabs(cube->pitch - cube->player.weapon.pitch_og) < 0.1){
+            cube->pitch = cube->player.weapon.pitch_og;
+            cube->player.weapon.pitch_changed = false;
+        }
+    }
+
+
+    // if((cube->player.weapon.pitch_changed == true) && (cube->pitch < cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase))
+    //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase, cube->pitch, RECOIL_LERP);
+    // else
+    //     cube->player.weapon.pitch_back = true;
+
+    // if((cube->player.weapon.pitch_back == true) && cube->pitch > cube->player.weapon.pitch_og)
+    //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og, cube->pitch, RECOIL_LERP);
+    // else
+    //     cube->player.weapon.pitch_back = false;
+
     while(y < SCREEN_HEIGHT){
         x = start_x;
         while(x < SCREEN_WIDTH){
 
-            int tex_x = (x - start_x) * ((cube->player.weapon.texture->width + FOV / 2) / (SCREEN_WIDTH - start_x));
-            int tex_y = (y - start_y) * ((cube->player.weapon.texture->height + FOV / 2) / (SCREEN_HEIGHT - start_y));
+            int tex_x = (x - start_x) * ((cube->player.weapon.texture->width + cube->fov / 2) / (SCREEN_WIDTH - start_x));
+            int tex_y = (y - start_y) * ((cube->player.weapon.texture->height + cube->fov / 2) / (SCREEN_HEIGHT - start_y));
             if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3] == 0){
                 x++;
                 continue;
@@ -1532,8 +1578,21 @@ void ft_weapon(t_cube *cube){
         }
         y++;
     }
+    
+    if(cube->player.weapon.delay == true && (int)(current_time - cube->player.weapon.frame_delay) >= 100){
+        cube->player.weapon.texture = cube->player.weapon.idle_texture;
+        cube->player.weapon.delay = false;
+    }
 }
 
+void ft_fov_mod(t_cube *cube){
+    if(cube->fov != cube->prev_fov){
+        cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
+        cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
+        cube->prev_fov = cube->fov;
+    }
+        cube->fov = ft_lerp_fov(FOV, cube->fov, FOV_LERP);
+}
 
 void ft_game(t_cube *cube){
     ft_mouvement(cube);
@@ -1543,6 +1602,7 @@ void ft_game(t_cube *cube){
     ft_draw_enemies(cube);
     ft_draw_proj(cube);
     ft_weapon(cube);
+    ft_fov_mod(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
 }
@@ -1677,16 +1737,16 @@ void ft_parse(t_cube *cube)
 
 static const int g_map_template[MAP_Y][MAP_X] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
@@ -1807,6 +1867,10 @@ void ft_init(t_cube *cube)
 
     // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
+    cube->fov = FOV;
+    cube->prev_fov = FOV;
+    cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
+    cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.HP = 150;
@@ -1830,7 +1894,10 @@ void ft_init(t_cube *cube)
 
     cube->player.weapon.DMG = 50;
     cube->player.weapon.fire_rate = 2;
-    cube->player.weapon.texture = mlx_load_png("./shotgun_01_nb.png");
+    cube->player.weapon.idle_texture = mlx_load_png("./shotgun.png");
+    cube->player.weapon.shoot_texture = mlx_load_png("./shotgun_blast.png");
+    cube->player.weapon.texture = cube->player.weapon.idle_texture;
+    cube->player.weapon.pitch_increase = 10;
 
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
@@ -1840,7 +1907,7 @@ void ft_init(t_cube *cube)
     cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
     cube->new_buffer = ft_calloc((SCREEN_HEIGHT - cube->tilt_addition_height) * (SCREEN_WIDTH - cube->tilt_addition_width), 4);
     cube->lerp_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
-    cube->mod_rate = (FOV * RADIANT_RATE) / RES;
+    cube->mod_rate = (cube->fov * RADIANT_RATE) / RES;
 
     cube->fps = 0;
     cube->grain = true;
