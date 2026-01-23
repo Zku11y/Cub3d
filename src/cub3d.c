@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/23 15:16:41 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/23 15:24:07 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1437,6 +1437,7 @@ void ft_draw_enemies(t_cube *cube){
                     cube->enemy[ENEMY_NUM - 1 - i].HP -= cube->player.weapon.DMG;                                  
                 }
         }
+
         ft_enemy(cube, &cube->enemy[i], cube->texture4);
         i++;
     }
