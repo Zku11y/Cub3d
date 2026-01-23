@@ -35,7 +35,7 @@ CFLAGS = -O3 $(MLX_INC) $(LIBFT_INC)
 ifeq ($(FT_UNAME), Darwin)
 	MLX_LIB = ./lib/libmlx42_mac.a
 	LIBFT_LIB = ./lib/libft_mac.a
-	LDFLAGS = -L"/Users/mdakni/.brew/opt/glfw/lib" -lglfw \
+	LDFLAGS = -L"/Users/mdakni/libraries/glfw/3.4/lib" -lglfw \
           -framework Cocoa -framework OpenGL -framework IOKit 
 # LDFLAGS = -lglfw -framework Cocoa -framework OpenGL -framework IOKit \
 # 		-fsanitize=address -g

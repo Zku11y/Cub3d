@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/18 20:37:08 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/23 15:04:26 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
-# define LERP 0.2
+# define LERP 0.7
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
@@ -58,11 +58,11 @@
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 500.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 20
+# define ENEMY_NUM 5
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
-# define MIN_ATK_DST 300
+# define MIN_ATK_DST 100
 # define MAX_PROJECTILES 100
 # define HITBOX_DST 30
 # define TILT_ANGLE 1
@@ -73,6 +73,20 @@ typedef enum s_direction
 	LEFT,
 	RIGHT
 }					t_direction;
+
+typedef enum s_weapon_type
+{
+	PISTOL,
+	PUMP
+}					t_weapon_type;
+
+typedef struct s_weapon{
+
+	int				DMG;
+	int				fire_rate;
+	mlx_texture_t	*texture;
+
+}					t_weapon;
 
 typedef enum s_state
 {
@@ -119,6 +133,8 @@ typedef struct s_player
 	int				atk_delay;
 	unsigned long	atk_time;
 	bool			delay;
+	t_weapon		weapon;
+	bool			attacked;
 }					t_player;
 
 typedef struct s_enemy
@@ -132,6 +148,12 @@ typedef struct s_enemy
 	bool			delay;
 	bool			dead;
 	double			player_dst;
+	int				start_y;
+	int				end_y;
+	int				start_x;
+	int				end_x;
+	int				hitbox_len;
+	double			max_hit_angle;
 }					t_enemy;
 
 typedef struct s_projectile
@@ -179,6 +201,7 @@ typedef struct s_cube
 	mlx_texture_t	*texture5;
 	mlx_texture_t	*texture6;
 	mlx_texture_t	*texture_died;
+	mlx_texture_t	*texture_pump;
 	double			min_length;
 	int8_t			*prev_buffer;
 	int8_t			*new_buffer;
