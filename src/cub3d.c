@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/25 17:13:02 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/25 22:53:50 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1517,9 +1517,9 @@ void ft_tilt(t_cube *cube){
 // }
 
 void ft_weapon(t_cube *cube){
-    int start_x = SCREEN_WIDTH / 2;
+    int start_x = 0;
     int x = start_x;
-    int start_y = SCREEN_HEIGHT / 2;
+    int start_y = 0;
     int y = start_y;
 
     struct timeval tv;
@@ -1534,8 +1534,8 @@ void ft_weapon(t_cube *cube){
         cube->player.weapon.pitch_back = false;
         cube->player.weapon.pitch_og = cube->pitch;
         cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
-        cube->fov = FOV + 30;
-        cube->player.weapon.texture = cube->player.weapon.shoot_texture;     
+        cube->fov = FOV + 50;
+        cube->player.weapon.texture = cube->player.weapon.shoot_texture;
         cube->player.weapon.frame_delay = current_time;
         cube->player.weapon.delay = true;
         cube->player.attacked = false;
@@ -1571,8 +1571,8 @@ void ft_weapon(t_cube *cube){
         x = start_x;
         while(x < SCREEN_WIDTH){
 
-            int tex_x = (x - start_x) * ((cube->player.weapon.texture->width + cube->fov / 2) / (SCREEN_WIDTH - start_x));
-            int tex_y = (y - start_y) * ((cube->player.weapon.texture->height + cube->fov / 2) / (SCREEN_HEIGHT - start_y));
+            int tex_x = (double)x * ((double)(cube->player.weapon.texture->width) / (double)(SCREEN_WIDTH));
+            int tex_y = (double)y * ((double)(cube->player.weapon.texture->height) / (double)(SCREEN_HEIGHT));
             if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3] == 0){
                 x++;
                 continue;
@@ -1890,7 +1890,7 @@ void ft_init(t_cube *cube)
     cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.HP = 15000;
+    cube->player.HP = 150;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
@@ -1911,11 +1911,11 @@ void ft_init(t_cube *cube)
 
     cube->player.weapon.DMG = 50;
     cube->player.weapon.fire_rate = 2;
-    cube->player.weapon.idle_texture = mlx_load_png("./idle_shotgun_test.png");
+    cube->player.weapon.idle_texture = mlx_load_png("./shotgun_idle.png");
     cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
     cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
     cube->player.weapon.texture = cube->player.weapon.idle_texture;
-    cube->player.weapon.pitch_increase = 20;
+    cube->player.weapon.pitch_increase = 10;
     cube->player.weapon.animation_frame = 0;
 
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};

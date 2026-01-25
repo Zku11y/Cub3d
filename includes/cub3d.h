@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/25 17:13:00 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/25 22:57:24 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
-# define FOV 100
+# define FOV 70
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 2
@@ -53,7 +53,7 @@
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define FOV_LERP 0.1
-# define RECOIL_LERP 0.3
+# define RECOIL_LERP 0.8
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
