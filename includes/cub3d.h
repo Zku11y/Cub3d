@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/24 00:01:31 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/25 17:13:00 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,18 @@
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define FOV_LERP 0.1
-# define RECOIL_LERP 0.5
+# define RECOIL_LERP 0.3
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 500.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 5
+# define ENEMY_NUM 10
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
-# define MIN_ATK_DST 100
+# define MIN_ATK_DST 300
 # define MAX_PROJECTILES 100
 # define HITBOX_DST 30
 # define TILT_ANGLE 1
@@ -91,11 +91,13 @@ typedef struct s_weapon{
 	mlx_texture_t	*texture;
 	mlx_texture_t	*idle_texture;
 	mlx_texture_t	*shoot_texture;
+	mlx_texture_t	*pump_texture;
 	double			pitch_og;
 	double			pitch_increase;
 	bool			pitch_changed;
 	bool			pitch_back;
 	double			pitch_dst;
+	int				animation_frame;
 }					t_weapon;
 
 typedef enum s_state

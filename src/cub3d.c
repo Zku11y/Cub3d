@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/24 00:16:22 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/25 17:13:02 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ void ft_mouvement(t_cube *cube)
     double dst_speed_FB_X = 0.0;
     double dst_speed_FB_Y = 0.0;
     double target_angle = 0.0;
+
     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -204,6 +205,8 @@ void ft_mouvement(t_cube *cube)
     cube->player.attacked = true;
     cube->player.atk_time = tv.tv_sec;
 }
+
+    // printf("attacked : %d, delay : %d\n", cube->player.attacked, cube->player.delay);
 
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
     {
@@ -705,7 +708,7 @@ void ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir){
     proj.DMG = enemy->DMG;
     proj.texture = cube->texture6;
     proj.dst_traveled = 0;
-    proj.speed = 10;
+    proj.speed = 7;
 
     int i = 0;
     while(i < MAX_PROJECTILES){
@@ -1426,7 +1429,7 @@ void ft_draw_enemies(t_cube *cube){
 
 
     if(cube->player.delay == true){
-        if((int)(tv.tv_sec - cube->player.atk_time) == cube->player.weapon.fire_rate)
+        if((int)(tv.tv_sec - cube->player.atk_time) >= cube->player.weapon.fire_rate)
             cube->player.delay = false;
     }
 
@@ -1463,12 +1466,14 @@ void ft_tilt(t_cube *cube){
     double prev_x;
     double prev_y;
     double offset;
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
 
     max_new_x = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
     max_new_y = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
 
     double flash = 1;
-    if(cube->player.weapon.delay == true)
+    if(cube->player.delay == true && ((int)((tv.tv_sec * 1000) + (tv.tv_usec / 1000)) - cube->player.weapon.frame_delay < 100))
         flash = 1.3;
    x = 0;
     while(x < max_new_x){
@@ -1521,6 +1526,8 @@ void ft_weapon(t_cube *cube){
     gettimeofday(&tv, NULL);
     long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 
+// printf("pitch_changed : %d, delay : %d\n", cube->player.weapon.pitch_changed, cube->player.delay);
+
     if(cube->player.attacked == true){
         // cube->player.weapon.pitch_dst = cube->pitch + 10;
         cube->player.weapon.pitch_changed = true;
@@ -1537,17 +1544,18 @@ void ft_weapon(t_cube *cube){
     if(cube->player.weapon.pitch_changed){
         cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_dst, cube->pitch, RECOIL_LERP);
     
-        if(!cube->player.weapon.pitch_back && fabs(cube->pitch - cube->player.weapon.pitch_dst) < 0.1){
+        if(!cube->player.weapon.pitch_back && fabs(cube->pitch - cube->player.weapon.pitch_dst) < 0.2){
             cube->player.weapon.pitch_dst = cube->player.weapon.pitch_og;
             cube->player.weapon.pitch_back = true;
+            // printf("top done!\n");
         }
 
-        if(cube->player.weapon.pitch_back && fabs(cube->pitch - cube->player.weapon.pitch_og) < 0.1){
+        if(cube->player.weapon.pitch_back && fabs(cube->pitch - cube->player.weapon.pitch_og) < 0.2){
             cube->pitch = cube->player.weapon.pitch_og;
             cube->player.weapon.pitch_changed = false;
+            // printf("bottom done!\n");
         }
     }
-
 
     // if((cube->player.weapon.pitch_changed == true) && (cube->pitch < cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase))
     //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase, cube->pitch, RECOIL_LERP);
@@ -1578,11 +1586,20 @@ void ft_weapon(t_cube *cube){
         }
         y++;
     }
-    
-    if(cube->player.weapon.delay == true && (int)(current_time - cube->player.weapon.frame_delay) >= 100){
-        cube->player.weapon.texture = cube->player.weapon.idle_texture;
-        cube->player.weapon.delay = false;
+
+    int time = (int)(current_time - cube->player.weapon.frame_delay);
+
+    if(cube->player.delay == true){
+        if(time >= 150 && time <= 500)
+            cube->player.weapon.texture = cube->player.weapon.idle_texture;
+        else if(time > 500 && time <= 800)
+            cube->player.weapon.texture = cube->player.weapon.pump_texture;
+        else if(time > 800 && time <= 900){
+            cube->player.weapon.texture = cube->player.weapon.idle_texture;
+            cube->player.delay = false;
+        }
     }
+    // printf("delay : %d, attacked : %d\n", cube->player.delay, cube->player.attacked);
 }
 
 void ft_fov_mod(t_cube *cube){
@@ -1873,7 +1890,7 @@ void ft_init(t_cube *cube)
     cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.HP = 150;
+    cube->player.HP = 15000;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
@@ -1894,10 +1911,12 @@ void ft_init(t_cube *cube)
 
     cube->player.weapon.DMG = 50;
     cube->player.weapon.fire_rate = 2;
-    cube->player.weapon.idle_texture = mlx_load_png("./shotgun.png");
-    cube->player.weapon.shoot_texture = mlx_load_png("./shotgun_blast.png");
+    cube->player.weapon.idle_texture = mlx_load_png("./idle_shotgun_test.png");
+    cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
+    cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
     cube->player.weapon.texture = cube->player.weapon.idle_texture;
-    cube->player.weapon.pitch_increase = 10;
+    cube->player.weapon.pitch_increase = 20;
+    cube->player.weapon.animation_frame = 0;
 
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
@@ -1968,3 +1987,17 @@ int main()
     mlx_terminate(cube.mlx);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
