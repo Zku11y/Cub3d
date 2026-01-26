@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/01/25 22:53:50 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/01/26 18:15:57 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,11 @@ double ft_lerp_tilt(double dst, double current){
 double ft_lerp_fov(double dst, double current, double lerp_rate){
     return (dst * lerp_rate) + (current * (1.0 - lerp_rate));
 }
+
+double ft_lerp_move(double dst, double current, double lerp_rate){
+    return (current * lerp_rate) + (dst * (1.0 - lerp_rate));
+}
+
 
 void draw_player(t_cube *cube)
 {
@@ -222,13 +227,18 @@ void ft_mouvement(t_cube *cube)
     }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
+        cube->player.weapon.move_lerp = ft_lerp_move(-move_increase, cube->player.weapon.move_lerp, MOVE_LERP);
         dst_speed_FB_X = max_cos_speed;
         dst_speed_FB_Y = max_sin_speed;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
+        cube->player.weapon.move_lerp = ft_lerp_move(move_increase, cube->player.weapon.move_lerp, MOVE_LERP);
         dst_speed_FB_X = -1 * max_cos_speed;
         dst_speed_FB_Y = -1 * max_sin_speed;
+    }
+    else{
+        cube->player.weapon.move_lerp = ft_lerp_move(0, cube->player.weapon.move_lerp, MOVE_LERP);
     }
 
     cube->tilt_angle = ft_lerp_tilt(target_angle, cube->tilt_angle);
@@ -1474,7 +1484,7 @@ void ft_tilt(t_cube *cube){
 
     double flash = 1;
     if(cube->player.delay == true && ((int)((tv.tv_sec * 1000) + (tv.tv_usec / 1000)) - cube->player.weapon.frame_delay < 100))
-        flash = 1.3;
+        flash = 2.0;
    x = 0;
     while(x < max_new_x){
         y = 0;
@@ -1485,10 +1495,16 @@ void ft_tilt(t_cube *cube){
             if(prev_y >= 0 && prev_y < SCREEN_HEIGHT){
                 int new_dst = (max_new_x * y * 4) + (x * 4);
                 int prev_dst = (SCREEN_WIDTH * (int)prev_y * 4) + ((int)prev_x * 4);
-                cube->new_buffer[new_dst + 0] = cube->prev_buffer[prev_dst + 0] * flash;
-                cube->new_buffer[new_dst + 1] = cube->prev_buffer[prev_dst + 1] * flash;
-                cube->new_buffer[new_dst + 2] = cube->prev_buffer[prev_dst + 2] * flash;
-                cube->new_buffer[new_dst + 3] = cube->prev_buffer[prev_dst + 3] * flash;
+                cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0] * flash;
+                if((uint8_t)cube->prev_buffer[prev_dst + 0] * flash > 255)
+                    cube->new_buffer[new_dst + 0] = (uint8_t)255;
+                cube->new_buffer[new_dst + 1] = (uint8_t)cube->prev_buffer[prev_dst + 1] * flash;
+                if((uint8_t)cube->prev_buffer[prev_dst + 1] * flash > 255)
+                    cube->new_buffer[new_dst + 1] = (uint8_t)255;
+                cube->new_buffer[new_dst + 2] = (uint8_t)cube->prev_buffer[prev_dst + 2] * flash;
+                if((uint8_t)cube->prev_buffer[prev_dst + 2] * flash > 255)
+                    cube->new_buffer[new_dst + 2] = (uint8_t)255;
+                cube->new_buffer[new_dst + 3] = (uint8_t)cube->prev_buffer[prev_dst + 3];
             }
             y++;
         }
@@ -1517,9 +1533,9 @@ void ft_tilt(t_cube *cube){
 // }
 
 void ft_weapon(t_cube *cube){
-    int start_x = 0;
+    int start_x = SCREEN_WIDTH * 0.2;
     int x = start_x;
-    int start_y = 0;
+    int start_y = SCREEN_HEIGHT * 0.2;
     int y = start_y;
 
     struct timeval tv;
@@ -1527,6 +1543,19 @@ void ft_weapon(t_cube *cube){
     long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 
 // printf("pitch_changed : %d, delay : %d\n", cube->player.weapon.pitch_changed, cube->player.delay);
+
+
+// code for 2nd idle frame
+    // if(cube->player.delay == false){
+    //     if(current_time - cube->player.weapon.idle_time > 500){
+    //         cube->player.weapon.idle_frame = !cube->player.weapon.idle_frame;   
+    //         cube->player.weapon.idle_time = current_time;
+    //     }
+    //     if(cube->player.weapon.idle_frame == 0)
+    //         cube->player.weapon.texture = cube->player.weapon.idle_texture;
+    //     else
+    //         cube->player.weapon.texture = cube->player.weapon.idle_texture_2;
+    // }
 
     if(cube->player.attacked == true){
         // cube->player.weapon.pitch_dst = cube->pitch + 10;
@@ -1571,17 +1600,18 @@ void ft_weapon(t_cube *cube){
         x = start_x;
         while(x < SCREEN_WIDTH){
 
-            int tex_x = (double)x * ((double)(cube->player.weapon.texture->width) / (double)(SCREEN_WIDTH));
-            int tex_y = (double)y * ((double)(cube->player.weapon.texture->height) / (double)(SCREEN_HEIGHT));
+            int tex_x = (double)(x - start_x) * ((double)(cube->player.weapon.texture->width) / (double)(SCREEN_WIDTH - start_x));
+            int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)(SCREEN_HEIGHT - start_y));
             if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3] == 0){
                 x++;
                 continue;
             }
-
-            cube->prev_buffer[((int)y * 4 * SCREEN_WIDTH) + ((int)x * 4) + 0] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 0];
-            cube->prev_buffer[((int)y * 4 * SCREEN_WIDTH) + ((int)x * 4) + 1] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 1];
-            cube->prev_buffer[((int)y * 4 * SCREEN_WIDTH) + ((int)x * 4) + 2] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 2];
-            cube->prev_buffer[((int)y * 4 * SCREEN_WIDTH) + ((int)x * 4) + 3] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3];
+            if(y + move_increase + cube->player.weapon.move_lerp < SCREEN_HEIGHT){
+                cube->prev_buffer[((int)(y + move_increase + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 0] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 0];
+                cube->prev_buffer[((int)(y + move_increase + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 1] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 1];
+                cube->prev_buffer[((int)(y + move_increase + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 2] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 2];
+                cube->prev_buffer[((int)(y + move_increase + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 3] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3];
+            }
             x++;
         }
         y++;
@@ -1835,7 +1865,7 @@ void ft_init_enemies(t_cube *cube){
         cube->enemy[i].HP = 100;
         cube->enemy[i].dead = false;
         cube->enemy[i].delay = false;
-        cube->enemy[i].atk_delay = 2;
+        cube->enemy[i].atk_delay = 1;
         cube->enemy[i].DMG = 50;
         cube->enemy[i].hitbox_len = 50;
         int posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
@@ -1890,7 +1920,7 @@ void ft_init(t_cube *cube)
     cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.HP = 150;
+    cube->player.HP = 15000;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
@@ -1912,11 +1942,14 @@ void ft_init(t_cube *cube)
     cube->player.weapon.DMG = 50;
     cube->player.weapon.fire_rate = 2;
     cube->player.weapon.idle_texture = mlx_load_png("./shotgun_idle.png");
+    cube->player.weapon.idle_texture_2 = mlx_load_png("./shotgun_idle_2.png");
     cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
     cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
     cube->player.weapon.texture = cube->player.weapon.idle_texture;
     cube->player.weapon.pitch_increase = 10;
-    cube->player.weapon.animation_frame = 0;
+    cube->player.weapon.idle_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    cube->player.weapon.idle_frame = 0;
+    cube->player.weapon.move_lerp = 0;
 
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
@@ -1944,9 +1977,9 @@ void ft_init(t_cube *cube)
     cube->texture = mlx_load_png("/Users/mdakni/projects/Cub3d/PNG - Pixel Art Textures/PNGs/Concrete/s2 Concrete Squares Grey.png");
     cube->texture2 = mlx_load_png("/Users/mdakni/projects/Cub3d/PNG - Pixel Art Textures/PNGs/Tiles/Tiles Rectangle/Tiles_Rectangle_Grey_1.png");
     cube->texture3 = mlx_load_png("/Users/mdakni/projects/Cub3d/PNG - Pixel Art Textures/PNGs/Concrete/Concrete_02_Grey_1.png");
-    cube->texture4 = mlx_load_png("./miku.png");
+    cube->texture4 = mlx_load_png("./job_dude.png");
     cube->texture5 = mlx_load_png("./Monster_1.png");
-    cube->texture6 = mlx_load_png("./small_miku.png");
+    cube->texture6 = mlx_load_png("./job_app.png");
     cube->texture_died = mlx_load_png("./you_died.png");
     cube->line_girth = (int)(SCREEN_WIDTH / RES);
     if(cube->line_girth == 0)
