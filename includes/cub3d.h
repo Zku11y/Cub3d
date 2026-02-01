@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/01/26 18:15:50 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/02/01 14:18:10 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
-# define UPSCALING_RATE 3
+# define UPSCALING_RATE 2
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -53,8 +53,8 @@
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define FOV_LERP 0.1
-# define RECOIL_LERP 0.8
-# define MOVE_LERP 0.9
+# define RECOIL_LERP 0.81
+# define MOVE_LERP 0.1
 # define move_increase 10
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
@@ -62,12 +62,13 @@
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 500.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 30
+# define ENEMY_NUM 10
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
-# define MIN_ATK_DST 1000
+# define MIN_ATK_DST 300
 # define MAX_PROJECTILES 100
+# define MAX_RECOIL 50
 # define HITBOX_DST 30
 # define TILT_ANGLE 1
 typedef enum s_direction
@@ -97,6 +98,7 @@ typedef struct s_weapon{
 	mlx_texture_t	*pump_texture;
 	double			pitch_og;
 	double			pitch_increase;
+	double			pitch_increased;
 	bool			pitch_changed;
 	bool			pitch_back;
 	double			pitch_dst;
