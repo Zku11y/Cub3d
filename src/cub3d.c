@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/01 14:18:14 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/02 23:34:27 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1415,7 +1415,42 @@ void draw_crosshair(t_cube *cube){
 }
 
 void ft_menu(t_cube *cube){
-    (void)cube;
+    
+    // int start_x = (SCREEN_WIDTH - (cube->menu.title->width)) / 2;
+    // int start_y = (SCREEN_HEIGHT - (cube->menu.title->height)) / 2;
+    int start_x = 0;
+    int start_y = 0;
+    int x = start_x;
+    int y = 0;
+    int tex_x;
+    int tex_y;
+
+
+    while(y < SCREEN_HEIGHT_BUFF){
+        x = start_x;
+        tex_y = (double)(y) * ((double)(cube->menu.title->height) / (double)(SCREEN_HEIGHT_BUFF));
+        while(x < SCREEN_WIDTH_BUFF){
+            tex_x = (double)(x) * ((double)(cube->menu.title->width) / (double)(SCREEN_WIDTH_BUFF));
+            int pixel_cords = (y * 4 * SCREEN_WIDTH_BUFF) + (x * 4);
+            int title_cords = (tex_y * 4 * cube->menu.title->width) + (tex_x * 4);
+            if(tex_x >= cube->menu.title->width || tex_y >= cube->menu.title->height || cube->menu.title->pixels[tex_y * 4 * cube->menu.title->width + tex_x * 4 + 3] < 127){
+                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 0] = 0;
+                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 1] = 0;
+                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 2] = 0;
+                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 3] = 255;
+                x++;
+                continue;
+            }
+            cube->image->pixels[pixel_cords + 0] = cube->menu.title->pixels[title_cords + 0];
+            cube->image->pixels[pixel_cords + 1] = cube->menu.title->pixels[title_cords + 1];
+            cube->image->pixels[pixel_cords + 2] = cube->menu.title->pixels[title_cords + 2];
+            cube->image->pixels[pixel_cords + 3] = cube->menu.title->pixels[title_cords + 3];
+            x++;
+        }
+        y++;
+    }
+    if(mlx_is_key_down(cube->mlx, MLX_KEY_ENTER))
+        cube->state = GAME;
 }
 
 void ft_draw_enemies(t_cube *cube){
@@ -1537,9 +1572,11 @@ void ft_tilt(t_cube *cube){
 // }
 
 void ft_weapon(t_cube *cube){
-    int start_x = SCREEN_WIDTH * 0.2;
+    int start_x = SCREEN_WIDTH * 0.1;
+    int start_y = (SCREEN_HEIGHT * 0.1);
+    // int start_x = 0;
+    // int start_y = 0;
     int x = start_x;
-    int start_y = SCREEN_HEIGHT * 0.2;
     int y = start_y;
 
     struct timeval tv;
@@ -1614,20 +1651,22 @@ void ft_weapon(t_cube *cube){
 
     while(y < SCREEN_HEIGHT){
         x = start_x;
+        int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)((SCREEN_HEIGHT + cube->player.weapon.move_lerp)));
         while(x < SCREEN_WIDTH){
-
+            
             int tex_x = (double)(x - start_x) * ((double)(cube->player.weapon.texture->width) / (double)(SCREEN_WIDTH - start_x));
-            int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)(SCREEN_HEIGHT - start_y));
-            if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3] == 0){
+            int prev_cords = ((int)(y) * 4 * SCREEN_WIDTH) + ((int)x * 4);
+            int weapon_cords = tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4;
+            if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[weapon_cords + 3] == 0){
                 x++;
                 continue;
             }
-            if(y + cube->player.weapon.move_lerp < SCREEN_HEIGHT){
-                cube->prev_buffer[((int)(y + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 0] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 0];
-                cube->prev_buffer[((int)(y + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 1] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 1];
-                cube->prev_buffer[((int)(y + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 2] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 2];
-                cube->prev_buffer[((int)(y + cube->player.weapon.move_lerp) * 4 * SCREEN_WIDTH) + ((int)x * 4) + 3] = cube->player.weapon.texture->pixels[tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4 + 3];
-            }
+            // if(y + cube->player.weapon.move_lerp < SCREEN_HEIGHT){
+                cube->prev_buffer[prev_cords + 0] = cube->player.weapon.texture->pixels[weapon_cords + 0];
+                cube->prev_buffer[prev_cords + 1] = cube->player.weapon.texture->pixels[weapon_cords + 1];
+                cube->prev_buffer[prev_cords + 2] = cube->player.weapon.texture->pixels[weapon_cords + 2];
+                cube->prev_buffer[prev_cords + 3] = cube->player.weapon.texture->pixels[weapon_cords + 3];
+            // }
             x++;
         }
         y++;
@@ -1698,6 +1737,7 @@ void ft_died(t_cube *cube){
 
 void state_transition(t_cube *cube, t_state dest){
     if(dest == GAME){
+        mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_DISABLED);
         mlx_image_to_window(cube->mlx, cube->image, 0, 0);
         cube->prev_state = GAME;
     }
@@ -1705,16 +1745,17 @@ void state_transition(t_cube *cube, t_state dest){
         mlx_image_to_window(cube->mlx, cube->image_death, 0, 0);
         cube->prev_state = DIED;
     }
-    else if(dest == MENU){   
-        mlx_image_to_window(cube->mlx, cube->image_menu, 0, 0);
+    else if(dest == MENU){
         cube->prev_state = MENU;
+        mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_NORMAL);
+        // clear_image(cube);
     }
 }
 
 void state_machine(t_cube *cube){
     if(cube->state == MENU){
         ft_menu(cube);
-        ft_upscaling(cube, cube->image_menu);
+        // ft_upscaling(cube, cube->image);
     }   
     else if(cube->state == GAME){
         int i = 0;
@@ -1730,12 +1771,12 @@ void state_machine(t_cube *cube){
         }
         ft_tilt(cube);
         ft_upscaling(cube, cube->image);
+        draw_crosshair(cube);
     }
     else if(cube->state == DIED){
         ft_died(cube);
         ft_upscaling(cube, cube->image_death);
     }
-    draw_crosshair(cube);
 }
 
 
@@ -1946,9 +1987,10 @@ void ft_init(t_cube *cube)
     cube->player.current_speed_FB_Y = 0.0;
     cube->player.last_FB = UP;
     cube->player.last_LR = LEFT;
-    cube->state = GAME;
-    cube->prev_state = GAME;
+    cube->state = MENU;
+    cube->prev_state = MENU;
 
+    cube->menu.title = mlx_load_png("./menu_screen_1.png");
 
     cube->tilt_angle = 0.0;
     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
@@ -1958,7 +2000,7 @@ void ft_init(t_cube *cube)
     cube->player.weapon.DMG = 50;
     cube->player.weapon.fire_rate = 2;
     cube->player.weapon.idle_texture = mlx_load_png("./shotgun_idle.png");
-    cube->player.weapon.idle_texture_2 = mlx_load_png("./shotgun_idle_2.png");
+    // cube->player.weapon.idle_texture_2 = mlx_load_png("./shotgun_idle_2.png");
     cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
     cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
     cube->player.weapon.texture = cube->player.weapon.idle_texture;
@@ -2023,7 +2065,6 @@ void ft_init(t_cube *cube)
         exit(EXIT_FAILURE);
     }
     mlx_image_to_window(cube->mlx, cube->image, 0, 0);
-    mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_DISABLED);
     mlx_set_mouse_pos(cube->mlx, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 }
 

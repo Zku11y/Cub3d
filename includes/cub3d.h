@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/01 14:18:10 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/02 23:33:00 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
-# define UPSCALING_RATE 2
+# define UPSCALING_RATE 4
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -55,7 +55,7 @@
 # define FOV_LERP 0.1
 # define RECOIL_LERP 0.81
 # define MOVE_LERP 0.1
-# define move_increase 10
+# define move_increase (0.1 * SCREEN_HEIGHT)
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
@@ -194,6 +194,11 @@ typedef struct s_projectile
 // 	ma_sound		bg_loop;
 // }					t_audio;
 
+typedef struct s_menu{
+	mlx_texture_t *title;
+	mlx_texture_t *background;
+}					t_menu;
+
 typedef struct s_cube
 {
 	mlx_t			*mlx;
@@ -245,6 +250,7 @@ typedef struct s_cube
 	double			tilt_addition_height;
 	double			tilt_addition_width;
 
+	t_menu			menu;
 
 	// t_audio			*audio;
 }					t_cube;
