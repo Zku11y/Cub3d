@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/02 23:33:00 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/03 16:49:47 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 10
 # define WALL_SCALE (SCREEN_HEIGHT / 2)
-# define TURN_SPEED 0.001
+# define TURN_SPEED 0.0007
 # define GRID_SIZE 64.0f
 # define PLAYER_SPEED 500.0f
 # define HORI 0
@@ -55,6 +55,7 @@
 # define FOV_LERP 0.1
 # define RECOIL_LERP 0.81
 # define MOVE_LERP 0.1
+# define LERP_LERP 0.01
 # define move_increase (0.1 * SCREEN_HEIGHT)
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
@@ -106,6 +107,20 @@ typedef struct s_weapon{
 	bool 			idle_frame;
 	double			move_lerp;
 }					t_weapon;
+
+typedef struct s_heart
+{
+	mlx_texture_t	*frame_0;
+	mlx_texture_t	*frame_1;
+	mlx_texture_t	*frame_2;
+	int				frame;
+	mlx_texture_t	*current_frame;
+	unsigned long	prev_time;
+	double			last_pitch;
+	double			last_angle;
+	double			added_angle;
+	double			added_pitch;
+}					t_heart;
 
 typedef enum s_state
 {
@@ -252,6 +267,7 @@ typedef struct s_cube
 
 	t_menu			menu;
 
+	t_heart			heart;
 	// t_audio			*audio;
 }					t_cube;
 

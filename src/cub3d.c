@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/02 23:34:27 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/03 17:19:02 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1571,6 +1571,56 @@ void ft_tilt(t_cube *cube){
 //     i++;
 // }
 
+void ft_heart(t_cube *cube){
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    
+    double frame_period = (double)(cube->player.HP);
+    if(current_time - cube->heart.prev_time > frame_period){
+        cube->heart.prev_time = current_time;
+        cube->heart.frame++;
+        if(cube->heart.frame > 2)
+            cube->heart.frame = 0;
+        if(cube->heart.frame == 0)
+            cube->heart.current_frame = cube->heart.frame_0;
+        else if(cube->heart.frame == 1)
+            cube->heart.current_frame = cube->heart.frame_1;
+        else if(cube->heart.frame == 2)
+            cube->heart.current_frame = cube->heart.frame_2;
+    }
+
+    int start_x = 0;
+    int start_y = (SCREEN_HEIGHT * 0.5) + 0.2 * cube->player.weapon.move_lerp;
+    int x = start_x;
+    int y = start_y;
+    int end_x = (SCREEN_WIDTH * 0.3);
+    int end_y = SCREEN_HEIGHT +  + 0.2 * cube->player.weapon.move_lerp;
+
+    while(y < end_y){
+        x = start_x;
+        int tex_y = (double)(y - start_y) * ((double)(cube->heart.current_frame->height) / (double)(SCREEN_HEIGHT * 0.5));
+        while(x < end_x){
+            
+            int tex_x = (double)(x - start_x) * ((double)(cube->heart.current_frame->width) / (double)(SCREEN_WIDTH * 0.3));
+            int prev_cords = ((int)(y) * 4 * SCREEN_WIDTH) + ((int)x * 4);
+            int heart_cords = tex_y * 4 * cube->heart.current_frame->width + tex_x * 4;
+            if(tex_x >= cube->heart.current_frame->width || tex_y >= cube->heart.current_frame->height || cube->heart.current_frame->pixels[heart_cords + 3] == 0){
+                x++;
+                continue;
+            }
+            // if(y + cube->player.weapon.move_lerp < SCREEN_HEIGHT){
+                cube->prev_buffer[prev_cords + 0] = cube->heart.current_frame->pixels[heart_cords + 0];
+                cube->prev_buffer[prev_cords + 1] = cube->heart.current_frame->pixels[heart_cords + 1];
+                cube->prev_buffer[prev_cords + 2] = cube->heart.current_frame->pixels[heart_cords + 2];
+                cube->prev_buffer[prev_cords + 3] = cube->heart.current_frame->pixels[heart_cords + 3];
+            // }
+            x++;
+        }
+        y++;
+    }    
+}
+
 void ft_weapon(t_cube *cube){
     int start_x = SCREEN_WIDTH * 0.1;
     int start_y = (SCREEN_HEIGHT * 0.1);
@@ -1704,6 +1754,7 @@ void ft_game(t_cube *cube){
     ft_draw_enemies(cube);
     ft_draw_proj(cube);
     ft_weapon(cube);
+    ft_heart(cube);
     ft_fov_mod(cube);
     if(cube->player.HP == 0)
         cube->state = DIED;
@@ -1923,7 +1974,7 @@ void ft_init_enemies(t_cube *cube){
         cube->enemy[i].dead = false;
         cube->enemy[i].delay = false;
         cube->enemy[i].atk_delay = 1;
-        cube->enemy[i].DMG = 50;
+        cube->enemy[i].DMG = 20;
         cube->enemy[i].hitbox_len = 50;
         int posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
         int posY = (int)(ft_rand(&seed) % (int)(MAP_Y * GRID_SIZE));
@@ -1977,7 +2028,7 @@ void ft_init(t_cube *cube)
     cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.HP = 15000;
+    cube->player.HP = 200;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
@@ -1987,6 +2038,7 @@ void ft_init(t_cube *cube)
     cube->player.current_speed_FB_Y = 0.0;
     cube->player.last_FB = UP;
     cube->player.last_LR = LEFT;
+    cube->player.attacked = false;
     cube->state = MENU;
     cube->prev_state = MENU;
 
@@ -2010,6 +2062,17 @@ void ft_init(t_cube *cube)
     cube->player.weapon.idle_frame = 0;
     cube->player.weapon.move_lerp = 0;
     cube->player.weapon.pitch_changed = false;
+
+    cube->heart.frame_0 = mlx_load_png("./heart_0.png");
+    cube->heart.frame_1 = mlx_load_png("./heart_1.png");
+    cube->heart.frame_2 = mlx_load_png("./heart_2.png");
+    cube->heart.current_frame = cube->heart.frame_0;
+    cube->heart.prev_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    cube->heart.frame = 0;
+    cube->heart.last_angle = 0;
+    cube->heart.last_pitch = 0;
+    cube->heart.added_angle = 0;
+    cube->heart.added_pitch = 0;
 
     cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
