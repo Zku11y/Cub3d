@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/05 01:16:50 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/05 21:09:34 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ unsigned long ft_rand(unsigned long *seed){
 
 void ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int color)
 {
+    uint32_t *prev = (uint32_t *)cube->image->pixels;
     int start_temp;
     int start_x = (int)(start_cords.x);
     int start_y = (int)(start_cords.y);
@@ -38,8 +39,8 @@ void ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int colo
         start_x = start_temp;
         while(start_x < end_x)
         {
-            // prev[(start_y * SCREEN_WIDTH) + (start_x)] = color;
-            mlx_put_pixel(cube->image, start_x, start_y, color);
+            prev[(start_y * SCREEN_WIDTH_BUFF) + (start_x)] = color;
+            // mlx_put_pixel(cube->image, start_x, start_y, color);
             start_x++;
         }
         start_y++;
@@ -1410,8 +1411,8 @@ void ft_upscaling(t_cube *cube, mlx_image_t *image){
 
 void draw_crosshair(t_cube *cube){
 
-    ft_rectangle(cube, cube->crosshair_hori_start, cube->crosshair_hori_end, CROSSHAIR_COLOR);
-    ft_rectangle(cube, cube->crosshair_vert_start, cube->crosshair_vert_end, CROSSHAIR_COLOR);
+    ft_rectangle(cube, cube->crosshair_hori_start, cube->crosshair_hori_end, cube->menu.settings.crosshair.color);
+    ft_rectangle(cube, cube->crosshair_vert_start, cube->crosshair_vert_end, cube->menu.settings.crosshair.color);
 }
 
 void ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y){
@@ -1447,35 +1448,98 @@ void ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y)
     }    
 }
 
+void ft_fov_slider(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+    int start_x = cube->menu.settings.fov.slider_end_x * ((double)(cube->fov - cube->menu.settings.fov.min_fov) / (cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov));
+
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(cube->menu.settings.mouse_held == FOV_SLIDER){
+        start_x = mouse_x - cube->menu.settings.fov.slider_start_x;
+        if (start_x > cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x)
+            start_x = cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x;
+        else if(start_x < 0)
+            start_x = 0;
+        cube->fov = ((cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov) * ((double)start_x / (double)cube->menu.settings.fov.slider_end_x)) + cube->menu.settings.fov.min_fov;
+    }
+    ft_renderer(cube, cube->menu.settings.fov.slider_1, start_x, 0);
+}
+
+void ft_resolution(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(cube->menu.settings.mouse_held != RESOLUTION)
+        return(ft_renderer(cube, cube->menu.settings.resolution.texture, 0, 0));
+
+    if(mouse_y > cube->menu.settings.resolution.start_y_1080_900 && mouse_y < cube->menu.settings.resolution.end_y_1080_900){
+        if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_x < cube->menu.settings.resolution.end_x_1080){
+                cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow;
+                cube->screen_height_buff = 1080;
+                cube->screen_width_buff = 1920;
+            }
+        else if(mouse_x > cube->menu.settings.resolution.start_x_900 && mouse_x < cube->menu.settings.resolution.end_x_900)
+            cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow;
+    }
+    else if(mouse_y > cube->menu.settings.resolution.start_y_720_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480){
+        if(mouse_x > cube->menu.settings.resolution.start_x_720 && mouse_x < cube->menu.settings.resolution.end_x_720)
+            cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow;
+        else if(mouse_x > cube->menu.settings.resolution.start_x_480 && mouse_x < cube->menu.settings.resolution.end_x_480)
+            cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow;
+    }
+    ft_renderer(cube, cube->menu.settings.resolution.texture, 0, 0);
+}
+
+void ft_crosshair_color(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+    uint32_t *prev = (uint32_t *)cube->image->pixels;
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(mouse_x > 0.636 * SCREEN_WIDTH_BUFF && mouse_x < 0.865 * SCREEN_WIDTH_BUFF && mouse_y > 0.178 * SCREEN_HEIGHT_BUFF && mouse_y < 0.58 * SCREEN_HEIGHT_BUFF)
+    {
+        printf("inside color palette!\n");
+        int start_x = mouse_x + (0.01 * (double)SCREEN_WIDTH_BUFF);
+        int start_y = mouse_y - (0.06 * (double)SCREEN_HEIGHT_BUFF);
+        int end_x = start_x + (0.05 * (double)SCREEN_WIDTH_BUFF);
+        int end_y = start_y + (0.064 * (double)SCREEN_HEIGHT_BUFF);
+        int x = start_x + (0.1 * (end_x - start_x));
+        int y = start_y + (0.1 * (end_y - start_y));
+        int color = prev[mouse_y * SCREEN_WIDTH_BUFF + mouse_x];
+        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
+            cube->menu.settings.crosshair.color = color;
+
+        while(y < end_y){
+            x = start_x;
+            while(x < end_x){
+                prev[y * SCREEN_WIDTH_BUFF + x] = color;
+                x++;
+            }
+            y++;
+        }
+        ft_renderer(cube, cube->menu.settings.crosshair.border, start_x, start_y);
+    }
+}
+
 void ft_settings(t_cube *cube){
     int mouse_x;
     int mouse_y;
-    int slider_start_y = 0.20 * SCREEN_HEIGHT_BUFF;
-    int slider_end_y = 0.24 * SCREEN_HEIGHT_BUFF;
-    int slider_start_x = 0.065 * SCREEN_WIDTH_BUFF;
-    int slider_end_x = 0.354 * SCREEN_WIDTH_BUFF;
-    int start_x = slider_end_x * ((double)(cube->fov - 30) / 120);
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(cube->menu.settings.mouse_held == 0 && mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
-     && mouse_y > (slider_start_y) && mouse_y < (slider_end_y)
-     && mouse_x < (slider_end_x) && mouse_x > (slider_start_x))
-        cube->menu.settings.mouse_held = 1;
-
-    if(cube->menu.settings.mouse_held == 1){
-        // printf("inside FOV range\n");
-        start_x = mouse_x - slider_start_x;
-        if (start_x > slider_end_x - slider_start_x)
-            start_x = slider_end_x - slider_start_x;
-        else if(start_x < 0)
-            start_x = 0;
-        cube->fov = (120 * ((double)start_x / (double)slider_end_x)) + 30;
-        // printf("start_x : %d, mouse_x : %d, slider_start_x : %d, fov : %d\n", start_x, mouse_x, slider_start_x, cube->fov);
-        if(!mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
-            cube->menu.settings.mouse_held = 0;
-        }
+    if(cube->menu.settings.mouse_held == NOTHING && mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
+        if(mouse_y > (cube->menu.settings.fov.slider_start_y) && mouse_y < (cube->menu.settings.fov.slider_end_y)
+         && mouse_x < (cube->menu.settings.fov.slider_end_x) && mouse_x > (cube->menu.settings.fov.slider_start_x))
+            cube->menu.settings.mouse_held = FOV_SLIDER;
+        else if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_y > cube->menu.settings.resolution.start_y_1080_900
+         && mouse_x < cube->menu.settings.resolution.end_x_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480)
+            cube->menu.settings.mouse_held = RESOLUTION;
     }
-    ft_renderer(cube, cube->menu.settings.slider_1, start_x, 0);
+    if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
+        cube->menu.settings.mouse_held = NOTHING;
+    }
+    ft_fov_slider(cube);
+    ft_resolution(cube);
+    ft_crosshair_color(cube);
 }
 
 void ft_menu(t_cube *cube){
@@ -1495,12 +1559,15 @@ void ft_menu(t_cube *cube){
     else
         texture = cube->menu.settings.background;
 
+    double ratio_y = ((double)(texture->height) / (double)(SCREEN_HEIGHT_BUFF));
+    double ratio_x = ((double)(texture->width) / (double)(SCREEN_WIDTH_BUFF));
+
 
     while(y < SCREEN_HEIGHT_BUFF){
         x = start_x;
-        tex_y = (double)(y) * ((double)(texture->height) / (double)(SCREEN_HEIGHT_BUFF));
+        tex_y = (double)(y) * ratio_y;
         while(x < SCREEN_WIDTH_BUFF){
-            tex_x = (double)(x) * ((double)(texture->width) / (double)(SCREEN_WIDTH_BUFF));
+            tex_x = (double)(x) * ratio_x;
             int pixel_cords = (y * 4 * SCREEN_WIDTH_BUFF) + (x * 4);
             int title_cords = (tex_y * 4 * texture->width) + (tex_x * 4);
             if(tex_x >= texture->width || tex_y >= texture->height || texture->pixels[tex_y * 4 * texture->width + tex_x * 4 + 3] < 127){
@@ -1519,17 +1586,24 @@ void ft_menu(t_cube *cube){
         }
         y++;
     }
-
-    if(cube->menu.state == 1)
-        return(ft_settings(cube));
-
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_ENTER))
-        cube->state = GAME;
-
     int mouse_x;
     int mouse_y;
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+
+    if(cube->menu.state == 1){
+        ft_settings(cube);
+    if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
+         && ((double)mouse_x > ((double)SCREEN_WIDTH_BUFF * 0.0156) && (double)mouse_x < ((double)SCREEN_WIDTH_BUFF * 0.0468))
+         && ((double)mouse_y > ((double)SCREEN_HEIGHT_BUFF * 0.0277)) && ((double)mouse_y < (double)SCREEN_HEIGHT_BUFF * 0.0833))
+            cube->menu.state = 0;
+        return;
+    }
+
+    if(mlx_is_key_down(cube->mlx, MLX_KEY_ENTER))
+        cube->state = GAME;
+
+
 
     // if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (mouse_x > (SCREEN_WIDTH_BUFF * 0.86) &&
     //  mouse_x < (SCREEN_WIDTH_BUFF * 0.95)) && (mouse_y > (SCREEN_HEIGHT_BUFF * 0.91)) && (mouse_y < SCREEN_HEIGHT_BUFF * 0.97))
@@ -2108,6 +2182,10 @@ void ft_init(t_cube *cube)
 
     // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
+    cube->screen_height = SCREEN_HEIGHT;
+    cube->screen_width = SCREEN_WIDTH;
+    cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
+    cube->screen_width_buff = SCREEN_WIDTH_BUFF;
     cube->fov = FOV;
     cube->prev_fov = FOV;
     cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
@@ -2130,35 +2208,54 @@ void ft_init(t_cube *cube)
 
     cube->menu.title = mlx_load_png("./menu_screen_1.png");
     cube->menu.settings.background = mlx_load_png("./settings_assets/settings_background.png");
-    cube->menu.settings.res_480 = mlx_load_png("./settings_assets/720_480.png");
-    cube->menu.settings.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
-    cube->menu.settings.res_720 = mlx_load_png("./settings_assets/1280_720.png");
-    cube->menu.settings.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
-    cube->menu.settings.res_900 = mlx_load_png("./settings_assets/1600_900.png");
-    cube->menu.settings.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
-    cube->menu.settings.res_1080 = mlx_load_png("./settings_assets/1920_1080.png");
-    cube->menu.settings.res_1080_glow = mlx_load_png("./settings_assets/1920_1080_glow.png");
-    cube->menu.settings.bar_1 = mlx_load_png("./settings_assets/bar_1.png");
+    cube->menu.settings.fov.bar_1 = mlx_load_png("./settings_assets/bar_1.png");
     cube->menu.settings.bar_2 = mlx_load_png("./settings_assets/bar_2.png");
-    cube->menu.settings.slider_1 = mlx_load_png("./settings_assets/slider_1.png");
+    cube->menu.settings.fov.slider_1 = mlx_load_png("./settings_assets/slider_1.png");
     cube->menu.settings.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
-    cube->menu.settings.x1 = mlx_load_png("./settings_assets/x1.png");
     cube->menu.settings.x1_glow = mlx_load_png("./settings_assets/x1_glow.png");
-    cube->menu.settings.x2 = mlx_load_png("./settings_assets/x2.png");
     cube->menu.settings.x2_glow = mlx_load_png("./settings_assets/x2_glow.png");
-    cube->menu.settings.x3 = mlx_load_png("./settings_assets/x3.png");
     cube->menu.settings.x3_glow = mlx_load_png("./settings_assets/x3_glow.png");
-    cube->menu.settings.x4 = mlx_load_png("./settings_assets/x4.png");
     cube->menu.settings.x4_glow = mlx_load_png("./settings_assets/x4_glow.png");
-    cube->menu.settings.x5 = mlx_load_png("./settings_assets/x5.png");
     cube->menu.settings.x5_glow = mlx_load_png("./settings_assets/x5_glow.png");
-    cube->menu.settings.x6 = mlx_load_png("./settings_assets/x6.png");
     cube->menu.settings.x6_glow = mlx_load_png("./settings_assets/x6_glow.png");
-    cube->menu.settings.x7 = mlx_load_png("./settings_assets/x7.png");
     cube->menu.settings.x7_glow = mlx_load_png("./settings_assets/x7_glow.png");
-    cube->menu.settings.x8 = mlx_load_png("./settings_assets/x8.png");
     cube->menu.settings.x8_glow = mlx_load_png("./settings_assets/x8_glow.png");
     cube->menu.settings.mouse_held = 0;
+
+    cube->menu.settings.fov.slider_start_y = 0.20 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.fov.slider_end_y = 0.24 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.fov.slider_start_x = 0.065 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.fov.slider_end_x = 0.354 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.fov.min_fov = 30;
+    cube->menu.settings.fov.max_fov = 150;
+
+    cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
+    cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
+    cube->menu.settings.resolution.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
+    cube->menu.settings.resolution.res_1080_glow = mlx_load_png("./settings_assets/1920_1080_glow.png");
+    if(SCREEN_HEIGHT_BUFF == 1080)
+        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow; 
+    if(SCREEN_HEIGHT_BUFF == 900)
+        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow; 
+    if(SCREEN_HEIGHT_BUFF == 720)
+        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow; 
+    if(SCREEN_HEIGHT_BUFF == 480)
+        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow; 
+    cube->menu.settings.resolution.start_x_1080 = 0.055 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.end_x_1080 = 0.175 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.start_x_900 = 0.245 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.end_x_900 = 0.358 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.start_x_720 = 0.057 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.end_x_720 = 0.173 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.start_x_480 = 0.265 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.end_x_480 = 0.365 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.resolution.start_y_1080_900 = 0.48 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.resolution.end_y_1080_900 = 0.51 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.resolution.start_y_720_480 = 0.59 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.resolution.end_y_720_480 = 0.62 * SCREEN_HEIGHT_BUFF;
+
+    cube->menu.settings.crosshair.border = mlx_load_png("./settings_assets/border.png");
+    cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
 
     cube->menu.state = 0;
 

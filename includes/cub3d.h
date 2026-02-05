@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/05 01:08:21 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/05 21:01:20 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
-# define UPSCALING_RATE 8
+# define UPSCALING_RATE 4
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -72,6 +72,8 @@
 # define MAX_RECOIL 50
 # define HITBOX_DST 30
 # define TILT_ANGLE 1
+
+
 typedef enum s_direction
 {
 	UP,
@@ -209,29 +211,65 @@ typedef struct s_projectile
 // 	ma_sound		bg_loop;
 // }					t_audio;
 
+typedef struct s_fov{
+	mlx_texture_t	*bar_1;
+	mlx_texture_t	*slider_1;
+	int				slider_start_x;
+	int				slider_end_x;
+	int				slider_start_y;
+	int				slider_end_y;
+	int				min_fov;
+	int				max_fov;
+}					t_fov;
+
+typedef struct s_resolution{
+
+	mlx_texture_t	*texture;
+	mlx_texture_t	*res_480_glow;
+	mlx_texture_t	*res_720_glow;
+	mlx_texture_t	*res_900_glow;
+	mlx_texture_t	*res_1080_glow;
+	int start_x_1080;
+    int end_x_1080;
+	int start_x_900;
+    int end_x_900;
+    int start_y_1080_900;
+    int end_y_1080_900;
+	int start_x_720;
+    int end_x_720;
+	int start_x_480;
+    int end_x_480;
+    int start_y_720_480;
+    int end_y_720_480;
+
+}					t_resolution;
+
+typedef struct s_crosshair{
+
+	int 			start_x;
+	int			 	start_y;
+	int 			end_x;
+	int 			end_y;
+	mlx_texture_t	*border;	
+	int				color;
+	
+}					t_crosshair;
+
+typedef enum s_held
+{
+	NOTHING,
+	FOV_SLIDER,
+	RESOLUTION,
+	UPSCALING,
+	CROSSHAIR,
+	MOUSE_SENS_SLIDER
+}	t_held;
+
 typedef struct s_settings{
 
 	mlx_texture_t	*background;
-	mlx_texture_t	*res_480;
-	mlx_texture_t	*res_480_glow;
-	mlx_texture_t	*res_720;
-	mlx_texture_t	*res_720_glow;
-	mlx_texture_t	*res_900;
-	mlx_texture_t	*res_900_glow;
-	mlx_texture_t	*res_1080;
-	mlx_texture_t	*res_1080_glow;
-	mlx_texture_t	*bar_1;
 	mlx_texture_t	*bar_2;
-	mlx_texture_t	*slider_1;
 	mlx_texture_t	*slider_2;
-	mlx_texture_t	*x1;
-	mlx_texture_t	*x2;
-	mlx_texture_t	*x3;
-	mlx_texture_t	*x4;
-	mlx_texture_t	*x5;
-	mlx_texture_t	*x6;
-	mlx_texture_t	*x7;
-	mlx_texture_t	*x8;
 	mlx_texture_t	*x1_glow;
 	mlx_texture_t	*x2_glow;
 	mlx_texture_t	*x3_glow;
@@ -240,7 +278,10 @@ typedef struct s_settings{
 	mlx_texture_t	*x6_glow;
 	mlx_texture_t	*x7_glow;
 	mlx_texture_t	*x8_glow;
-	int				mouse_held;
+	t_held			mouse_held;
+	t_fov			fov;
+	t_resolution	resolution;
+	t_crosshair		crosshair;
 
 }	t_settings;
 
@@ -255,6 +296,10 @@ typedef struct s_cube
 {
 	mlx_t			*mlx;
 
+	int				screen_width;
+	int				screen_height;
+	int				screen_width_buff;
+	int				screen_height_buff;
 	int				fov;
 	int				prev_fov;
 	double			proj_dst;
