@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/03 16:49:47 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/05 01:08:21 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
-# define UPSCALING_RATE 4
+# define UPSCALING_RATE 8
 # define SCREEN_WIDTH_BUFF 1280
 # define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
@@ -209,9 +209,46 @@ typedef struct s_projectile
 // 	ma_sound		bg_loop;
 // }					t_audio;
 
+typedef struct s_settings{
+
+	mlx_texture_t	*background;
+	mlx_texture_t	*res_480;
+	mlx_texture_t	*res_480_glow;
+	mlx_texture_t	*res_720;
+	mlx_texture_t	*res_720_glow;
+	mlx_texture_t	*res_900;
+	mlx_texture_t	*res_900_glow;
+	mlx_texture_t	*res_1080;
+	mlx_texture_t	*res_1080_glow;
+	mlx_texture_t	*bar_1;
+	mlx_texture_t	*bar_2;
+	mlx_texture_t	*slider_1;
+	mlx_texture_t	*slider_2;
+	mlx_texture_t	*x1;
+	mlx_texture_t	*x2;
+	mlx_texture_t	*x3;
+	mlx_texture_t	*x4;
+	mlx_texture_t	*x5;
+	mlx_texture_t	*x6;
+	mlx_texture_t	*x7;
+	mlx_texture_t	*x8;
+	mlx_texture_t	*x1_glow;
+	mlx_texture_t	*x2_glow;
+	mlx_texture_t	*x3_glow;
+	mlx_texture_t	*x4_glow;
+	mlx_texture_t	*x5_glow;
+	mlx_texture_t	*x6_glow;
+	mlx_texture_t	*x7_glow;
+	mlx_texture_t	*x8_glow;
+	int				mouse_held;
+
+}	t_settings;
+
 typedef struct s_menu{
 	mlx_texture_t *title;
 	mlx_texture_t *background;
+	t_settings	   settings;
+	int			   state;
 }					t_menu;
 
 typedef struct s_cube
