@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/06 20:33:42 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/06 21:00:49 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1500,9 +1500,9 @@ void ft_crosshair_color(t_cube *cube){
     int mouse_y;
     uint32_t *prev = (uint32_t *)cube->image->pixels;
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(mouse_x > 0.636 * SCREEN_WIDTH_BUFF && mouse_x < 0.865 * SCREEN_WIDTH_BUFF && mouse_y > 0.178 * SCREEN_HEIGHT_BUFF && mouse_y < 0.58 * SCREEN_HEIGHT_BUFF)
+    if(mouse_x > cube->menu.settings.crosshair.start_x && mouse_x < cube->menu.settings.crosshair.end_x
+     && mouse_y > cube->menu.settings.crosshair.start_y && mouse_y < cube->menu.settings.crosshair.end_y)
     {
-        printf("inside color palette!\n");
         int start_x = mouse_x + (0.01 * (double)SCREEN_WIDTH_BUFF);
         int start_y = mouse_y - (0.06 * (double)SCREEN_HEIGHT_BUFF);
         int end_x = start_x + (0.05 * (double)SCREEN_WIDTH_BUFF);
@@ -1510,7 +1510,7 @@ void ft_crosshair_color(t_cube *cube){
         int x = start_x + (0.1 * (end_x - start_x));
         int y = start_y + (0.1 * (end_y - start_y));
         int color = prev[mouse_y * SCREEN_WIDTH_BUFF + mouse_x];
-        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
+        if(cube->menu.settings.mouse_held == CROSSHAIR)
             cube->menu.settings.crosshair.color = color;
 
         while(y < end_y){
@@ -1525,6 +1525,15 @@ void ft_crosshair_color(t_cube *cube){
     }
 }
 
+void ft_mouse_sens(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(mouse_x > cube->menu.settings.mouse_sens.slider_start_x && mouse_x < cube->menu.settings.mouse_sens.slider_end_x)
+        printf("inside mouse sens slider!!!!\n");
+}
+
 void ft_settings(t_cube *cube){
     int mouse_x;
     int mouse_y;
@@ -1537,13 +1546,18 @@ void ft_settings(t_cube *cube){
         else if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_y > cube->menu.settings.resolution.start_y_1080_900
          && mouse_x < cube->menu.settings.resolution.end_x_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480)
             cube->menu.settings.mouse_held = RESOLUTION;
+        else if(mouse_x > cube->menu.settings.crosshair.start_x && mouse_x < cube->menu.settings.crosshair.end_x
+         && mouse_y > cube->menu.settings.crosshair.start_y && mouse_y < cube->menu.settings.crosshair.end_y)
+            cube->menu.settings.mouse_held = CROSSHAIR;
     }
     if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
         cube->menu.settings.mouse_held = NOTHING;
     }
     ft_fov_slider(cube);
     ft_resolution(cube);
-    ft_crosshair_color(cube);
+    if(cube->menu.settings.mouse_held == CROSSHAIR)
+        ft_crosshair_color(cube);
+    ft_mouse_sens(cube);
 }
 
 void ft_menu(t_cube *cube){
@@ -2237,6 +2251,13 @@ void ft_init(t_cube *cube)
     cube->menu.settings.fov.min_fov = 30;
     cube->menu.settings.fov.max_fov = 150;
 
+    cube->menu.settings.mouse_sens.slider_start_y = 0.20 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.mouse_sens.slider_end_y = 0.24 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.mouse_sens.slider_start_x = 0.065 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.mouse_sens.slider_end_x = 0.354 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.mouse_sens.min_sens = 30;
+    cube->menu.settings.mouse_sens.max_sens = 150;
+
     cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
     cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
     cube->menu.settings.resolution.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
@@ -2264,6 +2285,10 @@ void ft_init(t_cube *cube)
 
     cube->menu.settings.crosshair.border = mlx_load_png("./settings_assets/border.png");
     cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
+    cube->menu.settings.crosshair.start_x = 0.636 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.crosshair.end_x = 0.865 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.crosshair.start_y = 0.178 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.crosshair.end_y = 0.58 * SCREEN_WIDTH_BUFF;
 
     cube->menu.state = 0;
 

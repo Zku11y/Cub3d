@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/06 17:15:15 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/06 20:46:34 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,6 +255,18 @@ typedef struct s_crosshair{
 	
 }					t_crosshair;
 
+typedef struct s_mouse_sens{
+
+	mlx_texture_t	*slider_2;
+	int				slider_start_x;
+	int				slider_end_x;
+	int				slider_start_y;
+	int				slider_end_y;
+	double			min_sens;
+	double			max_sens;
+
+}					t_mouse_sens;
+
 typedef enum s_held
 {
 	NOTHING,
@@ -282,6 +294,7 @@ typedef struct s_settings{
 	t_fov			fov;
 	t_resolution	resolution;
 	t_crosshair		crosshair;
+	t_mouse_sens	mouse_sens;
 
 }	t_settings;
 
@@ -320,6 +333,7 @@ typedef struct s_cube
 	int				fps;
 	double			mod_rate;
 	int				line_girth;
+	double			mouse_sens;
 	mlx_texture_t	*texture;
 	mlx_texture_t	*texture2;
 	mlx_texture_t	*texture3;
