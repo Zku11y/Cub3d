@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/05 21:01:20 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/06 17:15:15 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,11 @@
 # define LERP 0.7
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
-# define FOV_LERP 0.1
+# define FOV_LERP 0.01
 # define RECOIL_LERP 0.81
 # define MOVE_LERP 0.1
 # define LERP_LERP 0.01
-# define move_increase (0.1 * SCREEN_HEIGHT)
+# define move_increase (0.05 * SCREEN_HEIGHT)
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
@@ -71,7 +71,7 @@
 # define MAX_PROJECTILES 100
 # define MAX_RECOIL 50
 # define HITBOX_DST 30
-# define TILT_ANGLE 1
+# define TILT_ANGLE 2
 
 
 typedef enum s_direction
@@ -301,6 +301,7 @@ typedef struct s_cube
 	int				screen_width_buff;
 	int				screen_height_buff;
 	int				fov;
+	int				init_fov;
 	int				prev_fov;
 	double			proj_dst;
 	double			half_fov_rad;

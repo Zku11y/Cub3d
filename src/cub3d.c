@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/05 21:09:34 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/06 20:33:42 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ void ft_turn(t_cube *cube)
     if (frames > 0)
         frames--;
     else
-        cube->pitch += (-1 * mouse_y) * (TURN_SPEED * SCREEN_HEIGHT);
+        cube->pitch += (-1 * mouse_y) * (TURN_SPEED * 3 * (cube->menu.settings.fov.max_fov - cube->fov));
     if(cube->pitch > PITCH_MAX)
         cube->pitch = PITCH_MAX;
     if(cube->pitch < -PITCH_MAX)
@@ -1451,7 +1451,7 @@ void ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y)
 void ft_fov_slider(t_cube *cube){
     int mouse_x;
     int mouse_y;
-    int start_x = cube->menu.settings.fov.slider_end_x * ((double)(cube->fov - cube->menu.settings.fov.min_fov) / (cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov));
+    int start_x = cube->menu.settings.fov.slider_end_x * ((double)(cube->init_fov - cube->menu.settings.fov.min_fov) / (cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov));
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     if(cube->menu.settings.mouse_held == FOV_SLIDER){
@@ -1460,7 +1460,11 @@ void ft_fov_slider(t_cube *cube){
             start_x = cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x;
         else if(start_x < 0)
             start_x = 0;
-        cube->fov = ((cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov) * ((double)start_x / (double)cube->menu.settings.fov.slider_end_x)) + cube->menu.settings.fov.min_fov;
+        cube->init_fov = ((cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov) * ((double)start_x / (double)cube->menu.settings.fov.slider_end_x)) + cube->menu.settings.fov.min_fov;
+        cube->fov = cube->init_fov;
+        cube->prev_fov = cube->init_fov;
+        cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
+        cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     }
     ft_renderer(cube, cube->menu.settings.fov.slider_1, start_x, 0);
 }
@@ -1811,11 +1815,12 @@ void ft_weapon(t_cube *cube){
     if(cube->player.attacked == true){
         // cube->pitch += 10;
         // cube->player.weapon.pitch_dst = cube->pitch + 10;
+        printf("THE PLAYER WAS ATTACKED!!!!\n");
         cube->player.weapon.pitch_changed = true;
         cube->player.weapon.pitch_back = false;
         cube->player.weapon.pitch_og = cube->pitch;
         cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
-        cube->fov = FOV + 50;
+        cube->fov = cube->init_fov + (0.5 * cube->init_fov);
         cube->player.weapon.texture = cube->player.weapon.shoot_texture;
         cube->player.weapon.frame_delay = current_time;
         cube->player.weapon.delay = true;
@@ -1903,7 +1908,8 @@ void ft_fov_mod(t_cube *cube){
         cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
         cube->prev_fov = cube->fov;
     }
-        cube->fov = ft_lerp_fov(FOV, cube->fov, FOV_LERP);
+    
+    cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
 }
 
 void ft_game(t_cube *cube){
@@ -2005,6 +2011,7 @@ void ft_update(void *param)
     // draw_player(cub/e);
     gettimeofday(&tv, NULL);
  
+
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
@@ -2186,8 +2193,9 @@ void ft_init(t_cube *cube)
     cube->screen_width = SCREEN_WIDTH;
     cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
-    cube->fov = FOV;
-    cube->prev_fov = FOV;
+    cube->init_fov = FOV;
+    cube->fov = cube->init_fov;
+    cube->prev_fov = cube->init_fov;
     cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
