@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/07 16:22:23 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/07 16:37:10 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,11 +180,11 @@ void ft_turn(t_cube *cube)
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     mouse_x = mouse_x - (SCREEN_WIDTH / 2);
     mouse_y = mouse_y - (SCREEN_HEIGHT / 2);
-    cube->player.angle += mouse_x * (cube->mouse_sens * 100) / (5 * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
+    cube->player.angle += mouse_x * (cube->mouse_sens * 300) / (5 * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
     if (frames > 0)
         frames--;
     else
-        cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens) * 100);
+        cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens) * 300);
     if(cube->pitch > PITCH_MAX)
         cube->pitch = PITCH_MAX;
     if(cube->pitch < -PITCH_MAX)
@@ -2039,6 +2039,7 @@ void ft_update(void *param)
     gettimeofday(&tv, NULL);
  
 
+    printf("mouse_sens : %lf\n", cube->mouse_sens);
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
@@ -2271,7 +2272,7 @@ void ft_init(t_cube *cube)
     cube->menu.settings.mouse_sens.slider_start_x = 0.605 * SCREEN_WIDTH_BUFF;
     cube->menu.settings.mouse_sens.slider_end_x = 0.895 * SCREEN_WIDTH_BUFF;
     cube->menu.settings.mouse_sens.min_sens = 0.0002;
-    cube->menu.settings.mouse_sens.max_sens = 0.0020;
+    cube->menu.settings.mouse_sens.max_sens = 0.0040;
 
     cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
     cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
