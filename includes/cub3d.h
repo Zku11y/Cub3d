@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/06 20:46:34 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/07 16:24:02 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
 # define UPSCALING_RATE 4
-# define SCREEN_WIDTH_BUFF 1280
-# define SCREEN_HEIGHT_BUFF 720
+# define SCREEN_WIDTH_BUFF 1920
+# define SCREEN_HEIGHT_BUFF 1080
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
@@ -69,7 +69,7 @@
 # define CROSSHAIR_COLOR 0xff0000ff
 # define MIN_ATK_DST 300
 # define MAX_PROJECTILES 100
-# define MAX_RECOIL 50
+# define MAX_RECOIL 30
 # define HITBOX_DST 30
 # define TILT_ANGLE 2
 
@@ -262,8 +262,8 @@ typedef struct s_mouse_sens{
 	int				slider_end_x;
 	int				slider_start_y;
 	int				slider_end_y;
-	double			min_sens;
-	double			max_sens;
+	double				min_sens;
+	double				max_sens;
 
 }					t_mouse_sens;
 

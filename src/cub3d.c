@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/06 21:00:49 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/07 16:22:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,11 +180,11 @@ void ft_turn(t_cube *cube)
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     mouse_x = mouse_x - (SCREEN_WIDTH / 2);
     mouse_y = mouse_y - (SCREEN_HEIGHT / 2);
-    cube->player.angle += mouse_x * TURN_SPEED;
+    cube->player.angle += mouse_x * (cube->mouse_sens * 100) / (5 * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
     if (frames > 0)
         frames--;
     else
-        cube->pitch += (-1 * mouse_y) * (TURN_SPEED * 3 * (cube->menu.settings.fov.max_fov - cube->fov));
+        cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens) * 100);
     if(cube->pitch > PITCH_MAX)
         cube->pitch = PITCH_MAX;
     if(cube->pitch < -PITCH_MAX)
@@ -1451,7 +1451,7 @@ void ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y)
 void ft_fov_slider(t_cube *cube){
     int mouse_x;
     int mouse_y;
-    int start_x = cube->menu.settings.fov.slider_end_x * ((double)(cube->init_fov - cube->menu.settings.fov.min_fov) / (cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov));
+    int start_x = (double)(cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x) * ((double)(cube->init_fov - cube->menu.settings.fov.min_fov) / (double)(cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov));
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     if(cube->menu.settings.mouse_held == FOV_SLIDER){
@@ -1460,13 +1460,31 @@ void ft_fov_slider(t_cube *cube){
             start_x = cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x;
         else if(start_x < 0)
             start_x = 0;
-        cube->init_fov = ((cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov) * ((double)start_x / (double)cube->menu.settings.fov.slider_end_x)) + cube->menu.settings.fov.min_fov;
+        cube->init_fov = ((cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov) * ((double)start_x / (double)(cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x))) + cube->menu.settings.fov.min_fov;
         cube->fov = cube->init_fov;
         cube->prev_fov = cube->init_fov;
         cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
         cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
+        cube->mod_rate = (cube->fov * RADIANT_RATE) / RES;
     }
     ft_renderer(cube, cube->menu.settings.fov.slider_1, start_x, 0);
+}
+
+void ft_mouse_sens(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+    double start_x = (double)(cube->menu.settings.mouse_sens.slider_end_x - cube->menu.settings.mouse_sens.slider_start_x) * (((cube->mouse_sens) - cube->menu.settings.mouse_sens.min_sens) / (cube->menu.settings.mouse_sens.max_sens - cube->menu.settings.mouse_sens.min_sens));
+
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(cube->menu.settings.mouse_held == MOUSE_SENS_SLIDER){
+        start_x = mouse_x - cube->menu.settings.mouse_sens.slider_start_x;
+        if (start_x > cube->menu.settings.mouse_sens.slider_end_x - cube->menu.settings.mouse_sens.slider_start_x)
+            start_x = cube->menu.settings.mouse_sens.slider_end_x - cube->menu.settings.mouse_sens.slider_start_x;
+        else if(start_x < 0)
+            start_x = 0;
+        cube->mouse_sens = ((cube->menu.settings.mouse_sens.max_sens - cube->menu.settings.mouse_sens.min_sens) * (start_x / (double)(cube->menu.settings.mouse_sens.slider_end_x - cube->menu.settings.mouse_sens.slider_start_x))) + cube->menu.settings.mouse_sens.min_sens;
+    }
+    ft_renderer(cube, cube->menu.settings.mouse_sens.slider_2, start_x, 0);
 }
 
 void ft_resolution(t_cube *cube){
@@ -1510,7 +1528,7 @@ void ft_crosshair_color(t_cube *cube){
         int x = start_x + (0.1 * (end_x - start_x));
         int y = start_y + (0.1 * (end_y - start_y));
         int color = prev[mouse_y * SCREEN_WIDTH_BUFF + mouse_x];
-        if(cube->menu.settings.mouse_held == CROSSHAIR)
+        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
             cube->menu.settings.crosshair.color = color;
 
         while(y < end_y){
@@ -1525,14 +1543,6 @@ void ft_crosshair_color(t_cube *cube){
     }
 }
 
-void ft_mouse_sens(t_cube *cube){
-    int mouse_x;
-    int mouse_y;
-
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(mouse_x > cube->menu.settings.mouse_sens.slider_start_x && mouse_x < cube->menu.settings.mouse_sens.slider_end_x)
-        printf("inside mouse sens slider!!!!\n");
-}
 
 void ft_settings(t_cube *cube){
     int mouse_x;
@@ -1546,18 +1556,18 @@ void ft_settings(t_cube *cube){
         else if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_y > cube->menu.settings.resolution.start_y_1080_900
          && mouse_x < cube->menu.settings.resolution.end_x_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480)
             cube->menu.settings.mouse_held = RESOLUTION;
-        else if(mouse_x > cube->menu.settings.crosshair.start_x && mouse_x < cube->menu.settings.crosshair.end_x
-         && mouse_y > cube->menu.settings.crosshair.start_y && mouse_y < cube->menu.settings.crosshair.end_y)
-            cube->menu.settings.mouse_held = CROSSHAIR;
+        else if(mouse_y > (cube->menu.settings.mouse_sens.slider_start_y) && mouse_y < (cube->menu.settings.mouse_sens.slider_end_y)
+         && mouse_x < (cube->menu.settings.mouse_sens.slider_end_x) && mouse_x > (cube->menu.settings.mouse_sens.slider_start_x))
+            cube->menu.settings.mouse_held = MOUSE_SENS_SLIDER;
     }
     if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
         cube->menu.settings.mouse_held = NOTHING;
     }
     ft_fov_slider(cube);
     ft_resolution(cube);
-    if(cube->menu.settings.mouse_held == CROSSHAIR)
-        ft_crosshair_color(cube);
+    ft_crosshair_color(cube);
     ft_mouse_sens(cube);
+    printf("fov : %d\n", cube->init_fov);
 }
 
 void ft_menu(t_cube *cube){
@@ -1834,7 +1844,9 @@ void ft_weapon(t_cube *cube){
         cube->player.weapon.pitch_back = false;
         cube->player.weapon.pitch_og = cube->pitch;
         cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
-        cube->fov = cube->init_fov + (0.5 * cube->init_fov);
+        cube->fov += (0.2 * cube->init_fov);
+        if(cube->fov > 170)
+            cube->fov = 170;
         cube->player.weapon.texture = cube->player.weapon.shoot_texture;
         cube->player.weapon.frame_delay = current_time;
         cube->player.weapon.delay = true;
@@ -1921,6 +1933,7 @@ void ft_fov_mod(t_cube *cube){
         cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
         cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
         cube->prev_fov = cube->fov;
+        cube->mod_rate = (cube->fov * RADIANT_RATE) / RES;
     }
     
     cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
@@ -2210,6 +2223,7 @@ void ft_init(t_cube *cube)
     cube->init_fov = FOV;
     cube->fov = cube->init_fov;
     cube->prev_fov = cube->init_fov;
+    cube->mouse_sens = TURN_SPEED;
     cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
@@ -2251,12 +2265,13 @@ void ft_init(t_cube *cube)
     cube->menu.settings.fov.min_fov = 30;
     cube->menu.settings.fov.max_fov = 150;
 
-    cube->menu.settings.mouse_sens.slider_start_y = 0.20 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.mouse_sens.slider_end_y = 0.24 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.mouse_sens.slider_start_x = 0.065 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.mouse_sens.slider_end_x = 0.354 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.mouse_sens.min_sens = 30;
-    cube->menu.settings.mouse_sens.max_sens = 150;
+    cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
+    cube->menu.settings.mouse_sens.slider_start_y = 0.78 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.mouse_sens.slider_end_y = 0.81 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.mouse_sens.slider_start_x = 0.605 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.mouse_sens.slider_end_x = 0.895 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.mouse_sens.min_sens = 0.0002;
+    cube->menu.settings.mouse_sens.max_sens = 0.0020;
 
     cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
     cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
@@ -2287,8 +2302,8 @@ void ft_init(t_cube *cube)
     cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
     cube->menu.settings.crosshair.start_x = 0.636 * SCREEN_WIDTH_BUFF;
     cube->menu.settings.crosshair.end_x = 0.865 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.crosshair.start_y = 0.178 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.crosshair.end_y = 0.58 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.crosshair.start_y = 0.178 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.crosshair.end_y = 0.58 * SCREEN_HEIGHT_BUFF;
 
     cube->menu.state = 0;
 

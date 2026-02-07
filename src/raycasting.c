@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 12:21:29 by skully            #+#    #+#             */
-/*   Updated: 2026/01/23 16:16:44 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/02/07 15:26:42 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
+
+double ft_safe_tan(double angle){
+    double result;
+
+    result = tan(angle);
+    if(fabs(result) < 0.00001)
+        return 0.00001;
+    return result;
+}
 
 bool check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert, t_ray *ray)
 {
@@ -120,11 +129,17 @@ t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
 {
     t_vect2 len = {0};
     double add;
+    double inv_tan;
+
+    if (fabs(tan(ray->angle)) < 0.000001)
+        inv_tan = 1e30;
+    else
+        inv_tan = 1.0 / tan(ray->angle);
 
     if(ray->y_dir == DOWN)
     {
         len.y = ((cube->player.grid_y + 1) * GRID_SIZE) - cube->player.y;
-        len.x = (len.y * (1 / tan(ray->angle)));
+        len.x = fabs(len.y * inv_tan);
         len.y += cube->player.y;
         if(ray->x_dir == RIGHT)
             len.x += cube->player.x;
@@ -134,7 +149,7 @@ t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
     else if(ray->y_dir == UP)
     {
         len.y = cube->player.y - (cube->player.grid_y * GRID_SIZE);
-        len.x = (len.y * (1 / tan(ray->angle)));
+        len.x = fabs(len.y * inv_tan);
         len.y = cube->player.y - len.y;
         if(ray->x_dir == RIGHT)
             len.x += cube->player.x;
@@ -142,7 +157,7 @@ t_vect2 hori_first_point(t_cube *cube, t_ray *ray)
             len.x = cube->player.x - len.x;
     }
     ft_limit_cords(&len);
-    add = (GRID_SIZE) * (1.0 / tan(ray->angle));
+    add = fabs(GRID_SIZE * inv_tan);
     hori_check_next_point(cube, &len, ray, add);
     return len;
 }
@@ -151,11 +166,14 @@ t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
 {
     t_vect2 len = {0};
     double add;
+    double s_tan;
+
+    s_tan = tan(ray->angle);
 
     if(ray->x_dir == RIGHT)
     {
         len.x = ((cube->player.grid_x + 1) * GRID_SIZE) - cube->player.x;
-        len.y = len.x * tan(ray->angle);
+        len.y = fabs(len.x * s_tan);
         len.x += cube->player.x;
         if(ray->y_dir == UP)
             len.y = cube->player.y - len.y;
@@ -165,7 +183,7 @@ t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
     else if(ray->x_dir == LEFT)
     {
         len.x = cube->player.x - (cube->player.grid_x * GRID_SIZE);
-        len.y = len.x * tan(ray->angle);
+        len.y = fabs(len.x * s_tan);
         len.x = cube->player.x - len.x;
         if(ray->y_dir == UP)
             len.y = cube->player.y - len.y;
@@ -173,7 +191,7 @@ t_vect2 vert_first_point(t_cube *cube, t_ray *ray)
             len.y += cube->player.y;
     }
     ft_limit_cords(&len);
-    add = GRID_SIZE * tan(ray->angle);
+    add = fabs(GRID_SIZE * s_tan);
     vert_check_next_point(cube, &len, ray, add);
     return len;
 }
