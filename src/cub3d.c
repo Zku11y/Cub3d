@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/07 16:37:10 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/09 16:30:24 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void clear_image(t_cube *cube)
 {
-    int buffer_size = SCREEN_HEIGHT * SCREEN_WIDTH * 4;
+    int buffer_size = cube->screen_height * cube->screen_width * 4;
     ft_memset(cube->image->pixels, 0, buffer_size);
 }
 
@@ -39,7 +39,7 @@ void ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int colo
         start_x = start_temp;
         while(start_x < end_x)
         {
-            prev[(start_y * SCREEN_WIDTH_BUFF) + (start_x)] = color;
+            prev[(start_y * cube->screen_width_buff) + (start_x)] = color;
             // mlx_put_pixel(cube->image, start_x, start_y, color);
             start_x++;
         }
@@ -85,12 +85,12 @@ void draw_player(t_cube *cube)
     offset = 3;
     if(cube->player.x < offset)
         cube->player.x = offset;
-    else if(cube->player.x > SCREEN_WIDTH)
-        cube->player.x = SCREEN_WIDTH - offset;
+    else if(cube->player.x > cube->screen_width)
+        cube->player.x = cube->screen_width - offset;
     if(cube->player.y < offset)
         cube->player.y = offset;
-    else if(cube->player.y > SCREEN_HEIGHT)
-        cube->player.y = SCREEN_HEIGHT - offset;
+    else if(cube->player.y > cube->screen_height)
+        cube->player.y = cube->screen_height - offset;
     x = cube->player.x - offset;
     while(x < (cube->player.x + offset))
     {
@@ -178,18 +178,19 @@ void ft_turn(t_cube *cube)
     static int frames = 5;
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    mouse_x = mouse_x - (SCREEN_WIDTH / 2);
-    mouse_y = mouse_y - (SCREEN_HEIGHT / 2);
-    cube->player.angle += mouse_x * (cube->mouse_sens * 300) / (5 * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
+    mouse_x = mouse_x - (cube->screen_width / 2);
+    mouse_y = mouse_y - (cube->screen_height / 2);
+    cube->player.angle += mouse_x * (cube->mouse_sens * 100) / (((double)cube->screen_height / 100) * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
+    // cube->player.angle += mouse_x * (cube->mouse_sens);
     if (frames > 0)
         frames--;
     else
-        cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens) * 300);
-    if(cube->pitch > PITCH_MAX)
-        cube->pitch = PITCH_MAX;
-    if(cube->pitch < -PITCH_MAX)
-        cube->pitch = -PITCH_MAX;
-    mlx_set_mouse_pos(cube->mlx, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+        cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens * 100));
+    if(cube->pitch > cube->pitch_max)
+        cube->pitch = cube->pitch_max;
+    if(cube->pitch < -cube->pitch_max)
+        cube->pitch = -cube->pitch_max;
+    mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
 }
 
 void ft_mouvement(t_cube *cube)
@@ -229,13 +230,13 @@ void ft_mouvement(t_cube *cube)
     }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
-        cube->player.weapon.move_lerp = ft_lerp_move(-move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
+        cube->player.weapon.move_lerp = ft_lerp_move(-cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
         dst_speed_FB_X = max_cos_speed;
         dst_speed_FB_Y = max_sin_speed;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
-        cube->player.weapon.move_lerp = ft_lerp_move(move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
+        cube->player.weapon.move_lerp = ft_lerp_move(cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
         dst_speed_FB_X = -1 * max_cos_speed;
         dst_speed_FB_Y = -1 * max_sin_speed;
     }
@@ -245,8 +246,8 @@ void ft_mouvement(t_cube *cube)
 
     cube->tilt_angle = ft_lerp_tilt(target_angle, cube->tilt_angle);
     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
-    cube->tilt_addition_height = fabs(cube->shear_factor) * SCREEN_HEIGHT;
-    cube->tilt_addition_width = fabs(cube->shear_factor) * SCREEN_WIDTH;
+    cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+    cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
     cube->player.current_speed_FB_X = ft_lerp_speed(dst_speed_FB_X, cube->player.current_speed_FB_X);
     cube->player.current_speed_FB_Y = ft_lerp_speed(dst_speed_FB_Y, cube->player.current_speed_FB_Y);
     cube->player.current_speed_LR_X = ft_lerp_speed(dst_speed_LR_X, cube->player.current_speed_LR_X);
@@ -347,9 +348,9 @@ void ft_draw_rays(t_cube *cube)
     double PlaneX = -DirY * cube->half_fov_rad;
     double PlaneY =  DirX * cube->half_fov_rad;
 
-    for (int i = 0; i < RES; i++)
+    for (int i = 0; i < cube->res; i++)
     {
-        double cameraX = 2.0 * i / (double)RES - 1.0;
+        double cameraX = 2.0 * i / (double)cube->res - 1.0;
 
         double rayDirX = DirX + PlaneX * cameraX;
         double rayDirY = DirY + PlaneY * cameraX;
@@ -374,7 +375,7 @@ void ft_draw_rays(t_cube *cube)
 //     i = 0;
 //     cube->min_length = 99999999;ft_ene
 //     start_angle = cube->player.angle - ((FOV / 2) * RADIANT_RATE);
-//     while(i < RES)
+//     while(i < cube->res)
 //     {
 //         if(start_angle < 0)
 //             start_angle = (2 * PI) + start_angle;
@@ -390,27 +391,27 @@ void ft_draw_rays(t_cube *cube)
 //     }
 // }
 
-bool check_screen_limits(t_vect2 len)
+bool check_screen_limits(t_cube *cube, t_vect2 len)
 {
-    if(len.x >= SCREEN_WIDTH)
+    if(len.x >= cube->screen_width)
         return true;
     else if(len.x < 0)
         return true;
-    if(len.y >= SCREEN_HEIGHT)
+    if(len.y >= cube->screen_height)
         return true;
     else if(len.y < 0)
         return true;
     return false;
 }
 
-void set_screen_limits(t_vect2 *len)
+void set_screen_limits(t_cube *cube, t_vect2 *len)
 {
-    if(len->x > SCREEN_WIDTH)
-        len->x = SCREEN_WIDTH;
+    if(len->x > cube->screen_width)
+        len->x = cube->screen_width;
     else if(len->x < 0)
         len->x = 0;
-    if(len->y > SCREEN_HEIGHT)
-        len->y = SCREEN_HEIGHT;
+    if(len->y > cube->screen_height)
+        len->y = cube->screen_height;
     else if(len->y < 0)
         len->y = 0;
 }
@@ -443,10 +444,10 @@ uint32_t shade_color(uint32_t base, double distance)
 //         y = 0;
 //         while(y < MAP_Y + MAP_SIZE){
 //             if(cube->map[(int)(y / GRID_SIZE)][(int)(x / GRID_SIZE)] == 1)
-//                 cube->prev_buffer[(SCREEN_WIDTH * (int)y * 4) + ((int)x * 4) + 0] = 255;
-//                 cube->prev_buffer[(SCREEN_WIDTH * (int)y * 4) + ((int)x * 4) + 1] = 0;
-//                 cube->prev_buffer[(SCREEN_WIDTH * (int)y * 4) + ((int)x * 4) + 2] = 0;
-//                 cube->prev_buffer[(SCREEN_WIDTH * (int)y * 4) + ((int)x * 4) + 3] = 255;
+//                 cube->prev_buffer[(cube->screen_width * (int)y * 4) + ((int)x * 4) + 0] = 255;
+//                 cube->prev_buffer[(cube->screen_width * (int)y * 4) + ((int)x * 4) + 1] = 0;
+//                 cube->prev_buffer[(cube->screen_width * (int)y * 4) + ((int)x * 4) + 2] = 0;
+//                 cube->prev_buffer[(cube->screen_width * (int)y * 4) + ((int)x * 4) + 3] = 255;
 //             else
 //             y++;
 //         }
@@ -466,7 +467,7 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
     }
     cords.y = 0;
     ratio.y = cube->texture->height / len;
-    if(check_screen_limits(start) && start.y <= 0)
+    if(check_screen_limits(cube, start) && start.y <= 0)
     {
         cords.y = ratio.y * ((-1) * start.y);
         start.y = 0;
@@ -481,7 +482,7 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         tmp = 1.0;
     else if(tmp < 0.0)
         tmp = 0.0;
-    while(start.y < SCREEN_HEIGHT && start.y < end.y && cords.y < cube->texture->height)
+    while(start.y < cube->screen_height && start.y < end.y && cords.y < cube->texture->height)
     {
 
         // if ((((int)start.x + (int)start.y) % 2) != cube->grain)
@@ -498,12 +499,12 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
         // uint8_t a = cube->texture->pixels[k + 3];
 
         // uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
-        if(!check_screen_limits(start)){
+        if(!check_screen_limits(cube, start)){
             int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
-            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 0] = cube->texture->pixels[k + 0] * (tmp);
-            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 1] = cube->texture->pixels[k + 1] * (tmp);
-            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 2] = cube->texture->pixels[k + 2] * (tmp);
-            cube->prev_buffer[(SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4) + 3] = cube->texture->pixels[k + 3];
+            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 0] = cube->texture->pixels[k + 0] * (tmp);
+            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 1] = cube->texture->pixels[k + 1] * (tmp);
+            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 2] = cube->texture->pixels[k + 2] * (tmp);
+            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 3] = cube->texture->pixels[k + 3];
             // mlx_put_pixel(cube->image, start.x, start.y, color);
         }
         cords.y += ratio.y;
@@ -519,21 +520,21 @@ void ft_draw_world(t_cube *cube)
     int j;
     int i;
 
-    start.x = (SCREEN_WIDTH - (cube->line_girth * RES)) / 2;
-    ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
-    ft_rectangle(cube, (t_vect2){SCREEN_WIDTH - start.x, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x000000ff);
+    start.x = (cube->screen_width - (cube->line_girth * cube->res)) / 2;
+    ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, cube->screen_height, 0, 0}, 0x000000ff);
+    ft_rectangle(cube, (t_vect2){cube->screen_width - start.x, 0, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x000000ff);
     i = 0;
-    while(i <= RES)
+    while(i <= cube->res)
     {
         j = 0;
         double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
         len = ((GRID_SIZE) / length) * cube->proj_dst;
-        start.y = ((SCREEN_HEIGHT - len) / 2) + cube->pitch;
+        start.y = ((cube->screen_height - len) / 2) + cube->pitch;
         end.x = start.x;
         end.y = start.y + len;
         while(j < cube->line_girth)
         {
-            if((int)start.x < SCREEN_WIDTH)
+            if((int)start.x < cube->screen_width)
                 cube->z_buffer[(int)start.x] = length;
             ft_draw_texture(cube, &cube->rays[i], start, end, len);
             start.x++;
@@ -549,8 +550,8 @@ void ft_draw_world(t_cube *cube)
 bool is_looking(t_cube *cube, t_enemy *enemy){
     if(enemy->dead == true)
         return false;
-    if((enemy->start_x < SCREEN_WIDTH / 2) && (enemy->end_x > SCREEN_WIDTH / 2) &&
-     (enemy->start_y < SCREEN_HEIGHT / 2) && (enemy->end_y > SCREEN_HEIGHT / 2))
+    if((enemy->start_x < cube->screen_width / 2) && (enemy->end_x > cube->screen_width / 2) &&
+     (enemy->start_y < cube->screen_height / 2) && (enemy->end_y > cube->screen_height / 2))
      return true;
     return false;
 }
@@ -635,7 +636,7 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     while(tetha_delta < -PI)
         tetha_delta += 2 * PI;
     
-    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * cube->proj_dst);
+    int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
     double dst = sqrt((projectile->x - cube->player.x) * (projectile->x - cube->player.x) + (projectile->y - cube->player.y) * (projectile->y - cube->player.y)) * cos(tetha_delta);
 
     if(dst < 0.1) 
@@ -652,7 +653,7 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     double scale_ratio = projectile->texture->height / height;
 
     int start_x = midX - (projectile->texture->width / scale_ratio) / 2;
-    int start_y = ((SCREEN_HEIGHT / 2.0) + cube->pitch) - (projectile->texture->height / scale_ratio) / 2;
+    int start_y = ((cube->screen_height / 2.0) + cube->pitch) - (projectile->texture->height / scale_ratio) / 2;
     int const_y = start_y;
     int end_x = start_x + (projectile->texture->width / scale_ratio);
     int end_y = start_y + (projectile->texture->height / scale_ratio);
@@ -665,17 +666,17 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
         start_x = 0;
     }
 
-    if (start_x >= SCREEN_WIDTH) return;
-    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
+    if (start_x >= cube->screen_width) return;
+    if (end_x > cube->screen_width) end_x = cube->screen_width;
 
     if (start_y < 0) {
         tex_y = (-start_y) * scale_ratio;
         start_y = 0;
     }
-    if (start_y >= SCREEN_HEIGHT) return;
+    if (start_y >= cube->screen_height) return;
 
-    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
-    if (end_y > SCREEN_HEIGHT) end_y = SCREEN_HEIGHT;
+    if (end_x > cube->screen_width) end_x = cube->screen_width;
+    if (end_y > cube->screen_height) end_y = cube->screen_height;
 
     while(start_x < end_x){
         start_y = const_y;
@@ -690,13 +691,13 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
                 if (y >= (int)projectile->texture->height) y = projectile->texture->height - 1;
                 if (y < 0) y = 0;
     
-                if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0})){
+                if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
                     int k = (x * projectile->texture->bytes_per_pixel) + (projectile->texture->width * projectile->texture->bytes_per_pixel * y);
                     if(projectile->texture->pixels[k + 3] > 128){
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = projectile->texture->pixels[k + 0] * tmp;
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 1] = projectile->texture->pixels[k + 1] * tmp;
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 2] = projectile->texture->pixels[k + 2] * tmp;
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 3] = projectile->texture->pixels[k + 3];
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = projectile->texture->pixels[k + 0] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = projectile->texture->pixels[k + 1] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = projectile->texture->pixels[k + 2] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = projectile->texture->pixels[k + 3];
                     }
                 }
                 start_y++;
@@ -785,7 +786,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     while(tetha_delta < -PI)
         tetha_delta += 2 * PI;
     
-    int midX = ((0.5 * SCREEN_WIDTH)) + (tan(tetha_delta) * cube->proj_dst);
+    int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
     double dst = sqrt((enemy->x - cube->player.x) * (enemy->x - cube->player.x) + (enemy->y - cube->player.y) * (enemy->y - cube->player.y)) * cos(tetha_delta);
 
     if(dst < 0.1) 
@@ -802,7 +803,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     double scale_ratio = texture->height / height;
 
     int start_x = midX - (texture->width / scale_ratio) / 2;
-    int start_y = ((SCREEN_HEIGHT / 2.0) + cube->pitch) - (texture->height / scale_ratio) / 2;
+    int start_y = ((cube->screen_height / 2.0) + cube->pitch) - (texture->height / scale_ratio) / 2;
     int const_y = start_y;
     int end_x = start_x + (texture->width / scale_ratio);
     int end_y = start_y + (texture->height / scale_ratio);
@@ -812,7 +813,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     enemy->start_x = start_x;
     enemy->end_x = end_x;
 
-    // if(is_looking(cube, enemy) && (((start_y + 12) < SCREEN_HEIGHT / 2) && ((end_y - 12) > SCREEN_HEIGHT / 2)) && (enemy->player_dst < cube->rays[RES / 2].length)){
+    // if(is_looking(cube, enemy) && (((start_y + 12) < cube->screen_height / 2) && ((end_y - 12) > cube->screen_height / 2)) && (enemy->player_dst < cube->rays[cube->res / 2].length)){
     //     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (cube->player.delay == false)){
     //         printf("enemy attacked! enemy HP: %d\n", enemy->HP);
     //         enemy->HP -= cube->player.DMG;
@@ -833,17 +834,17 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
         start_x = 0;
     }
 
-    if (start_x >= SCREEN_WIDTH) return;
-    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
+    if (start_x >= cube->screen_width) return;
+    if (end_x > cube->screen_width) end_x = cube->screen_width;
 
     if (start_y < 0) {
         tex_y = (-start_y) * scale_ratio;
         start_y = 0;
     }
-    if (start_y >= SCREEN_HEIGHT) return;
+    if (start_y >= cube->screen_height) return;
 
-    if (end_x > SCREEN_WIDTH) end_x = SCREEN_WIDTH;
-    if (end_y > SCREEN_HEIGHT) end_y = SCREEN_HEIGHT;
+    if (end_x > cube->screen_width) end_x = cube->screen_width;
+    if (end_y > cube->screen_height) end_y = cube->screen_height;
 
     while(start_x < end_x){
         start_y = const_y;
@@ -858,13 +859,13 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
                 if (y >= (int)texture->height) y = texture->height - 1;
                 if (y < 0) y = 0;
     
-                if(!check_screen_limits((t_vect2){start_x, start_y, 0, 0})){
+                if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
                     int k = (x * texture->bytes_per_pixel) + (texture->width * texture->bytes_per_pixel * y);
                     if(texture->pixels[k + 3] > 128){
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
-                        cube->prev_buffer[(SCREEN_WIDTH * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
                     }
                 }
                 start_y++;
@@ -899,8 +900,8 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //     // 3. Draw Loop
 //     // Stop at bottom of screen OR end of sprite
 //     double end_y = start.y + len; 
-//     if (end_y > SCREEN_HEIGHT) 
-//         end_y = SCREEN_HEIGHT;
+//     if (end_y > cube->screen_height) 
+//         end_y = cube->screen_height;
 
 //     while (start.y < end_y && cords.y < cube->texture4->height)
 //     {
@@ -916,9 +917,9 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //         // Only draw if pixel is NOT transparent
 //         if (color_a != 0) 
 //         {
-//             pixel_index = (SCREEN_WIDTH * (int)start.y * 4) + ((int)start.x * 4);
+//             pixel_index = (cube->screen_width * (int)start.y * 4) + ((int)start.x * 4);
 
-//             if (pixel_index >= 0 && pixel_index < SCREEN_WIDTH * SCREEN_HEIGHT * 4)
+//             if (pixel_index >= 0 && pixel_index < cube->screen_width * cube->screen_height * 4)
 //             {
 //                 cube->prev_buffer[pixel_index + 0] = cube->texture4->pixels[tex_index + 0];
 //                 cube->prev_buffer[pixel_index + 1] = cube->texture4->pixels[tex_index + 1];
@@ -960,11 +961,11 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
 //     // --- 3. CALC SCREEN POSITIONS ---
 //     // Find where the MIDDLE of the sprite is on screen
-//     int screen_mid_x = (SCREEN_WIDTH / 2) + (tan(theta_delta) * PROJ_DST);
+//     int screen_mid_x = (cube->screen_width / 2) + (tan(theta_delta) * PROJ_DST);
     
 //     int start_x = screen_mid_x - (sprite_width / 2);
 //     int end_x   = screen_mid_x + (sprite_width / 2);
-//     int start_y = (SCREEN_HEIGHT - sprite_height) / 2;
+//     int start_y = (cube->screen_height - sprite_height) / 2;
 
 //     // --- 4. DRAW COLUMNS ---
 //     t_vect2 pos;
@@ -974,7 +975,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //     while (x < end_x)
 //     {
 //         // Only draw if column is within screen bounds
-//         if (x >= 0 && x < SCREEN_WIDTH)
+//         if (x >= 0 && x < cube->screen_width)
 //         {
 //             pos.x = x;
             
@@ -1006,11 +1007,11 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //     double playerX = cube->player.x / GRID_SIZE;
 //     double playerY = cube->player.y / GRID_SIZE;
 
-//     double posZ = 0.5 * SCREEN_HEIGHT; // cameraHeight = 0.5
+//     double posZ = 0.5 * cube->screen_height; // cameraHeight = 0.5
 
-//     for (int i = SCREEN_HEIGHT / 2; i < SCREEN_HEIGHT; i++)
+//     for (int i = cube->screen_height / 2; i < cube->screen_height; i++)
 //     {
-//         double p = i - SCREEN_HEIGHT / 2.0;
+//         double p = i - cube->screen_height / 2.0;
 //         double rowDist = posZ / p;
 
 //         // World positions at left & right
@@ -1019,13 +1020,13 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //         double floorXRight = playerX + rowDist * (dirX + planeX);
 //         double floorYRight = playerY + rowDist * (dirY + planeY);
 
-//         double stepX = (floorXRight - floorXLeft) / SCREEN_WIDTH;
-//         double stepY = (floorYRight - floorYLeft) / SCREEN_WIDTH;
+//         double stepX = (floorXRight - floorXLeft) / cube->screen_width;
+//         double stepY = (floorYRight - floorYLeft) / cube->screen_width;
 
 //         double floorX = floorXLeft;
 //         double floorY = floorYLeft;
 
-//         for (int j = 0; j < SCREEN_WIDTH; j++)
+//         for (int j = 0; j < cube->screen_width; j++)
 //         {
 //             // fractional parts → texture coords
 //             double fracX = fmod(floorX, 1.0);
@@ -1059,10 +1060,10 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //     int y;
 
 //     x = 0;
-//     while(x < SCREEN_WIDTH)
+//     while(x < cube->screen_width)
 //     {
 //         y = 0;
-//         while(y < SCREEN_HEIGHT)
+//         while(y < cube->screen_height)
 //         {
             
 //             y++;
@@ -1082,23 +1083,23 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
 //     t_vect2 PlayerPos = (t_vect2){(cube->player.x), (cube->player.y), 0, 0};
 //     // t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
-//     // double posZ = SCREEN_HEIGHT / 2.0;
+//     // double posZ = cube->screen_height / 2.0;
 //     // double posZ = (CAM_H) * PROJ_DST;
 //     double posZ = V_PROJ_DST;
 //     int i = posZ + 1;
-//     while(i < SCREEN_HEIGHT)
+//     while(i < cube->screen_height)
 //     {
-//         double p = (float)i - SCREEN_HEIGHT / 2.0;   // distance from horizon in screen pixels
+//         double p = (float)i - cube->screen_height / 2.0;   // distance from horizon in screen pixels
 //         double rowDst = posZ / p;
 //         t_vect2 floorL = (t_vect2){(PlayerPos.x) + rowDst * RayDirL.x, (PlayerPos.y) + rowDst * RayDirL.y, 0, 0};
 //         t_vect2 floorR = (t_vect2){(PlayerPos.x) + rowDst * RayDirR.x, (PlayerPos.y) + rowDst * RayDirR.y, 0, 0};
 
-//         t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+//         t_vect2 step = (t_vect2){(floorR.x - floorL.x) / cube->screen_width, (floorR.y - floorL.y) / cube->screen_width, 0, 0};
 
 //         t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
 
 //         int j = 0;
-//         while(j < SCREEN_WIDTH)
+//         while(j < cube->screen_width)
 //         {
 //             double fracX = fmod(ft_floor.x, 1.0);
 //             double fracY = fmod(ft_floor.y, 1.0);
@@ -1135,16 +1136,16 @@ void ft_ceiling(t_cube *cube)
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
 
     int i = 0;
-    while(i < SCREEN_HEIGHT / 2)
+    while(i < cube->screen_height / 2)
     {
-        // if replace SCREEN_HEIGHT with SCREEN_WIDTH you get ceiling textures PS: found it by accident :P
-        double p = (SCREEN_HEIGHT / 2.0) - (float)i;   // distance from horizon in screen pixels
+        // if replace cube->screen_height with cube->screen_width you get ceiling textures PS: found it by accident :P
+        double p = (cube->screen_height / 2.0) - (float)i;   // distance from horizon in screen pixels
         double rowDst = (CAM_H * PROJ_DST) / p;
 
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(cube->player.x) + rowDst * RayDirR.x, (cube->player.y) + rowDst * RayDirR.y, 0, 0};
 
-        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / cube->screen_width, (floorR.y - floorL.y) / cube->screen_width, 0, 0};
         t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
 
         double tmp = 1.0 - (rowDst / MAX_DST);
@@ -1154,7 +1155,7 @@ void ft_ceiling(t_cube *cube)
             tmp = 0.0;
 
         int j = 0;
-        while(j < SCREEN_WIDTH)
+        while(j < cube->screen_width)
         {
             double fracX = fmod(ft_floor.x / GRID_SIZE, 1.0);
             double fracY = fmod(ft_floor.y / GRID_SIZE, 1.0);
@@ -1174,7 +1175,7 @@ void ft_ceiling(t_cube *cube)
             t_vect2 coords = (t_vect2){j, i, 0, 0};
             int iter = 0;
             while(iter < cube->line_girth){
-                if(!check_screen_limits(coords))
+                if(!check_screen_limits(cube, coords))
                     mlx_put_pixel(cube->image, j, i, color);
                 ft_floor.x += step.x;
                 ft_floor.y += step.y;
@@ -1194,17 +1195,17 @@ void ft_floor(t_cube *cube)
     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
 
-    int i = (SCREEN_HEIGHT / 2);
-    while(i < SCREEN_HEIGHT)
+    int i = (cube->screen_height / 2);
+    while(i < cube->screen_height)
     {
-        // if replace SCREEN_HEIGHT with SCREEN_WIDTH you get ceiling textures PS: found it by accident :P
-        double p = (float)i - SCREEN_HEIGHT / 2.0;
+        // if replace cube->screen_height with cube->screen_width you get ceiling textures PS: found it by accident :P
+        double p = (float)i - cube->screen_height / 2.0;
         double rowDst = (CAM_H * PROJ_DST) / p;
 
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(cube->player.x) + rowDst * RayDirR.x, (cube->player.y) + rowDst * RayDirR.y, 0, 0};
 
-        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / cube->screen_width, (floorR.y - floorL.y) / cube->screen_width, 0, 0};
         t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
 
         double tmp = 1.0 - (rowDst / MAX_DST);
@@ -1214,7 +1215,7 @@ void ft_floor(t_cube *cube)
             tmp = 0.0;
 
         int j = 0;
-        while(j < SCREEN_WIDTH)
+        while(j < cube->screen_width)
         {
             double fracX = fmod(ft_floor.x / GRID_SIZE, 1.0);
             double fracY = fmod(ft_floor.y / GRID_SIZE, 1.0);
@@ -1234,7 +1235,7 @@ void ft_floor(t_cube *cube)
             t_vect2 coords = (t_vect2){j, i, 0, 0};
             int iter = 0;
             while(iter < cube->line_girth){
-                if(!check_screen_limits(coords))
+                if(!check_screen_limits(cube, coords))
                     mlx_put_pixel(cube->image, j, i, color);
                 ft_floor.x += step.x;
                 ft_floor.y += step.y;
@@ -1298,12 +1299,12 @@ void ft_floor_ceiling(t_cube *cube){
     double PlaneY = DirX * (cube->half_fov_rad);
     t_vect2 RayDirL = (t_vect2){DirX - PlaneX, DirY - PlaneY,0 ,0};
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
-    double mid_point = (SCREEN_HEIGHT / 2.0) + cube->pitch;
+    double mid_point = (cube->screen_height / 2.0) + cube->pitch;
 
     double p = 0;
     mlx_texture_t *tex;
     int i = 0;
-    while(i < SCREEN_HEIGHT){
+    while(i < cube->screen_height){
         if(i < mid_point){
             p = (mid_point) - (float)i;
             tex = cube->texture3;
@@ -1320,7 +1321,7 @@ void ft_floor_ceiling(t_cube *cube){
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(cube->player.x) + rowDst * RayDirR.x, (cube->player.y) + rowDst * RayDirR.y, 0, 0};
 
-        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / SCREEN_WIDTH, (floorR.y - floorL.y) / SCREEN_WIDTH, 0, 0};
+        t_vect2 step = (t_vect2){(floorR.x - floorL.x) / cube->screen_width, (floorR.y - floorL.y) / cube->screen_width, 0, 0};
         t_vect2 ft_floor = (t_vect2){floorL.x, floorL.y, 0, 0};
 
         double tmp = 1.0 - (rowDst / MAX_DST);
@@ -1330,7 +1331,7 @@ void ft_floor_ceiling(t_cube *cube){
             tmp = 0.0;
 
         int j = 0;
-        while(j < SCREEN_WIDTH)
+        while(j < cube->screen_width)
         {
             // if ((j + i) % 2 != cube->grain) 
             // {
@@ -1356,11 +1357,11 @@ void ft_floor_ceiling(t_cube *cube){
             uint8_t a = tex->pixels[k + 3];
 
             // uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
-            int y_iter = SCREEN_WIDTH * i * 4;
+            int y_iter = cube->screen_width * i * 4;
             t_vect2 coords = (t_vect2){j, i, 0, 0};
             int iter = 0;
             while(iter < cube->line_girth){
-                if(!check_screen_limits(coords)){
+                if(!check_screen_limits(cube, coords)){
                     cube->prev_buffer[(y_iter) + (j * 4) + 0] = r;
                     cube->prev_buffer[(y_iter) + (j * 4) + 1] = g;
                     cube->prev_buffer[(y_iter) + (j * 4) + 2] = b;
@@ -1380,27 +1381,27 @@ void ft_floor_ceiling(t_cube *cube){
 void ft_upscaling(t_cube *cube, mlx_image_t *image){
     uint32_t *new = (uint32_t *)image->pixels;
     uint32_t *prev = (uint32_t *)cube->prev_buffer;
-    int screen_H = SCREEN_HEIGHT;
-    int screen_W = SCREEN_WIDTH;        
+    int screen_H = cube->screen_height;
+    int screen_W = cube->screen_width;        
 
     if(cube->state == GAME){
         prev = (uint32_t *)cube->new_buffer;
-        screen_H = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
-        screen_W = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
+        screen_H = cube->screen_height - (cube->tilt_addition_height * 2);
+        screen_W = cube->screen_width - (cube->tilt_addition_width * 2);
     }
-    double iter_x = (double)screen_W / (double)SCREEN_WIDTH_BUFF;
-    double iter_y = (double)screen_H / (double)SCREEN_HEIGHT_BUFF;
+    double iter_x = (double)screen_W / (double)cube->screen_width_buff;
+    double iter_y = (double)screen_H / (double)cube->screen_height_buff;
 
     double prev_x = 0.0;
     double prev_y = 0.0;
     int new_x = 0;
     int new_y = 0;
 
-    while(new_y < SCREEN_HEIGHT_BUFF && prev_y < screen_H){
+    while(new_y < cube->screen_height_buff && prev_y < screen_H){
         new_x = 0;
         prev_x = 0.0;
-        while(new_x < SCREEN_WIDTH_BUFF && prev_x < screen_W){
-            new[(new_y * SCREEN_WIDTH_BUFF) + new_x] = prev[((int)prev_y * screen_W) + (int)prev_x];
+        while(new_x < cube->screen_width_buff && prev_x < screen_W){
+            new[(new_y * cube->screen_width_buff) + new_x] = prev[((int)prev_y * screen_W) + (int)prev_x];
             new_x++;
             prev_x += iter_x;
         }
@@ -1423,18 +1424,18 @@ void ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y)
     int tex_x;
     int tex_y;
 
-    while(y < SCREEN_HEIGHT_BUFF){
+    while(y < cube->screen_height_buff){
         x = 0;
-        tex_y = (double)(y) * ((double)(texture->height) / (double)(SCREEN_HEIGHT_BUFF));
-        while(x < SCREEN_WIDTH_BUFF){
-            tex_x = (double)(x) * ((double)(texture->width) / (double)(SCREEN_WIDTH_BUFF));
-            int pixel_cords = ((y + start_y) * 4 * SCREEN_WIDTH_BUFF) + ((x + start_x) * 4);
+        tex_y = (double)(y) * ((double)(texture->height) / (double)(cube->screen_height_buff));
+        while(x < cube->screen_width_buff){
+            tex_x = (double)(x) * ((double)(texture->width) / (double)(cube->screen_width_buff));
+            int pixel_cords = ((y + start_y) * 4 * cube->screen_width_buff) + ((x + start_x) * 4);
             int title_cords = (tex_y * 4 * texture->width) + (tex_x * 4);
             if(tex_x >= texture->width || tex_y >= texture->height || texture->pixels[tex_y * 4 * texture->width + tex_x * 4 + 3] < 127){
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 0] = 0;
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 1] = 0;
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 2] = 0;
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 3] = 255;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 0] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 1] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 2] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 3] = 255;
                 x++;
                 continue;
             }
@@ -1463,9 +1464,9 @@ void ft_fov_slider(t_cube *cube){
         cube->init_fov = ((cube->menu.settings.fov.max_fov - cube->menu.settings.fov.min_fov) * ((double)start_x / (double)(cube->menu.settings.fov.slider_end_x - cube->menu.settings.fov.slider_start_x))) + cube->menu.settings.fov.min_fov;
         cube->fov = cube->init_fov;
         cube->prev_fov = cube->init_fov;
-        cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
+        cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
         cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
-        cube->mod_rate = (cube->fov * RADIANT_RATE) / RES;
+        cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
     }
     ft_renderer(cube, cube->menu.settings.fov.slider_1, start_x, 0);
 }
@@ -1487,6 +1488,46 @@ void ft_mouse_sens(t_cube *cube){
     ft_renderer(cube, cube->menu.settings.mouse_sens.slider_2, start_x, 0);
 }
 
+void ft_crosshair_color(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+    uint32_t *prev = (uint32_t *)cube->image->pixels;
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(mouse_x > cube->menu.settings.crosshair.start_x && mouse_x < cube->menu.settings.crosshair.end_x
+     && mouse_y > cube->menu.settings.crosshair.start_y && mouse_y < cube->menu.settings.crosshair.end_y)
+    {
+        int start_x = mouse_x + (0.01 * (double)cube->screen_width_buff);
+        int start_y = mouse_y - (0.06 * (double)cube->screen_height_buff);
+        int end_x = start_x + (0.05 * (double)cube->screen_width_buff);
+        int end_y = start_y + (0.064 * (double)cube->screen_height_buff);
+        int x = start_x + (0.1 * (end_x - start_x));
+        int y = start_y + (0.1 * (end_y - start_y));
+        int color = prev[mouse_y * cube->screen_width_buff + mouse_x];
+        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
+            cube->menu.settings.crosshair.color = color;
+
+        while(y < end_y){
+            x = start_x;
+            while(x < end_x){
+                prev[y * cube->screen_width_buff + x] = color;
+                x++;
+            }
+            y++;
+        }
+        ft_renderer(cube, cube->menu.settings.crosshair.border, start_x, start_y);
+    }
+}
+void ft_update_screen_buff(t_cube *cube, mlx_texture_t *texture, int new_w, int new_h){
+    if(new_w == cube->screen_width_buff && new_h == cube->screen_height_buff)
+        return;
+    cube->menu.settings.resolution.texture = texture;
+    cube->screen_height_buff = new_h;
+    cube->screen_width_buff = new_w;
+    cube->screen_height = cube->screen_height_buff / cube->upscaling;
+    cube->screen_width = cube->screen_width_buff / cube->upscaling;
+    ft_updated_buff_init(cube);
+}
+
 void ft_resolution(t_cube *cube){
     int mouse_x;
     int mouse_y;
@@ -1496,53 +1537,67 @@ void ft_resolution(t_cube *cube){
         return(ft_renderer(cube, cube->menu.settings.resolution.texture, 0, 0));
 
     if(mouse_y > cube->menu.settings.resolution.start_y_1080_900 && mouse_y < cube->menu.settings.resolution.end_y_1080_900){
-        if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_x < cube->menu.settings.resolution.end_x_1080){
-                cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow;
-                cube->screen_height_buff = 1080;
-                cube->screen_width_buff = 1920;
-            }
+
+        if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_x < cube->menu.settings.resolution.end_x_1080)
+            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_1080_glow, 1920, 1080);
+
         else if(mouse_x > cube->menu.settings.resolution.start_x_900 && mouse_x < cube->menu.settings.resolution.end_x_900)
-            cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow;
+            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_900_glow, 1600, 900);
+
     }
     else if(mouse_y > cube->menu.settings.resolution.start_y_720_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480){
+
         if(mouse_x > cube->menu.settings.resolution.start_x_720 && mouse_x < cube->menu.settings.resolution.end_x_720)
-            cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow;
+            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_720_glow, 1280, 720);
+
         else if(mouse_x > cube->menu.settings.resolution.start_x_480 && mouse_x < cube->menu.settings.resolution.end_x_480)
-            cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow;
+            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_480_glow, 720, 480);
+
     }
+
     ft_renderer(cube, cube->menu.settings.resolution.texture, 0, 0);
 }
 
-void ft_crosshair_color(t_cube *cube){
-    int mouse_x;
-    int mouse_y;
-    uint32_t *prev = (uint32_t *)cube->image->pixels;
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(mouse_x > cube->menu.settings.crosshair.start_x && mouse_x < cube->menu.settings.crosshair.end_x
-     && mouse_y > cube->menu.settings.crosshair.start_y && mouse_y < cube->menu.settings.crosshair.end_y)
-    {
-        int start_x = mouse_x + (0.01 * (double)SCREEN_WIDTH_BUFF);
-        int start_y = mouse_y - (0.06 * (double)SCREEN_HEIGHT_BUFF);
-        int end_x = start_x + (0.05 * (double)SCREEN_WIDTH_BUFF);
-        int end_y = start_y + (0.064 * (double)SCREEN_HEIGHT_BUFF);
-        int x = start_x + (0.1 * (end_x - start_x));
-        int y = start_y + (0.1 * (end_y - start_y));
-        int color = prev[mouse_y * SCREEN_WIDTH_BUFF + mouse_x];
-        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
-            cube->menu.settings.crosshair.color = color;
-
-        while(y < end_y){
-            x = start_x;
-            while(x < end_x){
-                prev[y * SCREEN_WIDTH_BUFF + x] = color;
-                x++;
-            }
-            y++;
-        }
-        ft_renderer(cube, cube->menu.settings.crosshair.border, start_x, start_y);
-    }
+void ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture){
+    if(upscale == cube->upscaling)
+        return;
+    cube->menu.settings.upscaling.texture = texture;
+    cube->upscaling = upscale;
+    cube->screen_height = cube->screen_height_buff / cube->upscaling;
+    cube->screen_width = cube->screen_width_buff / cube->upscaling;
+    ft_updated_res_init(cube);
 }
 
+void ft_upscale(t_cube *cube){
+    int mouse_x;
+    int mouse_y;
+
+    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+    if(cube->menu.settings.mouse_held != UPSCALING)
+        return(ft_renderer(cube, cube->menu.settings.upscaling.texture, 0, 0));
+
+    if(mouse_y > cube->menu.settings.upscaling.start_y1234 && mouse_y < cube->menu.settings.upscaling.end_y1234){
+        if(mouse_x > cube->menu.settings.upscaling.start_x15 && mouse_x < cube->menu.settings.upscaling.end_x15)
+            ft_update_screen_res(cube, 1, cube->menu.settings.upscaling.x1_glow);
+        else if(mouse_x > cube->menu.settings.upscaling.start_x26 && mouse_x < cube->menu.settings.upscaling.end_x26)
+            ft_update_screen_res(cube, 2, cube->menu.settings.upscaling.x2_glow);
+        else if(mouse_x > cube->menu.settings.upscaling.start_x37 && mouse_x < cube->menu.settings.upscaling.end_x37)
+            ft_update_screen_res(cube, 3, cube->menu.settings.upscaling.x3_glow);
+        else if(mouse_x > cube->menu.settings.upscaling.start_x48 && mouse_x < cube->menu.settings.upscaling.end_x48)
+            ft_update_screen_res(cube, 4, cube->menu.settings.upscaling.x4_glow);
+    }
+    else if(mouse_y > cube->menu.settings.upscaling.start_y5678 && mouse_y < cube->menu.settings.upscaling.end_y5678){
+        if(mouse_x > cube->menu.settings.upscaling.start_x15 && mouse_x < cube->menu.settings.upscaling.end_x15)
+            ft_update_screen_res(cube, 5, cube->menu.settings.upscaling.x5_glow);
+        else if(mouse_x > cube->menu.settings.upscaling.start_x26 && mouse_x < cube->menu.settings.upscaling.end_x26)
+            ft_update_screen_res(cube, 6, cube->menu.settings.upscaling.x6_glow);
+        else if(mouse_x > cube->menu.settings.upscaling.start_x37 && mouse_x < cube->menu.settings.upscaling.end_x37)
+            ft_update_screen_res(cube, 7, cube->menu.settings.upscaling.x7_glow);
+        else if(mouse_x > cube->menu.settings.upscaling.start_x48 && mouse_x < cube->menu.settings.upscaling.end_x48)
+            ft_update_screen_res(cube, 8, cube->menu.settings.upscaling.x8_glow);
+    }
+    ft_renderer(cube, cube->menu.settings.upscaling.texture, 0, 0);
+}
 
 void ft_settings(t_cube *cube){
     int mouse_x;
@@ -1559,21 +1614,26 @@ void ft_settings(t_cube *cube){
         else if(mouse_y > (cube->menu.settings.mouse_sens.slider_start_y) && mouse_y < (cube->menu.settings.mouse_sens.slider_end_y)
          && mouse_x < (cube->menu.settings.mouse_sens.slider_end_x) && mouse_x > (cube->menu.settings.mouse_sens.slider_start_x))
             cube->menu.settings.mouse_held = MOUSE_SENS_SLIDER;
+        else if(mouse_x > cube->menu.settings.upscaling.start_x15 && mouse_x < cube->menu.settings.upscaling.end_x48
+         && mouse_y > cube->menu.settings.upscaling.start_y1234 && mouse_y < cube->menu.settings.upscaling.end_y5678)
+            cube->menu.settings.mouse_held = UPSCALING;
     }
     if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
         cube->menu.settings.mouse_held = NOTHING;
     }
     ft_fov_slider(cube);
     ft_resolution(cube);
-    ft_crosshair_color(cube);
+    if(cube->menu.settings.mouse_held == NOTHING || cube->menu.settings.mouse_held == MOUSE_SENS_SLIDER)
+        ft_crosshair_color(cube);
     ft_mouse_sens(cube);
-    printf("fov : %d\n", cube->init_fov);
+    ft_upscale(cube);
+    printf("screen_buff : (%d, %d), screen_res : (%d, %d), upscaling : %d\n",cube->screen_width, cube->screen_height, cube->screen_width_buff, cube->screen_height_buff, cube->upscaling);
 }
 
 void ft_menu(t_cube *cube){
     
-    // int start_x = (SCREEN_WIDTH - (cube->menu.title->width)) / 2;
-    // int start_y = (SCREEN_HEIGHT - (cube->menu.title->height)) / 2;
+    // int start_x = (cube->screen_width - (cube->menu.title->width)) / 2;
+    // int start_y = (cube->screen_height - (cube->menu.title->height)) / 2;
     int start_x = 0;
     int start_y = 0;
     int x = start_x;
@@ -1587,22 +1647,22 @@ void ft_menu(t_cube *cube){
     else
         texture = cube->menu.settings.background;
 
-    double ratio_y = ((double)(texture->height) / (double)(SCREEN_HEIGHT_BUFF));
-    double ratio_x = ((double)(texture->width) / (double)(SCREEN_WIDTH_BUFF));
+    double ratio_y = ((double)(texture->height) / (double)(cube->screen_height_buff));
+    double ratio_x = ((double)(texture->width) / (double)(cube->screen_width_buff));
 
 
-    while(y < SCREEN_HEIGHT_BUFF){
+    while(y < cube->screen_height_buff){
         x = start_x;
         tex_y = (double)(y) * ratio_y;
-        while(x < SCREEN_WIDTH_BUFF){
+        while(x < cube->screen_width_buff){
             tex_x = (double)(x) * ratio_x;
-            int pixel_cords = (y * 4 * SCREEN_WIDTH_BUFF) + (x * 4);
+            int pixel_cords = (y * 4 * cube->screen_width_buff) + (x * 4);
             int title_cords = (tex_y * 4 * texture->width) + (tex_x * 4);
             if(tex_x >= texture->width || tex_y >= texture->height || texture->pixels[tex_y * 4 * texture->width + tex_x * 4 + 3] < 127){
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 0] = 0;
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 1] = 0;
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 2] = 0;
-                // cube->prev_buffer[(y * 4 * SCREEN_WIDTH_BUFF) + (x * 4) + 3] = 255;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 0] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 1] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 2] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 3] = 255;
                 x++;
                 continue;
             }
@@ -1622,8 +1682,8 @@ void ft_menu(t_cube *cube){
     if(cube->menu.state == 1){
         ft_settings(cube);
     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
-         && ((double)mouse_x > ((double)SCREEN_WIDTH_BUFF * 0.0156) && (double)mouse_x < ((double)SCREEN_WIDTH_BUFF * 0.0468))
-         && ((double)mouse_y > ((double)SCREEN_HEIGHT_BUFF * 0.0277)) && ((double)mouse_y < (double)SCREEN_HEIGHT_BUFF * 0.0833))
+         && ((double)mouse_x > ((double)cube->screen_width_buff * 0.0156) && (double)mouse_x < ((double)cube->screen_width_buff * 0.0468))
+         && ((double)mouse_y > ((double)cube->screen_height_buff * 0.0277)) && ((double)mouse_y < (double)cube->screen_height_buff * 0.0833))
             cube->menu.state = 0;
         return;
     }
@@ -1633,11 +1693,11 @@ void ft_menu(t_cube *cube){
 
 
 
-    // if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (mouse_x > (SCREEN_WIDTH_BUFF * 0.86) &&
-    //  mouse_x < (SCREEN_WIDTH_BUFF * 0.95)) && (mouse_y > (SCREEN_HEIGHT_BUFF * 0.91)) && (mouse_y < SCREEN_HEIGHT_BUFF * 0.97))
+    // if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (mouse_x > (cube->screen_width_buff * 0.86) &&
+    //  mouse_x < (cube->screen_width_buff * 0.95)) && (mouse_y > (cube->screen_height_buff * 0.91)) && (mouse_y < cube->screen_height_buff * 0.97))
     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
-     && ((double)mouse_x > ((double)SCREEN_WIDTH_BUFF * 0.92) && (double)mouse_x < ((double)SCREEN_WIDTH_BUFF * 0.97))
-     && ((double)mouse_y > ((double)SCREEN_HEIGHT_BUFF * 0.85)) && ((double)mouse_y < (double)SCREEN_HEIGHT_BUFF * 0.95))
+     && ((double)mouse_x > ((double)cube->screen_width_buff * 0.92) && (double)mouse_x < ((double)cube->screen_width_buff * 0.97))
+     && ((double)mouse_y > ((double)cube->screen_height_buff * 0.85)) && ((double)mouse_y < (double)cube->screen_height_buff * 0.95))
         cube->menu.state = 1;
 }
 
@@ -1668,11 +1728,11 @@ void ft_draw_enemies(t_cube *cube){
     }
 
     while(i < ENEMY_NUM){
-        if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (SCREEN_HEIGHT / 2)) &&
-                (cube->enemy[ENEMY_NUM - 1 - i].end_y > (SCREEN_HEIGHT / 2)))
+        if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (cube->screen_height / 2)) &&
+                (cube->enemy[ENEMY_NUM - 1 - i].end_y > (cube->screen_height / 2)))
         if(cube->player.delay == true && cube->player.attacked == true){
-            if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (SCREEN_HEIGHT / 2)) &&
-                (cube->enemy[ENEMY_NUM - 1 - i].end_y > (SCREEN_HEIGHT / 2)) && (cube->enemy[ENEMY_NUM - 1 - i].player_dst < cube->rays[RES / 2].length)){
+            if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (cube->screen_height / 2)) &&
+                (cube->enemy[ENEMY_NUM - 1 - i].end_y > (cube->screen_height / 2)) && (cube->enemy[ENEMY_NUM - 1 - i].player_dst < cube->rays[cube->res / 2].length)){
                     printf("enemy %d attacked! enemy HP: %d\n", ENEMY_NUM - 1 - i, cube->enemy[ENEMY_NUM - 1 - i].HP);
                     cube->enemy[ENEMY_NUM - 1 - i].HP -= cube->player.weapon.DMG;                                  
                 }
@@ -1704,8 +1764,8 @@ void ft_tilt(t_cube *cube){
     gettimeofday(&tv, NULL);
     long time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 
-    max_new_x = SCREEN_WIDTH - (cube->tilt_addition_width * 2);
-    max_new_y = SCREEN_HEIGHT - (cube->tilt_addition_height * 2);
+    max_new_x = cube->screen_width - (cube->tilt_addition_width * 2);
+    max_new_y = cube->screen_height - (cube->tilt_addition_height * 2);
 
     double flash = 1.0;
     if(cube->player.delay == true && (time - cube->player.weapon.frame_delay < 100)){
@@ -1716,12 +1776,12 @@ void ft_tilt(t_cube *cube){
     while(x < max_new_x){
         y = 0;
         prev_x = (double)x + cube->tilt_addition_width;
-        offset = (prev_x - (SCREEN_WIDTH / 2.0)) * cube->shear_factor; 
+        offset = (prev_x - (cube->screen_width / 2.0)) * cube->shear_factor; 
         while(y < max_new_y){
             prev_y = ((double)y + cube->tilt_addition_height) + offset;
-            if(prev_y >= 0 && prev_y < SCREEN_HEIGHT){
+            if(prev_y >= 0 && prev_y < cube->screen_height){
                 int new_dst = (max_new_x * y * 4) + (x * 4);
-                int prev_dst = (SCREEN_WIDTH * (int)prev_y * 4) + ((int)prev_x * 4);
+                int prev_dst = (cube->screen_width * (int)prev_y * 4) + ((int)prev_x * 4);
                 cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0] * flash;
                 if((uint8_t)cube->prev_buffer[prev_dst + 0] * flash > 255)
                     cube->new_buffer[new_dst + 0] = (uint8_t)255;
@@ -1741,19 +1801,19 @@ void ft_tilt(t_cube *cube){
 
 // dst_y = abs(dst_y);
 // int i = 0;
-// int start_j = SCREEN_HEIGHT - 1 - dst_y;
+// int start_j = cube->screen_height - 1 - dst_y;
 // int j = start_j;
-// while(i < SCREEN_WIDTH){
-//     j = SCREEN_HEIGHT - 1 - dst_y;
-//     while(j < SCREEN_HEIGHT){
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 0] = 0;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 1] = 0;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 2] = 0;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)j * 4) + ((int)i * 4) + 3] = 255;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 0] = 0;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 1] = 0;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 2] = 0;
-//         cube->prev_buffer[(SCREEN_WIDTH * (int)(j - start_j) * 4) + ((int)i * 4) + 3] = 255;
+// while(i < cube->screen_width){
+//     j = cube->screen_height - 1 - dst_y;
+//     while(j < cube->screen_height){
+//         cube->prev_buffer[(cube->screen_width * (int)j * 4) + ((int)i * 4) + 0] = 0;
+//         cube->prev_buffer[(cube->screen_width * (int)j * 4) + ((int)i * 4) + 1] = 0;
+//         cube->prev_buffer[(cube->screen_width * (int)j * 4) + ((int)i * 4) + 2] = 0;
+//         cube->prev_buffer[(cube->screen_width * (int)j * 4) + ((int)i * 4) + 3] = 255;
+//         cube->prev_buffer[(cube->screen_width * (int)(j - start_j) * 4) + ((int)i * 4) + 0] = 0;
+//         cube->prev_buffer[(cube->screen_width * (int)(j - start_j) * 4) + ((int)i * 4) + 1] = 0;
+//         cube->prev_buffer[(cube->screen_width * (int)(j - start_j) * 4) + ((int)i * 4) + 2] = 0;
+//         cube->prev_buffer[(cube->screen_width * (int)(j - start_j) * 4) + ((int)i * 4) + 3] = 255;
 //         j++;
 //     }
 //     i++;
@@ -1779,25 +1839,25 @@ void ft_heart(t_cube *cube){
     }
 
     int start_x = 0;
-    int start_y = (SCREEN_HEIGHT * 0.5) + 0.2 * cube->player.weapon.move_lerp;
+    int start_y = (cube->screen_height * 0.5) + 0.2 * cube->player.weapon.move_lerp;
     int x = start_x;
     int y = start_y;
-    int end_x = (SCREEN_WIDTH * 0.3);
-    int end_y = SCREEN_HEIGHT +  + 0.2 * cube->player.weapon.move_lerp;
+    int end_x = (cube->screen_width * 0.3);
+    int end_y = cube->screen_height +  + 0.2 * cube->player.weapon.move_lerp;
 
     while(y < end_y){
         x = start_x;
-        int tex_y = (double)(y - start_y) * ((double)(cube->heart.current_frame->height) / (double)(SCREEN_HEIGHT * 0.5));
+        int tex_y = (double)(y - start_y) * ((double)(cube->heart.current_frame->height) / (double)(cube->screen_height * 0.5));
         while(x < end_x){
             
-            int tex_x = (double)(x - start_x) * ((double)(cube->heart.current_frame->width) / (double)(SCREEN_WIDTH * 0.3));
-            int prev_cords = ((int)(y) * 4 * SCREEN_WIDTH) + ((int)x * 4);
+            int tex_x = (double)(x - start_x) * ((double)(cube->heart.current_frame->width) / (double)(cube->screen_width * 0.3));
+            int prev_cords = ((int)(y) * 4 * cube->screen_width) + ((int)x * 4);
             int heart_cords = tex_y * 4 * cube->heart.current_frame->width + tex_x * 4;
             if(tex_x >= cube->heart.current_frame->width || tex_y >= cube->heart.current_frame->height || cube->heart.current_frame->pixels[heart_cords + 3] == 0){
                 x++;
                 continue;
             }
-            // if(y + cube->player.weapon.move_lerp < SCREEN_HEIGHT){
+            // if(y + cube->player.weapon.move_lerp < cube->screen_height){
                 cube->prev_buffer[prev_cords + 0] = cube->heart.current_frame->pixels[heart_cords + 0];
                 cube->prev_buffer[prev_cords + 1] = cube->heart.current_frame->pixels[heart_cords + 1];
                 cube->prev_buffer[prev_cords + 2] = cube->heart.current_frame->pixels[heart_cords + 2];
@@ -1810,8 +1870,8 @@ void ft_heart(t_cube *cube){
 }
 
 void ft_weapon(t_cube *cube){
-    int start_x = SCREEN_WIDTH * 0.1;
-    int start_y = (SCREEN_HEIGHT * 0.1);
+    int start_x = cube->screen_width * 0.1;
+    int start_y = (cube->screen_height * 0.1);
     // int start_x = 0;
     // int start_y = 0;
     int x = start_x;
@@ -1890,19 +1950,19 @@ void ft_weapon(t_cube *cube){
     // else
     //     cube->player.weapon.pitch_back = false;
 
-    while(y < SCREEN_HEIGHT){
+    while(y < cube->screen_height){
         x = start_x;
-        int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)((SCREEN_HEIGHT + cube->player.weapon.move_lerp)));
-        while(x < SCREEN_WIDTH){
+        int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)((cube->screen_height + cube->player.weapon.move_lerp)));
+        while(x < cube->screen_width){
             
-            int tex_x = (double)(x - start_x) * ((double)(cube->player.weapon.texture->width) / (double)(SCREEN_WIDTH - start_x));
-            int prev_cords = ((int)(y) * 4 * SCREEN_WIDTH) + ((int)x * 4);
+            int tex_x = (double)(x - start_x) * ((double)(cube->player.weapon.texture->width) / (double)(cube->screen_width - start_x));
+            int prev_cords = ((int)(y) * 4 * cube->screen_width) + ((int)x * 4);
             int weapon_cords = tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4;
             if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[weapon_cords + 3] == 0){
                 x++;
                 continue;
             }
-            // if(y + cube->player.weapon.move_lerp < SCREEN_HEIGHT){
+            // if(y + cube->player.weapon.move_lerp < cube->screen_height){
                 cube->prev_buffer[prev_cords + 0] = cube->player.weapon.texture->pixels[weapon_cords + 0];
                 cube->prev_buffer[prev_cords + 1] = cube->player.weapon.texture->pixels[weapon_cords + 1];
                 cube->prev_buffer[prev_cords + 2] = cube->player.weapon.texture->pixels[weapon_cords + 2];
@@ -1930,10 +1990,10 @@ void ft_weapon(t_cube *cube){
 
 void ft_fov_mod(t_cube *cube){
     if(cube->fov != cube->prev_fov){
-        cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
+        cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
         cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
         cube->prev_fov = cube->fov;
-        cube->mod_rate = (cube->fov * RADIANT_RATE) / RES;
+        cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
     }
     
     cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
@@ -1958,19 +2018,19 @@ void ft_died(t_cube *cube){
     int y = 0;
     double i = 0;
     double j = 0;
-    double i_iter = (double)cube->texture_died->width / (double)SCREEN_WIDTH;
-    double j_iter = (double)cube->texture_died->height / (double)SCREEN_HEIGHT;
+    double i_iter = (double)cube->texture_died->width / (double)cube->screen_width;
+    double j_iter = (double)cube->texture_died->height / (double)cube->screen_height;
 
-    while(x < SCREEN_WIDTH){
+    while(x < cube->screen_width){
         y = 0;
         j = 0;
-        while(y < SCREEN_HEIGHT){
+        while(y < cube->screen_height){
             if((int)i >= (int)cube->texture_died->width) i = cube->texture_died->width - 1;
             if((int)j >= (int)cube->texture_died->height) j = cube->texture_died->height - 1;
-            cube->prev_buffer[(y * 4 * SCREEN_WIDTH) + (x * 4) + 0] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 0)];
-            cube->prev_buffer[(y * 4 * SCREEN_WIDTH) + (x * 4) + 1] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 1)];
-            cube->prev_buffer[(y * 4 * SCREEN_WIDTH) + (x * 4) + 2] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 2)];
-            cube->prev_buffer[(y * 4 * SCREEN_WIDTH) + (x * 4) + 3] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 3)];
+            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 0] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 0)];
+            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 1] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 1)];
+            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 2] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 2)];
+            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 3] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 3)];
             y++;
             j += j_iter;
         }
@@ -2003,13 +2063,13 @@ void state_machine(t_cube *cube){
     }   
     else if(cube->state == GAME){
         int i = 0;
-        while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
+        while(i < cube->screen_height * cube->screen_width * 4){
             cube->lerp_buffer[i] = cube->prev_buffer[i];
             i++;
         }
         ft_game(cube);
         i = 0;
-        while(i < SCREEN_HEIGHT * SCREEN_WIDTH * 4){
+        while(i < cube->screen_height * cube->screen_width * 4){
             cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i]);
             i++;
         }
@@ -2032,14 +2092,13 @@ void ft_update(void *param)
     cube = (t_cube *)param;
     // cube->grain = !cube->grain;
     // clear_image(cube);
-    // ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 0}, 0x000000ff);
-    // ft_rectangle(cube, (t_vect2){0, SCREEN_HEIGHT / 2, 0, 0}, (t_vect2){SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0}, 0x57493eff);
+    // ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height / 2, 0, 0}, 0x000000ff);
+    // ft_rectangle(cube, (t_vect2){0, cube->screen_height / 2, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x57493eff);
     // draw_grid(cube);
     // draw_player(cub/e);
     gettimeofday(&tv, NULL);
  
 
-    printf("mouse_sens : %lf\n", cube->mouse_sens);
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
@@ -2170,7 +2229,7 @@ void ft_init_enemies(t_cube *cube){
         cube->enemy[i].delay = false;
         cube->enemy[i].atk_delay = 1;
         cube->enemy[i].DMG = 20;
-        cube->enemy[i].hitbox_len = 50;
+        cube->enemy[i].hitbox_len = 50; // COMEBACK TO THIS ITS VERY IMPORTANT, THE HITBOX NEEDS TO SCALE WITH THE ENEMY DISTANCE FROM PLAYER EACH FRAME
         int posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
         int posY = (int)(ft_rand(&seed) % (int)(MAP_Y * GRID_SIZE));
         // printf("1 : posX : %d, posY : %d\n", posX, posY);
@@ -2208,7 +2267,76 @@ void ft_init_enemies(t_cube *cube){
 //     ma_sound_set_start_time_in_pcm_frames(&cube->audio->bg_loop, now + length + 5);
 //     ma_sound_start(&cube->audio->bg_loop);
 // }
- 
+
+void ft_updated_res_init(t_cube *cube){
+    cube->res = cube->screen_width;
+    cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+    cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+    cube->move_increase = 0.05 * cube->screen_height;
+    cube->pitch_max = cube->screen_height + 100;
+    free(cube->prev_buffer);
+    free(cube->new_buffer);
+    free(cube->lerp_buffer);
+    free(cube->z_buffer);
+    free(cube->rays);
+    cube->prev_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->new_buffer = ft_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
+    cube->lerp_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->rays = ft_calloc(cube->res + 1, sizeof(t_ray));
+    cube->z_buffer = ft_calloc(cube->screen_width + 1, sizeof(double));
+    cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
+    cube->line_girth = (int)(cube->screen_width / cube->res);
+    cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
+    clear_image(cube);
+}
+
+void ft_updated_buff_init(t_cube *cube){
+    mlx_resize_image(cube->image, cube->screen_width_buff, cube->screen_height_buff);
+    mlx_resize_image(cube->image_death, cube->screen_width_buff, cube->screen_height_buff);
+    mlx_set_window_size(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
+    // mlx_image_to_window(cube->mlx, cube->image, 0, 0);
+    cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
+    cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
+    cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
+    cube->menu.settings.upscaling.end_y5678 = 0.9 * cube->screen_height_buff;    
+    cube->menu.settings.fov.slider_start_y = 0.20 * cube->screen_height_buff;
+    cube->menu.settings.fov.slider_end_y = 0.24 * cube->screen_height_buff;
+    cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
+    cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
+    cube->menu.settings.resolution.start_y_1080_900 = 0.48 * cube->screen_height_buff;
+    cube->menu.settings.resolution.end_y_1080_900 = 0.51 * cube->screen_height_buff;
+    cube->menu.settings.resolution.start_y_720_480 = 0.59 * cube->screen_height_buff;
+    cube->menu.settings.resolution.end_y_720_480 = 0.62 * cube->screen_height_buff;
+    cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
+    cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
+    cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
+    cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
+    cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
+    cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
+    cube->menu.settings.upscaling.start_x15 = 0.089 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x15 = 0.11 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_x26 = 0.162 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x26 = 0.183 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_x37 = 0.235 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x37 = 0.256 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_x48 = 0.310 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x48 = 0.331 * cube->screen_width_buff;
+    cube->menu.settings.fov.slider_start_x = 0.065 * cube->screen_width_buff;
+    cube->menu.settings.fov.slider_end_x = 0.354 * cube->screen_width_buff;
+    cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
+    cube->menu.settings.mouse_sens.slider_end_x = 0.895 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_1080 = 0.055 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_1080 = 0.175 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_900 = 0.245 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_900 = 0.358 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_720 = 0.057 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_720 = 0.173 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_480 = 0.265 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_480 = 0.365 * cube->screen_width_buff;
+    cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
+    cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
+    ft_updated_res_init(cube);
+}
 
 
 void ft_init(t_cube *cube)
@@ -2217,16 +2345,20 @@ void ft_init(t_cube *cube)
 
     // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
-    cube->screen_height = SCREEN_HEIGHT;
-    cube->screen_width = SCREEN_WIDTH;
+    cube->upscaling = UPSCALING_RATE;
     cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
+    cube->screen_height = (double)cube->screen_height_buff / (double)cube->upscaling;
+    cube->screen_width = (double)cube->screen_width_buff / (double)cube->upscaling;
+    cube->res = cube->screen_width;
+    cube->move_increase = 0.05 * (double)cube->screen_height;
+    cube->pitch_max = (double)cube->screen_height * 1.1;
     cube->init_fov = FOV;
     cube->fov = cube->init_fov;
     cube->prev_fov = cube->init_fov;
     cube->mouse_sens = TURN_SPEED;
-    cube->proj_dst = (SCREEN_WIDTH / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
-    cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
+    cube->proj_dst = ((double)cube->screen_width / 2.0) / tan(((double)cube->fov / 2.0) * RADIANT_RATE);
+    cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.HP = 200;
@@ -2249,28 +2381,58 @@ void ft_init(t_cube *cube)
     cube->menu.settings.bar_2 = mlx_load_png("./settings_assets/bar_2.png");
     cube->menu.settings.fov.slider_1 = mlx_load_png("./settings_assets/slider_1.png");
     cube->menu.settings.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
-    cube->menu.settings.x1_glow = mlx_load_png("./settings_assets/x1_glow.png");
-    cube->menu.settings.x2_glow = mlx_load_png("./settings_assets/x2_glow.png");
-    cube->menu.settings.x3_glow = mlx_load_png("./settings_assets/x3_glow.png");
-    cube->menu.settings.x4_glow = mlx_load_png("./settings_assets/x4_glow.png");
-    cube->menu.settings.x5_glow = mlx_load_png("./settings_assets/x5_glow.png");
-    cube->menu.settings.x6_glow = mlx_load_png("./settings_assets/x6_glow.png");
-    cube->menu.settings.x7_glow = mlx_load_png("./settings_assets/x7_glow.png");
-    cube->menu.settings.x8_glow = mlx_load_png("./settings_assets/x8_glow.png");
+
+    cube->menu.settings.upscaling.x1_glow = mlx_load_png("./settings_assets/x1_glow.png");
+    cube->menu.settings.upscaling.x2_glow = mlx_load_png("./settings_assets/x2_glow.png");
+    cube->menu.settings.upscaling.x3_glow = mlx_load_png("./settings_assets/x3_glow.png");
+    cube->menu.settings.upscaling.x4_glow = mlx_load_png("./settings_assets/x4_glow.png");
+    cube->menu.settings.upscaling.x5_glow = mlx_load_png("./settings_assets/x5_glow.png");
+    cube->menu.settings.upscaling.x6_glow = mlx_load_png("./settings_assets/x6_glow.png");
+    cube->menu.settings.upscaling.x7_glow = mlx_load_png("./settings_assets/x7_glow.png");
+    cube->menu.settings.upscaling.x8_glow = mlx_load_png("./settings_assets/x8_glow.png");
+    cube->menu.settings.upscaling.start_x15 = 0.089 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x15 = 0.11 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_x26 = 0.162 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x26 = 0.183 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_x37 = 0.235 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x37 = 0.256 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_x48 = 0.310 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.end_x48 = 0.331 * cube->screen_width_buff;
+    cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
+    cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
+    cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
+    cube->menu.settings.upscaling.end_y5678 = 0.9 * cube->screen_height_buff;
+    if(cube->upscaling == 1)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x1_glow;
+    else if(cube->upscaling == 2)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x2_glow;
+    else if(cube->upscaling == 3)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x3_glow;
+    else if(cube->upscaling == 4)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x4_glow;
+    else if(cube->upscaling == 5)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x5_glow;
+    else if(cube->upscaling == 6)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x6_glow;
+    else if(cube->upscaling == 7)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x7_glow;
+    else if(cube->upscaling == 8)
+        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x8_glow;
+
     cube->menu.settings.mouse_held = 0;
 
-    cube->menu.settings.fov.slider_start_y = 0.20 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.fov.slider_end_y = 0.24 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.fov.slider_start_x = 0.065 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.fov.slider_end_x = 0.354 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.fov.slider_start_y = 0.20 * cube->screen_height_buff;
+    cube->menu.settings.fov.slider_end_y = 0.24 * cube->screen_height_buff;
+    cube->menu.settings.fov.slider_start_x = 0.065 * cube->screen_width_buff;
+    cube->menu.settings.fov.slider_end_x = 0.354 * cube->screen_width_buff;
     cube->menu.settings.fov.min_fov = 30;
     cube->menu.settings.fov.max_fov = 150;
 
     cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
-    cube->menu.settings.mouse_sens.slider_start_y = 0.78 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.mouse_sens.slider_end_y = 0.81 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.mouse_sens.slider_start_x = 0.605 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.mouse_sens.slider_end_x = 0.895 * SCREEN_WIDTH_BUFF;
+    cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
+    cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
+    cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
+    cube->menu.settings.mouse_sens.slider_end_x = 0.895 * cube->screen_width_buff;
     cube->menu.settings.mouse_sens.min_sens = 0.0002;
     cube->menu.settings.mouse_sens.max_sens = 0.0040;
 
@@ -2278,40 +2440,40 @@ void ft_init(t_cube *cube)
     cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
     cube->menu.settings.resolution.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
     cube->menu.settings.resolution.res_1080_glow = mlx_load_png("./settings_assets/1920_1080_glow.png");
-    if(SCREEN_HEIGHT_BUFF == 1080)
+    if(cube->screen_height_buff == 1080)
         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow; 
-    if(SCREEN_HEIGHT_BUFF == 900)
+    if(cube->screen_height_buff == 900)
         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow; 
-    if(SCREEN_HEIGHT_BUFF == 720)
+    if(cube->screen_height_buff == 720)
         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow; 
-    if(SCREEN_HEIGHT_BUFF == 480)
+    if(cube->screen_height_buff == 480)
         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow; 
-    cube->menu.settings.resolution.start_x_1080 = 0.055 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.end_x_1080 = 0.175 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.start_x_900 = 0.245 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.end_x_900 = 0.358 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.start_x_720 = 0.057 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.end_x_720 = 0.173 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.start_x_480 = 0.265 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.end_x_480 = 0.365 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.resolution.start_y_1080_900 = 0.48 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.resolution.end_y_1080_900 = 0.51 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.resolution.start_y_720_480 = 0.59 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.resolution.end_y_720_480 = 0.62 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.resolution.start_x_1080 = 0.055 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_1080 = 0.175 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_900 = 0.245 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_900 = 0.358 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_720 = 0.057 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_720 = 0.173 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_x_480 = 0.265 * cube->screen_width_buff;
+    cube->menu.settings.resolution.end_x_480 = 0.365 * cube->screen_width_buff;
+    cube->menu.settings.resolution.start_y_1080_900 = 0.48 * cube->screen_height_buff;
+    cube->menu.settings.resolution.end_y_1080_900 = 0.51 * cube->screen_height_buff;
+    cube->menu.settings.resolution.start_y_720_480 = 0.59 * cube->screen_height_buff;
+    cube->menu.settings.resolution.end_y_720_480 = 0.62 * cube->screen_height_buff;
 
     cube->menu.settings.crosshair.border = mlx_load_png("./settings_assets/border.png");
     cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
-    cube->menu.settings.crosshair.start_x = 0.636 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.crosshair.end_x = 0.865 * SCREEN_WIDTH_BUFF;
-    cube->menu.settings.crosshair.start_y = 0.178 * SCREEN_HEIGHT_BUFF;
-    cube->menu.settings.crosshair.end_y = 0.58 * SCREEN_HEIGHT_BUFF;
+    cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
+    cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
+    cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
+    cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
 
     cube->menu.state = 0;
 
     cube->tilt_angle = 0.0;
     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
-    cube->tilt_addition_height = fabs(cube->shear_factor) * SCREEN_HEIGHT;
-    cube->tilt_addition_width = fabs(cube->shear_factor) * SCREEN_WIDTH;
+    cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+    cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
 
     cube->player.weapon.DMG = 50;
     cube->player.weapon.fire_rate = 2;
@@ -2338,21 +2500,21 @@ void ft_init(t_cube *cube)
     cube->heart.added_angle = 0;
     cube->heart.added_pitch = 0;
 
-    cube->crosshair_hori_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_GIRTH, 0, 0};
-    cube->crosshair_hori_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_LEN, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_GIRTH, 0, 0};
-    cube->crosshair_vert_start = (t_vect2){(SCREEN_WIDTH_BUFF / 2) - CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) - CROSSHAIR_LEN, 0, 0};
-    cube->crosshair_vert_end = (t_vect2){(SCREEN_WIDTH_BUFF / 2) + CROSSHAIR_GIRTH, (SCREEN_HEIGHT_BUFF / 2) + CROSSHAIR_LEN, 0, 0};
+    cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
+    cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
+    cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
+    cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
     cube->projectiles = ft_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
-    cube->prev_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
-    cube->new_buffer = ft_calloc((SCREEN_HEIGHT - cube->tilt_addition_height) * (SCREEN_WIDTH - cube->tilt_addition_width), 4);
-    cube->lerp_buffer = ft_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, 4);
-    cube->mod_rate = (cube->fov * RADIANT_RATE) / RES;
+    cube->prev_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->new_buffer = ft_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
+    cube->lerp_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
 
     cube->fps = 0;
     cube->grain = true;
     cube->pitch = 0.0;
-    cube->z_buffer = ft_calloc(SCREEN_WIDTH, sizeof(double));
-    cube->rays = ft_calloc(RES + 1, sizeof(t_ray));
+    cube->z_buffer = ft_calloc(cube->screen_width, sizeof(double));
+    cube->rays = ft_calloc(cube->res + 1, sizeof(t_ray));
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
     cube->moving = false;
@@ -2368,23 +2530,23 @@ void ft_init(t_cube *cube)
     cube->texture5 = mlx_load_png("./Monster_1.png");
     cube->texture6 = mlx_load_png("./job_app.png");
     cube->texture_died = mlx_load_png("./you_died.png");
-    cube->line_girth = (int)(SCREEN_WIDTH / RES);
+    cube->line_girth = (int)(cube->screen_width / cube->res);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
-    cube->mlx = mlx_init(SCREEN_WIDTH_BUFF, SCREEN_HEIGHT_BUFF, "cub3d", true);
+    cube->mlx = mlx_init(cube->screen_width_buff, cube->screen_height_buff, "cub3d", true);
     if(cube->mlx == NULL)
     {
         perror("mlx init error :");
         exit(EXIT_FAILURE);
     }
-    cube->image = mlx_new_image(cube->mlx, SCREEN_WIDTH_BUFF, SCREEN_HEIGHT_BUFF);
+    cube->image = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
     if(cube->image == NULL)
     {
         mlx_terminate(cube->mlx);
         perror("image init error :");
         exit(EXIT_FAILURE);
     }
-    cube->image_death = mlx_new_image(cube->mlx, SCREEN_WIDTH_BUFF, SCREEN_HEIGHT_BUFF);
+    cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
     if(cube->image_death == NULL)
     {
         mlx_terminate(cube->mlx);
@@ -2392,7 +2554,7 @@ void ft_init(t_cube *cube)
         exit(EXIT_FAILURE);
     }
     mlx_image_to_window(cube->mlx, cube->image, 0, 0);
-    mlx_set_mouse_pos(cube->mlx, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
 }
 
 int main()

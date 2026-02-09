@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/07 16:37:07 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/09 16:11:07 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 // 1920 / 4 = 480 || 1080 / 4 = 270
 
 # define UPSCALING_RATE 4
-# define SCREEN_WIDTH_BUFF 1920
-# define SCREEN_HEIGHT_BUFF 1080
+# define SCREEN_WIDTH_BUFF 1600
+# define SCREEN_HEIGHT_BUFF 900
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
 # define RES SCREEN_WIDTH
@@ -37,7 +37,6 @@
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 10
-# define WALL_SCALE (SCREEN_HEIGHT / 2)
 # define TURN_SPEED 0.0015
 # define GRID_SIZE 64.0f
 # define PLAYER_SPEED 500.0f
@@ -56,7 +55,7 @@
 # define RECOIL_LERP 0.81
 # define MOVE_LERP 0.1
 # define LERP_LERP 0.01
-# define move_increase (0.05 * SCREEN_HEIGHT)
+# define MOVE_INCREASE (0.05 * SCREEN_HEIGHT)
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
@@ -244,6 +243,31 @@ typedef struct s_resolution{
 
 }					t_resolution;
 
+typedef struct s_upscaling{
+
+	mlx_texture_t	*texture;
+	mlx_texture_t	*x1_glow;
+	mlx_texture_t	*x2_glow;
+	mlx_texture_t	*x3_glow;
+	mlx_texture_t	*x4_glow;
+	mlx_texture_t	*x5_glow;
+	mlx_texture_t	*x6_glow;
+	mlx_texture_t	*x7_glow;
+	mlx_texture_t	*x8_glow;
+	int				start_x15;
+	int				start_x26;
+	int				start_x37;
+	int				start_x48;
+	int				end_x15;
+	int				end_x26;
+	int				end_x37;
+	int				end_x48;
+	int				start_y1234;
+	int				start_y5678;
+	int				end_y1234;
+	int				end_y5678;
+}					t_upscaling;
+
 typedef struct s_crosshair{
 
 	int 			start_x;
@@ -282,19 +306,12 @@ typedef struct s_settings{
 	mlx_texture_t	*background;
 	mlx_texture_t	*bar_2;
 	mlx_texture_t	*slider_2;
-	mlx_texture_t	*x1_glow;
-	mlx_texture_t	*x2_glow;
-	mlx_texture_t	*x3_glow;
-	mlx_texture_t	*x4_glow;
-	mlx_texture_t	*x5_glow;
-	mlx_texture_t	*x6_glow;
-	mlx_texture_t	*x7_glow;
-	mlx_texture_t	*x8_glow;
 	t_held			mouse_held;
 	t_fov			fov;
 	t_resolution	resolution;
 	t_crosshair		crosshair;
 	t_mouse_sens	mouse_sens;
+	t_upscaling		upscaling;
 
 }	t_settings;
 
@@ -313,11 +330,14 @@ typedef struct s_cube
 	int				screen_height;
 	int				screen_width_buff;
 	int				screen_height_buff;
+	int				res;
 	int				fov;
 	int				init_fov;
 	int				prev_fov;
 	double			proj_dst;
 	double			half_fov_rad;
+	double			move_increase;
+	int				pitch_max;
 	char			**map;
 	char			**floor_map;
 	t_ray			*rays;
@@ -334,6 +354,7 @@ typedef struct s_cube
 	double			mod_rate;
 	int				line_girth;
 	double			mouse_sens;
+	int				upscaling;
 	mlx_texture_t	*texture;
 	mlx_texture_t	*texture2;
 	mlx_texture_t	*texture3;
@@ -374,3 +395,5 @@ bool				ft_check_limits(t_vect2 len);
 void				ft_limit_cords(t_vect2 *len);
 t_vect2				hori_first_point(t_cube *cube, t_ray *ray);
 t_vect2				vert_first_point(t_cube *cube, t_ray *ray);
+void 				ft_updated_res_init(t_cube *cube);
+void 				ft_updated_buff_init(t_cube *cube);
