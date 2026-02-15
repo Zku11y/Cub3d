@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/09 16:11:07 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/15 22:12:00 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
-# define LERP 0.7
+# define MAX_HP 200
+# define BLUR_MAX 0.06
+# define BLUR_MIN 0.5
+# define BLUR_LERP BLUR_MIN
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define FOV_LERP 0.01
@@ -121,6 +124,7 @@ typedef struct s_heart
 	double			last_angle;
 	double			added_angle;
 	double			added_pitch;
+	double			blur_lerp;
 }					t_heart;
 
 typedef enum s_state

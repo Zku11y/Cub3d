@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/09 16:30:24 by skully           ###   ########.fr       */
+/*   Updated: 2026/02/15 22:26:26 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void ft_angle_limit(double *angle)
         *angle = *angle - (2 * PI);
 }
 
-uint8_t ft_lerp_pixels(uint8_t new, uint8_t old){
-    return (new * LERP) + (old * (1.0 - LERP));
+uint8_t ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate){
+    return (new * lerp_rate) + (old * (1.0 - lerp_rate));
 }
 
 double ft_lerp_speed(double dst, double current){
@@ -1824,6 +1824,7 @@ void ft_heart(t_cube *cube){
     gettimeofday(&tv, NULL);
     long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
     
+    cube->heart.blur_lerp = (((double)cube->player.HP / (double)MAX_HP) * (BLUR_MIN - BLUR_MAX)) + BLUR_MAX;
     double frame_period = (double)(cube->player.HP);
     if(current_time - cube->heart.prev_time > frame_period){
         cube->heart.prev_time = current_time;
@@ -2070,7 +2071,7 @@ void state_machine(t_cube *cube){
         ft_game(cube);
         i = 0;
         while(i < cube->screen_height * cube->screen_width * 4){
-            cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i]);
+            cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i], cube->heart.blur_lerp);
             i++;
         }
         ft_tilt(cube);
@@ -2361,7 +2362,7 @@ void ft_init(t_cube *cube)
     cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
     cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
     cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.HP = 200;
+    cube->player.HP = MAX_HP;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
@@ -2499,6 +2500,7 @@ void ft_init(t_cube *cube)
     cube->heart.last_pitch = 0;
     cube->heart.added_angle = 0;
     cube->heart.added_pitch = 0;
+    cube->heart.blur_lerp = BLUR_LERP;
 
     cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
@@ -2557,9 +2559,14 @@ void ft_init(t_cube *cube)
     mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
 }
 
+void f(){
+    system("leaks -q cub3d");
+}
+
 int main()
 {
     t_cube cube;
+    // atexit(f);
     ft_map_init(&cube);
     // ft_parse(&cube);
     ft_init(&cube);
