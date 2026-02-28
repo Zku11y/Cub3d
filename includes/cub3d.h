@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/15 22:12:00 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/02/28 00:43:49 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,17 +114,18 @@ typedef struct s_weapon{
 
 typedef struct s_heart
 {
-	mlx_texture_t	*frame_0;
 	mlx_texture_t	*frame_1;
 	mlx_texture_t	*frame_2;
+	mlx_texture_t	*frame_3;
+	mlx_texture_t	*frame_4;
 	int				frame;
-	mlx_texture_t	*current_frame;
 	unsigned long	prev_time;
 	double			last_pitch;
 	double			last_angle;
 	double			added_angle;
 	double			added_pitch;
 	double			blur_lerp;
+	double			blood_op; // op : Opacity, just used op for less lengthy code :P
 }					t_heart;
 
 typedef enum s_state
