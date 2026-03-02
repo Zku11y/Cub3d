@@ -18,6 +18,7 @@ void free_nu(t_nc *nu)
     {
         ts = nu;
         nu = nu->next;
+        free(ts->hi);
         free_nu_map(ts->map);
         ts_free_one_nomap(ts);
     }

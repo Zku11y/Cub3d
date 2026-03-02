@@ -17,11 +17,11 @@ t_nc *ts_make_one(int fd)
         return (ts_free_one_nomap(nu), NULL);
     if (get_map(fd, nu))
         return (ts_free_one_nomap(nu), NULL);
-    if (rec_map(nu->map))
+    if (rec_map(nu->map, nu))
     {
         free_nu_map(nu->map);
         ts_free_one_nomap(nu);
-        ts_putstr_fd("ASS MAP NIGGA\n", 2);
+        ts_putstr_fd("ASS MAP\n", 2);
         return NULL;
     }
     return nu;

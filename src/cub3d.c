@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/02 06:02:54 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/02 16:03:29 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ void draw_player(t_cube *cube)
     offset = 3;
     if(cube->player.x < offset)
         cube->player.x = offset;
-    else if(cube->player.x > cube->screen_width)
-        cube->player.x = cube->screen_width - offset;
+    else if(cube->player.x > cube->map_x * GRID_SIZE)
+        cube->player.x = cube->map_x * GRID_SIZE - offset;
     if(cube->player.y < offset)
         cube->player.y = offset;
-    else if(cube->player.y > cube->screen_height)
-        cube->player.y = cube->screen_height - offset;
+    else if(cube->player.y > cube->map_y * GRID_SIZE)
+        cube->player.y = cube->map_y * GRID_SIZE - offset;
     x = cube->player.x - offset;
     while(x < (cube->player.x + offset))
     {
@@ -124,20 +124,20 @@ void draw_grid(t_cube *cube)
     int y = 0;
     int x = 0;
 
-    while(y < MAP_Y)
+    while(y < cube->map_y)
     {
         x = 0;
-        while(x < MAP_X)
+        while(x < cube->map_x)
         {
-            if(cube->map[y][x] == 1)
+            if(cube->map[y][x] == '1')
             {
-                if(y == 0 || cube->map[y - 1][x] == 0)
+                if(y == 0 || cube->map[y - 1][x] == '0')
                     grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, y * GRID_SIZE, true);
-                if(y == MAP_Y - 1 || cube->map[y + 1][x] == 0)
+                if(y == cube->map_y - 1 || cube->map[y + 1][x] == '0')
                     grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
-                if(x == 0 || cube->map[y][x - 1] == 0)
+                if(x == 0 || cube->map[y][x - 1] == '0')
                     grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, x * GRID_SIZE, false);
-                if(x == MAP_X - 1 || cube->map[y][x + 1] == 0)
+                if(x == cube->map_x - 1 || cube->map[y][x + 1] == '0')
                     grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
             }
             x++;
@@ -149,22 +149,22 @@ void draw_grid(t_cube *cube)
 void ft_mouvement_limits(t_cube *cube)
 {
     // printf("grid cords : (%d, %d), cords : (%d, %d)\n", cube->player.grid_x, cube->player.grid_y, cube->player.x, cube->player.y);
-    if(cube->map[cube->player.grid_y][cube->player.grid_x - 1] == 1)
+    if(cube->map[cube->player.grid_y][cube->player.grid_x - 1] == '1')
     {
         if(cube->player.x <= (GRID_SIZE * cube->player.grid_x) + WALL_DST)
             cube->player.x = (GRID_SIZE * cube->player.grid_x) + WALL_DST;
     }
-    if(cube->map[cube->player.grid_y][cube->player.grid_x + 1] == 1)
+    if(cube->map[cube->player.grid_y][cube->player.grid_x + 1] == '1')
     {
         if(cube->player.x >= (GRID_SIZE * (cube->player.grid_x + 1)) - WALL_DST)
             cube->player.x = (GRID_SIZE * (cube->player.grid_x + 1)) - WALL_DST;
     }
-    if(cube->map[cube->player.grid_y - 1][cube->player.grid_x] == 1)
+    if(cube->map[cube->player.grid_y - 1][cube->player.grid_x] == '1')
     {
         if(cube->player.y <= (GRID_SIZE * cube->player.grid_y) + WALL_DST)
             cube->player.y = (GRID_SIZE * cube->player.grid_y) + WALL_DST;
     }
-    if(cube->map[cube->player.grid_y + 1][cube->player.grid_x] == 1)
+    if(cube->map[cube->player.grid_y + 1][cube->player.grid_x] == '1')
     {
         if(cube->player.y >= (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST)
             cube->player.y = (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST;
@@ -264,8 +264,8 @@ void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
     t_vect2 add;
     t_vect2 mod;
 
-    ft_limit_cords(&start);
-    ft_limit_cords(&finish);
+    ft_limit_cords(cube, &start);
+    ft_limit_cords(cube, &finish);
     mod.x = finish.x - start.x; // -GRID_SIZE
     mod.y = finish.y - start.y; // -100
     if(fabs(mod.x) >= fabs(mod.y))
@@ -440,9 +440,9 @@ uint32_t shade_color(uint32_t base, double distance)
 //     int y;
 
 //     x = 0;
-//     while(x < MAP_X + MAP_SIZE){
+//     while(x < cube->map_x + MAP_SIZE){
 //         y = 0;
-//         while(y < MAP_Y + MAP_SIZE){
+//         while(y < cube->map_y + MAP_SIZE){
 //             if(cube->map[(int)(y / GRID_SIZE)][(int)(x / GRID_SIZE)] == 1)
 //                 cube->prev_buffer[(cube->screen_width * (int)y * 4) + ((int)x * 4) + 0] = 255;
 //                 cube->prev_buffer[(cube->screen_width * (int)y * 4) + ((int)x * 4) + 1] = 0;
@@ -622,9 +622,9 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
         return;
     }
 
-    if(cube->map[(int)((projectile->y + (projectile->dir.y * projectile->speed)) / GRID_SIZE)][(int)(projectile->x / GRID_SIZE)] == 1)
+    if(cube->map[(int)((projectile->y + (projectile->dir.y * projectile->speed)) / GRID_SIZE)][(int)(projectile->x / GRID_SIZE)] == '1')
         return((void)(projectile->in_use = 0));
-    if(cube->map[(int)(projectile->y / GRID_SIZE)][(int)((projectile->x + (projectile->dir.x * projectile->speed)) / GRID_SIZE)] == 1)
+    if(cube->map[(int)(projectile->y / GRID_SIZE)][(int)((projectile->x + (projectile->dir.x * projectile->speed)) / GRID_SIZE)] == '1')
         return((void)(projectile->in_use = 0));
 
 
@@ -1843,7 +1843,7 @@ void ft_tilt(t_cube *cube){
     if(cube->flash.flashed && cube->player.delay == false)
         cube->flash.flashed = false;
 
-    printf("r : %lf, g : %lf, b : %lf\n", cube->flash.r, cube->flash.g, cube->flash.b);
+    // printf("r : %lf, g : %lf, b : %lf\n", cube->flash.r, cube->flash.g, cube->flash.b);
 
     cube->flash.r = ft_lerp_fov(cube->flash.dst_r, cube->flash.r, FLASH_LERP);
     cube->flash.g = ft_lerp_fov(cube->flash.dst_g, cube->flash.g, FLASH_LERP);
@@ -2146,14 +2146,14 @@ void ft_update(void *param)
     // clear_image(cube);
     // ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height / 2, 0, 0}, 0x000000ff);
     // ft_rectangle(cube, (t_vect2){0, cube->screen_height / 2, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x57493eff);
-    // draw_grid(cube);
-    // draw_player(cub/e);
     gettimeofday(&tv, NULL);
  
-
+    printf("player : (%d, %d)\n", (int)cube->player.x, (int)cube->player.y);
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
+    draw_grid(cube);
+    draw_player(cube);
     // ft_ray_init(cube, &cube->player.ray, cube->player.angle);
     // ft_draw_rays(cube);
     // ft_ceiling(cube);
@@ -2196,38 +2196,40 @@ void ft_parse(t_cube *cube)
     }
 }
 
-static const int g_map_template[MAP_Y][MAP_X] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+int g_map_template[MAP_Y][MAP_X] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1},
+    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1}
 };
 
-void ft_map_init(t_cube *cube)
+void ft_map_init(t_cube *cube, t_nc *nu)
 {
-    cube->map = ft_calloc(MAP_Y + 1, sizeof(char *));
-    cube->floor_map = ft_calloc(MAP_Y + 1, sizeof(char *));
+
+    printf("im here\n");
+    cube->map = ft_calloc(nu->y + 1, sizeof(char *));
+    cube->floor_map = ft_calloc(nu->y + 1, sizeof(char *));
     if (cube->map == NULL)
     {
         mlx_terminate(cube->mlx);
@@ -2242,9 +2244,9 @@ void ft_map_init(t_cube *cube)
     }
 
     int i = 0;
-    while (i < MAP_Y)
+    while (i < nu->y)
     {
-        cube->map[i] = ft_calloc(MAP_X + 1, sizeof(char));
+        cube->map[i] = ft_calloc(nu->x + 1, sizeof(char));
         if (cube->map[i] == NULL)
         {
             mlx_terminate(cube->mlx);
@@ -2254,17 +2256,19 @@ void ft_map_init(t_cube *cube)
         i++;
     }
 
-    int y = 0;
-    while (y < MAP_Y)
-    {
-        int x = 0;
-        while (x < MAP_X)
-        {
-            cube->map[y][x] = (char)g_map_template[y][x];
-            x++;
-        }
-        y++;
-    }
+    cube->map = nu->map;
+
+    // int y = 0;
+    // while (y < MAP_Y)
+    // {
+    //     int x = 0;
+    //     while (x < MAP_X)
+    //     {
+    //         cube->map[y][x] = (char)g_map_template[y][x] + 48;
+    //         x++;
+    //     }
+    //     y++;
+    // }
 }
 
 void ft_init_enemies(t_cube *cube){
@@ -2283,12 +2287,12 @@ void ft_init_enemies(t_cube *cube){
         cube->enemy[i].atk_delay = 1;
         cube->enemy[i].DMG = 20;
         cube->enemy[i].hitbox_len = 50; // COMEBACK TO THIS ITS VERY IMPORTANT, THE HITBOX NEEDS TO SCALE WITH THE ENEMY DISTANCE FROM PLAYER EACH FRAME
-        int posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
-        int posY = (int)(ft_rand(&seed) % (int)(MAP_Y * GRID_SIZE));
+        int posX = (int)(ft_rand(&seed) % (int)(cube->map_x * GRID_SIZE));
+        int posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
         // printf("1 : posX : %d, posY : %d\n", posX, posY);
-        while(cube->map[(int)(posY / GRID_SIZE)][(int)(posX / GRID_SIZE)] == 1 || (posX >= (MAP_X * GRID_SIZE) || posY >= (MAP_Y * GRID_SIZE))){
-            posX = (int)(ft_rand(&seed) % (int)(MAP_X * GRID_SIZE));
-            posY = (int)(ft_rand(&seed) % (int)(MAP_Y * GRID_SIZE));
+        while(cube->map[(int)(posY / GRID_SIZE)][(int)(posX / GRID_SIZE)] == '1' || (posX >= (cube->map_x * GRID_SIZE) || posY >= (cube->map_y * GRID_SIZE))){
+            posX = (int)(ft_rand(&seed) % (int)(cube->map_x * GRID_SIZE));
+            posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
             // printf("2 : posX : %d, posY : %d\n", posX, posY);
         }
         cube->enemy[i].x = (posX);
@@ -2392,12 +2396,14 @@ void ft_updated_buff_init(t_cube *cube){
 }
 
 
-void ft_init(t_cube *cube)
+void ft_init(t_cube *cube, t_nc *nu)
 {
     struct timeval tv;
 
     // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
+    cube->map_x = nu->x;
+    cube->map_y = nu->y;
     cube->upscaling = UPSCALING_RATE;
     cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
@@ -2412,8 +2418,8 @@ void ft_init(t_cube *cube)
     cube->mouse_sens = TURN_SPEED;
     cube->proj_dst = ((double)cube->screen_width / 2.0) / tan(((double)cube->fov / 2.0) * RADIANT_RATE);
     cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
-    cube->player.x = GRID_SIZE + (GRID_SIZE / 2);
-    cube->player.y = GRID_SIZE + (GRID_SIZE / 2);
+    cube->player.x = GRID_SIZE * (double)nu->hi->x;
+    cube->player.y = GRID_SIZE * (double)nu->hi->y;
     cube->player.HP = MAX_HP;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
@@ -2426,6 +2432,7 @@ void ft_init(t_cube *cube)
     cube->player.last_LR = LEFT;
     cube->player.attacked = false;
     cube->player.hit = false;
+    cube->player.angle = 0;
     cube->state = MENU;
     cube->prev_state = MENU;
 
@@ -2599,7 +2606,6 @@ void ft_init(t_cube *cube)
     ft_init_enemies(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-    cube->player.angle = 0;
     cube->texture = mlx_load_png("./s2 Concrete Squares Grey.png");
     cube->texture2 = mlx_load_png("./Tiles_Rectangle_Grey_1.png");
     cube->texture3 = mlx_load_png("./Concrete_02_Grey_1.png");
@@ -2667,8 +2673,6 @@ void ts_print_nu(t_nc *nu)
         ts_putstr_fd("EA ", 1);
         ts_putstr_fd(ts->imgs[EA], 1);
         ts_putstr_fd("|\n", 1);
-        // printf("F0x%08x|\n", nu->flor);
-        // printf("C0x%08x|\n", nu->ceil);
         ts_putstr_fd("F::", 1);
         ts_putstr_fd("R", 1);
         ts_putnbr_fd(ts->flor_r, 1);
@@ -2690,6 +2694,13 @@ void ts_print_nu(t_nc *nu)
         ts_putstr_fd(" |", 1);
         ts_putstr_fd("y", 1);
         ts_putnbr_fd(ts->y, 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putchar_fd(ts->hi->who, 1);
+        ts_putstr_fd("::", 1);
+        ts_putstr_fd("x", 1);
+        ts_putnbr_fd(ts->hi->x, 1);
+        ts_putstr_fd("|y", 1);
+        ts_putnbr_fd(ts->hi->y, 1);
         ts_putstr_fd("|\n", 1);
         x = 0;
         while (ts->map[x])
@@ -2721,12 +2732,49 @@ int main(int ac, char **av)
     if (ac < 2)
     return 1;
     t_cube cube;
-    ft_map_init(&cube);
     nu = ts_pars(&av[1]);
     if (!nu)
-        return 1;
+    return 1;
     ts_print_nu(nu); // -- ts just prnt REMOVE IT
-    ft_init(&cube);
+    ft_map_init(&cube, nu);
+
+    int y = 0;
+    int x = 0;
+
+    while(y < nu->y){
+        x = 0;
+        while(x < nu->x){
+            if(nu->map[y][x] == '1')
+                printf("\e[1;31m1\e[0m");
+            else
+                printf("\e[1;32m%c\e[0m", nu->map[y][x]);
+            x++;
+        }
+        printf("\n");
+        y++;
+    }
+
+    // printf("\n\n");
+
+    // y = 0;
+    // x = 0;
+
+    // while(y < MAP_Y){
+    //     x = 0;
+    //     while(x < MAP_X){
+    //         if(cube.map[y][x] == '1')
+    //             printf("\e[1;31m1\e[0m");
+    //         else
+    //             printf("\e[1;32m%c\e[0m", cube.map[y][x]);
+    //         x++;
+    //     }
+    //     printf("\n");
+    //     y++;
+    // }
+
+
+    ft_init(&cube, nu);
+    printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube.player.x, cube.player.y, nu->hi->x, nu->hi->y);
     mlx_loop_hook(cube.mlx, ft_update, &cube);
     mlx_loop(cube.mlx);
     mlx_terminate(cube.mlx);

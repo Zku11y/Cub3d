@@ -93,7 +93,7 @@ void map_cln(char **map, int x, int y, t_plyr *hi)
         j = 0;
         while (map[i][j])
         {
-            if (map[i][j] == '8')
+            if (map[i][j] == '8' || map[i][j] == ' ')
                 map[i][j] = '0';
             j++;
         }
@@ -102,7 +102,7 @@ void map_cln(char **map, int x, int y, t_plyr *hi)
     map[x][y] = hi->who;
 }
 
-int rec_map(char **map)
+int rec_map(char **map, t_nc *nu)
 {
     int m_x;
     int m_y;
@@ -118,8 +118,8 @@ int rec_map(char **map)
     hi = get_plyr(map);
     if  (!hi)
         return 1;
+    nu->hi = hi;
     ret = rec(map, hi->y, hi->x, m_x, m_y);
     map_cln(map, hi->y, hi->x, hi);
-    free(hi);
     return ret;
 }

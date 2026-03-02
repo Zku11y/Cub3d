@@ -45,6 +45,7 @@ typedef struct s_nc
     // mlx_texture_t *txtrs[4];
     struct s_nc *next;
     char **map;
+    t_plyr *hi;
     int x;
     int y;
     int flor_r;
@@ -71,7 +72,7 @@ void ts_free_one_nomap(t_nc *nu); // 1
 t_nc *ts_put(t_teto *teto);  // 1
 void free_nu_map(char **nu); // 1
 int get_map(int fd, t_nc *nu); // 1
-int rec_map(char **map); // 1
+int rec_map(char **map, t_nc *nu); // 1
 t_nc *ts_pars(char **arg); // 1
 void free_nu(t_nc *nu); // 1
 t_nc *ts_make_one(int fd); // 1

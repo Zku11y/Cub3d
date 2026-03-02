@@ -30,8 +30,6 @@ void ts_print_nu(t_nc *nu)
         ts_putstr_fd("EA ", 1);
         ts_putstr_fd(ts->imgs[EA], 1);
         ts_putstr_fd("|\n", 1);
-        // printf("F0x%08x|\n", nu->flor);
-        // printf("C0x%08x|\n", nu->ceil);
         ts_putstr_fd("F::", 1);
         ts_putstr_fd("R", 1);
         ts_putnbr_fd(ts->flor_r, 1);
@@ -53,6 +51,13 @@ void ts_print_nu(t_nc *nu)
         ts_putstr_fd(" |", 1);
         ts_putstr_fd("y", 1);
         ts_putnbr_fd(ts->y, 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putchar(ts->hi->who, 1);
+        ts_putstr_fd("::", 1);
+        ts_putstr_fd("x", 1);
+        ts_putnbr_fd(ts->hi->x, 1);
+        ts_putstr_fd("|y", 1);
+        ts_putnbr_fd(ts->hi->y, 1);
         ts_putstr_fd("|\n", 1);
         x = 0;
         while (ts->map[x])

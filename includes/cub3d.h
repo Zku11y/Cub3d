@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/02 05:35:54 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/02 15:05:42 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@
 # define PLAYER_SPEED 500.0f
 # define HORI 0
 # define VERT 1
-# define MAP_X 25
-# define MAP_Y 25
+# define MAP_X 30
+# define MAP_Y 30
 # define MAX_DST 1000
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
@@ -368,6 +368,8 @@ typedef struct s_cube
 	double			half_fov_rad;
 	double			move_increase;
 	int				pitch_max;
+	int				map_x;
+	int				map_y;
 	char			**map;
 	char			**floor_map;
 	t_ray			*rays;
@@ -425,8 +427,8 @@ typedef struct s_cube
 
 #endif
 
-bool				ft_check_limits(t_vect2 len);
-void				ft_limit_cords(t_vect2 *len);
+bool				ft_check_limits(t_cube *cube, t_vect2 len);
+void				ft_limit_cords(t_cube *cube, t_vect2 *len);
 t_vect2				hori_first_point(t_cube *cube, t_ray *ray);
 t_vect2				vert_first_point(t_cube *cube, t_ray *ray);
 void 				ft_updated_res_init(t_cube *cube);
