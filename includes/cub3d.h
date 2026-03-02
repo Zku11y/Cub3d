@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/02/28 00:43:49 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/02 05:15:22 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@
 # define FOV_LERP 0.01
 # define RECOIL_LERP 0.81
 # define MOVE_LERP 0.1
+# define FLASH_LERP 0.03
 # define LERP_LERP 0.01
 # define MOVE_INCREASE (0.05 * SCREEN_HEIGHT)
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
@@ -74,6 +75,7 @@
 # define MAX_RECOIL 30
 # define HITBOX_DST 30
 # define TILT_ANGLE 2
+# define BLOOD_ANIM_DELAY 20
 
 
 typedef enum s_direction
@@ -175,7 +177,14 @@ typedef struct s_player
 	bool			delay;
 	t_weapon		weapon;
 	bool			attacked;
+	bool			hit;
 }					t_player;
+
+typedef struct s_blood_explosion
+{
+	mlx_texture_t *frame[12];
+
+} t_blood_explosion;
 
 typedef struct s_enemy
 {
@@ -185,8 +194,10 @@ typedef struct s_enemy
 	int				DMG;
 	int				atk_delay;
 	unsigned long	atk_time;
+	unsigned long	blood_time;
 	bool			delay;
 	bool			dead;
+	int				blood_frame_index;
 	double			player_dst;
 	int				start_y;
 	int				end_y;
@@ -327,6 +338,18 @@ typedef struct s_menu{
 	int			   state;
 }					t_menu;
 
+typedef struct s_flash{
+
+	double r;
+	double g;
+	double b;
+	double dst_r;
+	double dst_g;
+	double dst_b;
+	bool flashed;
+
+}	t_flash;
+
 typedef struct s_cube
 {
 	mlx_t			*mlx;
@@ -391,6 +414,10 @@ typedef struct s_cube
 	t_menu			menu;
 
 	t_heart			heart;
+
+	t_flash			flash;
+
+	t_blood_explosion	blood_explosion;
 	// t_audio			*audio;
 }					t_cube;
 

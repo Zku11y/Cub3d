@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/02/28 01:25:47 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/02 05:16:15 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -617,6 +617,7 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     if(player_dst < HITBOX_DST){
         printf("player shot!\n");
         cube->player.HP -= projectile->DMG;
+        cube->player.hit = true;
         projectile->in_use = 0;
         return;
     }
@@ -737,11 +738,30 @@ void ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir){
 
 void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
-    if(enemy->dead)
-        return;
-
     struct timeval tv;
     gettimeofday(&tv, NULL);
+    long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+
+    if(enemy->dead){
+        if(enemy->blood_frame_index >= 12)
+            return;
+        if(current_time - enemy->blood_time > BLOOD_ANIM_DELAY){
+            enemy->blood_time = current_time;
+            enemy->blood_frame_index++;
+        }
+        if(enemy->blood_frame_index < 12)
+            texture = cube->blood_explosion.frame[enemy->blood_frame_index];
+        else
+            return;
+    }
+    
+    if(enemy->dead == false && enemy->HP <= 0) 
+    {
+        texture = cube->blood_explosion.frame[enemy->blood_frame_index];
+        enemy->blood_time = current_time;
+        enemy->dead = true;
+    }
+
     enemy->player_dst = sqrt((cube->player.x - enemy->x) * (cube->player.x - enemy->x) + (cube->player.y - enemy->y) * (cube->player.y - enemy->y));
     if(enemy->player_dst > MAX_DST)
         return;
@@ -749,7 +769,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     player_dir.x *= ENEMY_SPEED;
     player_dir.y *= ENEMY_SPEED;
 
-    if(enemy->player_dst < MIN_ATK_DST){
+    if(enemy->dead == false && enemy->player_dst < MIN_ATK_DST){
         if(enemy->delay == false){
             printf("enemy has shot!\n");
             ft_init_projectile(cube, enemy, &player_dir);
@@ -827,7 +847,6 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     //     }
     // }
 
-    if(enemy->HP <= 0) enemy->dead = true;
 
     double tex_x = 0;
     double tex_y = 0;
@@ -1806,17 +1825,31 @@ void ft_tilt(t_cube *cube){
     max_new_x = cube->screen_width - (cube->tilt_addition_width * 2);
     max_new_y = cube->screen_height - (cube->tilt_addition_height * 2);
 
-
-    double r = 1.0;
-    double g = 1.0;
-    double b = 1.0;
-    if(cube->player.delay == true && ((int)(time - cube->player.weapon.frame_delay) < 100)){
-        printf("FLASHED!\n");
-        r = 2.0;
-        g = 2.0;
-        b = 2.0;
+    if(!cube->flash.flashed && (cube->player.delay == true || cube->player.hit == true)){
+        if(cube->player.delay == true){
+            cube->flash.r = 2.0;
+            cube->flash.g = 2.0;
+            cube->flash.b = 2.0;
+        }
+        else{
+            cube->flash.r = 3.0;
+            cube->flash.g = 0.2;
+            cube->flash.b = 0.2;
+        }
+        cube->flash.flashed = true;
+        cube->player.hit = false;
     }
-   x = 0;
+
+    if(cube->flash.flashed && cube->player.delay == false)
+        cube->flash.flashed = false;
+
+    printf("r : %lf, g : %lf, b : %lf\n", cube->flash.r, cube->flash.g, cube->flash.b);
+
+    cube->flash.r = ft_lerp_fov(cube->flash.dst_r, cube->flash.r, FLASH_LERP);
+    cube->flash.g = ft_lerp_fov(cube->flash.dst_g, cube->flash.g, FLASH_LERP);
+    cube->flash.b = ft_lerp_fov(cube->flash.dst_b, cube->flash.b, FLASH_LERP);
+
+    x = 0;
     while(x < max_new_x){
         y = 0;
         prev_x = (double)x + cube->tilt_addition_width;
@@ -1826,14 +1859,14 @@ void ft_tilt(t_cube *cube){
             if(prev_y >= 0 && prev_y < cube->screen_height){
                 int new_dst = (max_new_x * y * 4) + (x * 4);
                 int prev_dst = (cube->screen_width * (int)prev_y * 4) + ((int)prev_x * 4);
-                cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0] * r;
-                if((uint8_t)cube->prev_buffer[prev_dst + 0] * r > 255)
+                cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r;
+                if((uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r > 255)
                     cube->new_buffer[new_dst + 0] = (uint8_t)255;
-                cube->new_buffer[new_dst + 1] = (uint8_t)cube->prev_buffer[prev_dst + 1] * g;
-                if((uint8_t)cube->prev_buffer[prev_dst + 1] * g > 255)
+                cube->new_buffer[new_dst + 1] = (uint8_t)cube->prev_buffer[prev_dst + 1] * cube->flash.g;
+                if((uint8_t)cube->prev_buffer[prev_dst + 1] * cube->flash.g > 255)
                     cube->new_buffer[new_dst + 1] = (uint8_t)255;
-                cube->new_buffer[new_dst + 2] = (uint8_t)cube->prev_buffer[prev_dst + 2] * b;
-                if((uint8_t)cube->prev_buffer[prev_dst + 2] * b > 255)
+                cube->new_buffer[new_dst + 2] = (uint8_t)cube->prev_buffer[prev_dst + 2] * cube->flash.b;
+                if((uint8_t)cube->prev_buffer[prev_dst + 2] * cube->flash.b > 255)
                     cube->new_buffer[new_dst + 2] = (uint8_t)255;
                 cube->new_buffer[new_dst + 3] = (uint8_t)cube->prev_buffer[prev_dst + 3];
             }
@@ -1865,15 +1898,27 @@ void ft_tilt(t_cube *cube){
 
 void ft_heart(t_cube *cube){
     if((double)cube->player.HP > (0.8 * (double)MAX_HP))
-        return;
+        return ((void)(cube->heart.blur_lerp = BLUR_LERP));
     else if((double)cube->player.HP > (0.6 * (double)MAX_HP) && (double)cube->player.HP <= (0.8 * (double)MAX_HP))
-        ft_prev_renderer(cube, cube->heart.frame_1, 0, 0);
+{
+    ft_prev_renderer(cube, cube->heart.frame_1, 0, 0);
+    cube->heart.blur_lerp = 0.4;
+}
     else if((double)cube->player.HP > (0.4 * (double)MAX_HP) && (double)cube->player.HP <= (0.6 * (double)MAX_HP))
-        ft_prev_renderer(cube, cube->heart.frame_2, 0, 0);
+{
+    ft_prev_renderer(cube, cube->heart.frame_2, 0, 0);
+    cube->heart.blur_lerp = 0.3;
+}
     else if((double)cube->player.HP > (0.2 * (double)MAX_HP) && (double)cube->player.HP <= (0.4 * (double)MAX_HP))
-        ft_prev_renderer(cube, cube->heart.frame_3, 0, 0);
-    else
-        ft_prev_renderer(cube, cube->heart.frame_4, 0, 0);
+{
+    ft_prev_renderer(cube, cube->heart.frame_3, 0, 0);
+    cube->heart.blur_lerp = 0.2;
+}
+else
+{
+    ft_prev_renderer(cube, cube->heart.frame_4, 0, 0);
+    cube->heart.blur_lerp = 0.1;
+}
 }
 
 void ft_weapon(t_cube *cube){
@@ -1925,8 +1970,8 @@ void ft_weapon(t_cube *cube){
         // printf("here\n");
     
         if(!cube->player.weapon.pitch_back){
-            cube->pitch += cube->player.weapon.pitch_increase;
-            cube->player.weapon.pitch_increased += cube->player.weapon.pitch_increase;
+            cube->pitch += cube->player.weapon.pitch_increase * 4.0;
+            cube->player.weapon.pitch_increased += cube->player.weapon.pitch_increase * 4.0;
             if(cube->player.weapon.pitch_increased >= MAX_RECOIL){
                 cube->player.weapon.pitch_increased = 0;
                 cube->player.weapon.pitch_dst = cube->player.weapon.pitch_og;
@@ -2153,16 +2198,16 @@ void ft_parse(t_cube *cube)
 
 static const int g_map_template[MAP_Y][MAP_X] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
@@ -2232,6 +2277,7 @@ void ft_init_enemies(t_cube *cube){
 
     while(i < ENEMY_NUM){
         cube->enemy[i].HP = 100;
+        cube->enemy[i].blood_frame_index = 0;
         cube->enemy[i].dead = false;
         cube->enemy[i].delay = false;
         cube->enemy[i].atk_delay = 1;
@@ -2379,6 +2425,7 @@ void ft_init(t_cube *cube)
     cube->player.last_FB = UP;
     cube->player.last_LR = LEFT;
     cube->player.attacked = false;
+    cube->player.hit = false;
     cube->state = MENU;
     cube->prev_state = MENU;
 
@@ -2489,7 +2536,7 @@ void ft_init(t_cube *cube)
     cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
     cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
     cube->player.weapon.texture = cube->player.weapon.idle_texture;
-    cube->player.weapon.pitch_increase = 3;
+    cube->player.weapon.pitch_increase = 1;
     cube->player.weapon.pitch_increased = 0;
     cube->player.weapon.idle_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
     cube->player.weapon.idle_frame = 0;
@@ -2508,6 +2555,27 @@ void ft_init(t_cube *cube)
     cube->heart.added_pitch = 0;
     cube->heart.blur_lerp = BLUR_LERP;
     cube->heart.blood_op = 0.0;
+
+    cube->blood_explosion.frame[0] = mlx_load_png("./blood_explosion/1_0.png");
+    cube->blood_explosion.frame[1] = mlx_load_png("./blood_explosion/1_1.png");
+    cube->blood_explosion.frame[2] = mlx_load_png("./blood_explosion/1_2.png");
+    cube->blood_explosion.frame[3] = mlx_load_png("./blood_explosion/1_3.png");
+    cube->blood_explosion.frame[4] = mlx_load_png("./blood_explosion/1_4.png");
+    cube->blood_explosion.frame[5] = mlx_load_png("./blood_explosion/1_5.png");
+    cube->blood_explosion.frame[6] = mlx_load_png("./blood_explosion/1_6.png");
+    cube->blood_explosion.frame[7] = mlx_load_png("./blood_explosion/1_7.png");
+    cube->blood_explosion.frame[8] = mlx_load_png("./blood_explosion/1_8.png");
+    cube->blood_explosion.frame[9] = mlx_load_png("./blood_explosion/1_9.png");
+    cube->blood_explosion.frame[10] = mlx_load_png("./blood_explosion/1_10.png");
+    cube->blood_explosion.frame[11] = mlx_load_png("./blood_explosion/1_11.png");
+
+    cube->flash.r = 1.0;
+    cube->flash.g = 1.0;
+    cube->flash.b = 1.0;
+    cube->flash.dst_r = 1.0;
+    cube->flash.dst_g = 1.0;
+    cube->flash.dst_b = 1.0;
+    cube->flash.flashed = false;
 
     cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
