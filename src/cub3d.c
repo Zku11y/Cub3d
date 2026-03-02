@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/02 05:16:15 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/02 06:02:54 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2638,18 +2638,102 @@ void f(){
     system("leaks -q cub3d");
 }
 
-int main()
+void ts_print_nu(t_nc *nu)
 {
+    t_nc *ts;
+    int i;
+    int x;
+
+    ts = nu;
+    i = 0;
+    if (!ts)
+        return ts_putstr_fd("nu is NULL\n", 2);
+    ts_putstr_fd("\n", 1); 
+    ts_putstr_fd("ts START::\n", 1);
+    while (ts)
+    {
+        ts_putstr_fd("nu=", 1);
+        ts_putnbr_fd(i, 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putstr_fd("NO ", 1);
+        ts_putstr_fd(ts->imgs[NO], 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putstr_fd("SO ", 1);
+        ts_putstr_fd(ts->imgs[SO], 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putstr_fd("WE ", 1);
+        ts_putstr_fd(ts->imgs[WE], 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putstr_fd("EA ", 1);
+        ts_putstr_fd(ts->imgs[EA], 1);
+        ts_putstr_fd("|\n", 1);
+        // printf("F0x%08x|\n", nu->flor);
+        // printf("C0x%08x|\n", nu->ceil);
+        ts_putstr_fd("F::", 1);
+        ts_putstr_fd("R", 1);
+        ts_putnbr_fd(ts->flor_r, 1);
+        ts_putstr_fd("G", 1);
+        ts_putnbr_fd(ts->flor_g, 1);
+        ts_putstr_fd("B", 1);
+        ts_putnbr_fd(ts->flor_b, 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putstr_fd("C::", 1);
+        ts_putstr_fd("R", 1);
+        ts_putnbr_fd(ts->ceil_r, 1);
+        ts_putstr_fd("G", 1);
+        ts_putnbr_fd(ts->ceil_g, 1);
+        ts_putstr_fd("B", 1);
+        ts_putnbr_fd(ts->ceil_b, 1);
+        ts_putstr_fd("|\n", 1);
+        ts_putstr_fd("x", 1);
+        ts_putnbr_fd(ts->x, 1);
+        ts_putstr_fd(" |", 1);
+        ts_putstr_fd("y", 1);
+        ts_putnbr_fd(ts->y, 1);
+        ts_putstr_fd("|\n", 1);
+        x = 0;
+        while (ts->map[x])
+        {
+            ts_putstr_fd("|", 1);
+            ts_putstr_fd(ts->map[x], 1);
+            ts_putstr_fd("|\n", 1);
+            x++;
+        }
+        ts_putstr_fd("\n", 1);
+        ts_putstr_fd("end.\n", 1);
+        ts = ts->next;
+        i++;
+    }
+    ts_putstr_fd("ts END.\n", 1);
+}
+
+// void feet()
+// {
+//     system("leaks cub-tst");
+// }
+
+int main(int ac, char **av)
+{
+    t_nc *nu;
+
+    nu = NULL;
+//     atexit(feet);
+    if (ac < 2)
+    return 1;
     t_cube cube;
-    // atexit(f);
     ft_map_init(&cube);
-    // ft_parse(&cube);
+    nu = ts_pars(&av[1]);
+    if (!nu)
+        return 1;
+    ts_print_nu(nu); // -- ts just prnt REMOVE IT
     ft_init(&cube);
     mlx_loop_hook(cube.mlx, ft_update, &cube);
     mlx_loop(cube.mlx);
     mlx_terminate(cube.mlx);
+    free_nu(nu);
     return 0;
 }
+
 
 
 

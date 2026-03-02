@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/02 05:15:22 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/02 05:35:54 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # include <stdlib.h>
 # include <time.h>
 // 1920 / 4 = 480 || 1080 / 4 = 270
+
+# include "../pars_ing/head.h"
 
 # define UPSCALING_RATE 4
 # define SCREEN_WIDTH_BUFF 1600

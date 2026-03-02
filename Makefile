@@ -1,6 +1,18 @@
 NAME = cub3d
 
-SRC = src/cub3d.c src/raycasting.c
+SRC = src/cub3d.c src/raycasting.c \
+	./pars_ing/ts_data/ts_teto.c \
+	./pars_ing/ts_check/rec_map.c\
+	./pars_ing/ts_check/dot_chk.c \
+	./pars_ing/ts_check/ts_check_data.c \
+	./pars_ing/ts_data/ts_key.c \
+	./pars_ing/ts_data/ts_opn.c \
+	./pars_ing/ts_data/ts_put.c \
+	./pars_ing/ts_data/ts_rgb.c \
+	./pars_ing/ts_data/ts_val.c \
+	./pars_ing/ts_data/ts_read.c \
+	./pars_ing/ts_data/ts_read_map.c \
+	./pars_ing/ts_pars.c \
 
 OBJ = $(SRC:.c=.o)
 
@@ -9,6 +21,9 @@ MLX_INC = -I$(MLX_DIR)
 
 LIBFT_DIR = libft
 LIBFT_INC = -I$(LIBFT_DIR)
+
+LIBTS_D = libts
+LIBTS_A = $(LIBTS_D)/libts.a
 
 CUB3D_HEADER = includes/cub3d.h
 
@@ -45,7 +60,7 @@ endif
 
 ifeq ($(FT_UNAME), Linux)
 	MLX_LIB = ./lib/libmlx42_linux.a
-	LIBFT_LIB = ./lib/libft_linux.a
+	LIBFT_LIB = ./lib/libft_linux.a ./pars_ing/libts/libts.a
 	LDFLAGS = -ldl -lglfw -pthread -lm
 
 endif
