@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/02 16:03:29 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/02 20:44:26 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,13 +131,13 @@ void draw_grid(t_cube *cube)
         {
             if(cube->map[y][x] == '1')
             {
-                if(y == 0 || cube->map[y - 1][x] == '0')
+                if(y == 0 || cube->map[y - 1][x] != '1')
                     grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, y * GRID_SIZE, true);
-                if(y == cube->map_y - 1 || cube->map[y + 1][x] == '0')
+                if(y == cube->map_y - 1 || cube->map[y + 1][x] != '1')
                     grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
-                if(x == 0 || cube->map[y][x - 1] == '0')
+                if(x == 0 || cube->map[y][x - 1] != '1')
                     grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, x * GRID_SIZE, false);
-                if(x == cube->map_x - 1 || cube->map[y][x + 1] == '0')
+                if(x == cube->map_x - 1 || cube->map[y][x + 1] != '1')
                     grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
             }
             x++;

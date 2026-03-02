@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/02 15:05:42 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/02 20:41:10 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 10
 # define TURN_SPEED 0.0015
-# define GRID_SIZE 64.0f
+# define GRID_SIZE 32.0f
 # define PLAYER_SPEED 500.0f
 # define HORI 0
 # define VERT 1
