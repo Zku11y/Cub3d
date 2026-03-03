@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/03 18:58:21 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/03 22:54:05 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,40 @@ double ft_lerp_move(double dst, double current, double lerp_rate){
     return (current * lerp_rate) + (dst * (1.0 - lerp_rate));
 }
 
+void draw_map_entity(t_cube *cube, double pos_x, double pos_y, double angle){
+    int y;
+    int x;
+    int offset;
+
+    offset = 5;
+    x = pos_x - offset;
+    while(x < (pos_x + offset))
+    {
+        y = pos_y - offset;
+        while(y < (pos_y + offset))
+        {
+            double dst = sqrt(((double)y - pos_y) * ((double)y - pos_y) + ((double)x - pos_x) * ((double)x - pos_x));
+            if(dst < (double)offset)
+                mlx_put_pixel(cube->image, x, y, 0xff1100ff);
+            y++;
+        }
+        x++;
+    }
+
+    int arrow_start_x = pos_x + cos(cube->player.angle) * 13;
+    int arrow_start_y = pos_y + sin(cube->player.angle) * 13;
+
+    double arrow_angle = PI / 4;
+
+    int left_x = arrow_start_x - (cos(cube->player.angle - arrow_angle) * 9);
+    int left_y = arrow_start_y - (sin(cube->player.angle - arrow_angle) * 9);
+
+    int right_x = arrow_start_x - (cos(cube->player.angle + arrow_angle) * 9);
+    int right_y = arrow_start_y - (sin(cube->player.angle + arrow_angle) * 9);
+
+    ft_draw_line(cube, (t_vect2){arrow_start_x, arrow_start_y, 0, 0}, (t_vect2){left_x, left_y, 0, 0}, 0xff1100ff);
+    ft_draw_line(cube, (t_vect2){arrow_start_x, arrow_start_y, 0, 0}, (t_vect2){right_x, right_y, 0, 0}, 0xff1100ff);
+}
 
 void draw_player(t_cube *cube)
 {
@@ -91,19 +125,20 @@ void draw_player(t_cube *cube)
     //     cube->player.y = offset;
     // else if(cube->player.y > cube->map_y * GRID_SIZE)
     //     cube->player.y = cube->map_y * GRID_SIZE - offset;
-    x = (cube->mini_map_size / 2) - offset;
-    while(x < ((cube->mini_map_size / 2) + offset))
-    {
-        y = (cube->mini_map_size / 2) - offset;
-        while(y < ((cube->mini_map_size / 2) + offset))
-        {
-            double dst = sqrt(((double)y - (cube->mini_map_size / 2.0)) * ((double)y - (cube->mini_map_size / 2.0)) + ((double)x - (cube->mini_map_size / 2.0)) * ((double)x - (cube->mini_map_size / 2.0)));
-            if(dst < (double)offset)
-                mlx_put_pixel(cube->image, x, y, 0xff1100ff);
-            y++;
-        }
-        x++;
-    }
+    draw_map_entity(cube, cube->mini_map_size / 2, cube->mini_map_size / 2, cube->player.angle);
+    // x = (cube->mini_map_size / 2) - offset;
+    // while(x < ((cube->mini_map_size / 2) + offset))
+    // {
+    //     y = (cube->mini_map_size / 2) - offset;
+    //     while(y < ((cube->mini_map_size / 2) + offset))
+    //     {
+    //         double dst = sqrt(((double)y - (cube->mini_map_size / 2.0)) * ((double)y - (cube->mini_map_size / 2.0)) + ((double)x - (cube->mini_map_size / 2.0)) * ((double)x - (cube->mini_map_size / 2.0)));
+    //         if(dst < (double)offset)
+    //             mlx_put_pixel(cube->image, x, y, 0xff1100ff);
+    //         y++;
+    //     }
+    //     x++;
+    // }
 }
 
 void grid_line(t_cube *cube, int start, int finish, int cst, bool axis_x)
@@ -216,30 +251,56 @@ void draw_grid(t_cube *cube)
     }
 }
 
-void ft_mouvement_limits(t_cube *cube)
+void ft_mouvement_limits(t_cube *cube, double new_x, double new_y)
 {
-    // printf("grid cords : (%d, %d), cords : (%d, %d)\n", cube->player.grid_x, cube->player.grid_y, cube->player.x, cube->player.y);
-    if(cube->map[cube->player.grid_y][cube->player.grid_x - 1] == '1')
+
+    double check_x = new_x;
+
+    if (new_x > cube->player.x)
+        check_x = new_x + WALL_DST;
+    else if (new_x < cube->player.x)
+        check_x = new_x - WALL_DST;
+
+    int grid_x = (int)(check_x / GRID_SIZE);
+
+    if(cube->map[cube->player.grid_y][grid_x] != '1')
     {
-        if(cube->player.x <= (GRID_SIZE * cube->player.grid_x) + WALL_DST)
-            cube->player.x = (GRID_SIZE * cube->player.grid_x) + WALL_DST;
+        cube->player.x = new_x;
     }
-    if(cube->map[cube->player.grid_y][cube->player.grid_x + 1] == '1')
-    {
-        if(cube->player.x >= (GRID_SIZE * (cube->player.grid_x + 1)) - WALL_DST)
-            cube->player.x = (GRID_SIZE * (cube->player.grid_x + 1)) - WALL_DST;
+    else{
+        if(new_x > cube->player.x)
+            cube->player.x = ((cube->player.grid_x + 1) * GRID_SIZE) - WALL_DST;        
+        else
+            cube->player.x = ((cube->player.grid_x) * GRID_SIZE) + WALL_DST;        
+        cube->player.current_speed_FB_X = 0;
+        cube->player.current_speed_LR_X = 0;    
     }
-    if(cube->map[cube->player.grid_y - 1][cube->player.grid_x] == '1')
+    
+    cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);    
+    
+    double check_y = new_y;    
+
+    if (new_y > cube->player.y)
+        check_y = new_y + WALL_DST;
+    else if (new_y < cube->player.y) 
+        check_y = new_y - WALL_DST;
+
+    int grid_y = (int)(check_y / GRID_SIZE);
+
+    if(cube->map[grid_y][cube->player.grid_x] != '1')
     {
-        if(cube->player.y <= (GRID_SIZE * cube->player.grid_y) + WALL_DST)
-            cube->player.y = (GRID_SIZE * cube->player.grid_y) + WALL_DST;
+        cube->player.y = new_y;
     }
-    if(cube->map[cube->player.grid_y + 1][cube->player.grid_x] == '1')
-    {
-        if(cube->player.y >= (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST)
-            cube->player.y = (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST;
+    else{
+        if(new_y > cube->player.y)
+            cube->player.y = ((cube->player.grid_y + 1) * GRID_SIZE) - WALL_DST;        
+        else
+            cube->player.y = ((cube->player.grid_y) * GRID_SIZE) + WALL_DST;        
+        cube->player.current_speed_FB_Y = 0;
+        cube->player.current_speed_LR_Y = 0;    
     }
 
+    cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);    
 }
 
 void ft_turn(t_cube *cube)
@@ -323,11 +384,11 @@ void ft_mouvement(t_cube *cube)
     cube->player.current_speed_FB_Y = ft_lerp_speed(dst_speed_FB_Y, cube->player.current_speed_FB_Y);
     cube->player.current_speed_LR_X = ft_lerp_speed(dst_speed_LR_X, cube->player.current_speed_LR_X);
     cube->player.current_speed_LR_Y = ft_lerp_speed(dst_speed_LR_Y, cube->player.current_speed_LR_Y);
-    cube->player.x += cube->player.current_speed_FB_X + cube->player.current_speed_LR_X;
-    cube->player.y += cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y;
+    // cube->player.x += cube->player.current_speed_FB_X + cube->player.current_speed_LR_X;
+    // cube->player.y += cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y;
+    ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-    ft_mouvement_limits(cube);
 }
 
 void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)

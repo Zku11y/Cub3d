@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/03 17:59:18 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/03 22:06:15 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define FOV 70
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
-# define WALL_DST 3
+# define WALL_DST 5
 # define TURN_SPEED 0.0015
 # define GRID_SIZE 32.0f
 # define PLAYER_SPEED 200.0f
@@ -436,3 +436,4 @@ t_vect2				hori_first_point(t_cube *cube, t_ray *ray);
 t_vect2				vert_first_point(t_cube *cube, t_ray *ray);
 void 				ft_updated_res_init(t_cube *cube);
 void 				ft_updated_buff_init(t_cube *cube);
+void 				ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color);
