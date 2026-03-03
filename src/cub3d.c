@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/03 14:39:36 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/03 16:39:09 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,11 @@ void draw_bg(t_cube *cube, int x, int y, uint32_t color){
         j = 0;
         while(j < GRID_SIZE){
 
-            if(x + i - start_x >= 0 && x + i - start_x <= MINI_MAP_SIZE && y + j - start_y >= 0 && y + j - start_y <= MINI_MAP_SIZE)
+            double dst = sqrt(((double)(x + i - start_x) - MINI_MAP_SIZE / 2.0f) * ((double)(x + i - start_x) - MINI_MAP_SIZE / 2.0f) + ((double)(y + j - start_y) - MINI_MAP_SIZE / 2.0f) * ((double)(y + j - start_y) - MINI_MAP_SIZE / 2.0f));
+            // if(x + i - start_x >= 0 && x + i - start_x <= MINI_MAP_SIZE && y + j - start_y >= 0 && y + j - start_y <= MINI_MAP_SIZE)
+            if(dst < 150.0)
                 mlx_put_pixel(cube->image, x + i - start_x, y + j - start_y, color);
+
             j++;
         }
         i++;
@@ -170,28 +173,41 @@ void draw_grid(t_cube *cube)
     int y = start_y;
     int x = start_x;
 
+    int i = 0;
+    int j;
+
+    while(i < MINI_MAP_SIZE){
+        j = 0;
+        while(j < MINI_MAP_SIZE){
+            double dst = sqrt(((double)i - (MINI_MAP_SIZE / 2.0)) * ((double)i - (MINI_MAP_SIZE / 2.0)) + ((double)j - (MINI_MAP_SIZE / 2.0)) * ((double)j - (MINI_MAP_SIZE / 2.0)));
+            if(dst < 150.0)
+                mlx_put_pixel(cube->image, i, j, 0x000000ff);
+            j++;
+        }
+        i++;
+    }
+
     while(y < end_y)
     {
         x = start_x;
         while(x < end_x)
         {
-            printf("cords : (%d, %d), max : (%d, %d), real max : (%d, %d)\n", x, y, end_x, end_y, cube->map_x, cube->map_y);
             if(cube->map[y][x] == '1')
                 draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0x000000ff);
             else
                 draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0xffffffff);
 
-            if(cube->map[y][x] == '1')
-            {
-                if(y == 0 || cube->map[y - 1][x] != '1')
-                    grid_line(cube, (x) * GRID_SIZE, (x + 1) * GRID_SIZE, (y) * GRID_SIZE, true);
-                if(y == cube->map_y - 1 || cube->map[y + 1][x] != '1')
-                    grid_line(cube, (x) * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
-                if(x == 0 || cube->map[y][x - 1] != '1')
-                    grid_line(cube, (y) * GRID_SIZE, (y + 1) * GRID_SIZE, (x) * GRID_SIZE, false);
-                if(x == cube->map_x - 1 || cube->map[y][x + 1] != '1')
-                    grid_line(cube, (y) * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
-            }
+            // if(cube->map[y][x] == '1')
+            // {
+            //     if(y == 0 || cube->map[y - 1][x] != '1')
+            //         grid_line(cube, (x) * GRID_SIZE, (x + 1) * GRID_SIZE, (y) * GRID_SIZE, true);
+            //     if(y == cube->map_y - 1 || cube->map[y + 1][x] != '1')
+            //         grid_line(cube, (x) * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
+            //     if(x == 0 || cube->map[y][x - 1] != '1')
+            //         grid_line(cube, (y) * GRID_SIZE, (y + 1) * GRID_SIZE, (x) * GRID_SIZE, false);
+            //     if(x == cube->map_x - 1 || cube->map[y][x + 1] != '1')
+            //         grid_line(cube, (y) * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
+            // }
             x++;
         }
         y++;
