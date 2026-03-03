@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/02 20:41:10 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/03 00:09:09 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define CUB3D_H
 
 # include "../MLX42/include/MLX42/MLX42.h"
-# include "../libft/libft.h"
 // # include "miniaudio.h"
 # include <fcntl.h>
 # include <stdio.h>
@@ -78,7 +77,9 @@
 # define HITBOX_DST 30
 # define TILT_ANGLE 2
 # define BLOOD_ANIM_DELAY 20
-
+# define MINI_MAP_SIZE 200
+# define MINI_MAP_GRID_SIZE MINI_MAP_SIZE / GRID_SIZE
+# define MINI_MAP_OFFSET 20
 
 typedef enum s_direction
 {

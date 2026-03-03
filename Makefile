@@ -19,13 +19,10 @@ OBJ = $(SRC:.c=.o)
 MLX_DIR = includes
 MLX_INC = -I$(MLX_DIR)
 
-LIBFT_DIR = libft
-LIBFT_INC = -I$(LIBFT_DIR)
+LIBTS_DIR = ./pars_ing/libts
+LIBTS_INC = -I$(LIBTS_DIR)
 
-LIBTS_D = libts
-LIBTS_A = $(LIBTS_D)/libts.a
-
-CUB3D_HEADER = includes/cub3d.h
+CUB3D_HEADER = includes/cub3d.h pars_ing/head.h
 
 CC = cc
 
@@ -33,9 +30,9 @@ FT_UNAME := $(shell uname -s)
 
 # Linux Compilation
 
-# CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
-# CFLAGS = -g -O3 $(MLX_INC) $(LIBFT_INC)
-# CFLAGS = -g -O1 -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC)
+# CFLAGS = -g -Wall -Wextra -Werror $(MLX_INC) $(LIBTS_INC)
+# CFLAGS = -g -O3 $(MLX_INC) $(LIBTS_INC)
+# CFLAGS = -g -O1 -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address -Wall -Wextra -Werror $(MLX_INC) $(LIBTS_INC)
 # LDFLAGS = -ldl -lglfw -pthread -lm
 
 # $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
@@ -43,14 +40,14 @@ FT_UNAME := $(shell uname -s)
 
 # MacOS Compilation :
 
-# CFLAGS = -g -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBFT_INC) \
+# CFLAGS = -g -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBTS_INC) \
 #          -I/Users/mdakni/.brew/opt/glfw/include 
-# CFLAGS = -g -fsanitize=address $(MLX_INC) $(LIBFT_INC)
-CFLAGS = -O3 $(MLX_INC) $(LIBFT_INC)
+# CFLAGS = -g -fsanitize=address $(MLX_INC) $(LIBTS_INC)
+CFLAGS = -O3 $(MLX_INC) $(LIBTS_INC)
 
 ifeq ($(FT_UNAME), Darwin)
 	MLX_LIB = ./lib/libmlx42_mac.a
-	LIBFT_LIB = ./lib/libft_mac.a
+	LIBTS_LIB = ./pars_ing/libts/libts.a
 	LDFLAGS = -L"/goinfre/mdakni/homebrew/Cellar/glfw/3.4/lib" -lglfw \
           -framework Cocoa -framework OpenGL -framework IOKit 
 # LDFLAGS = -lglfw -framework Cocoa -framework OpenGL -framework IOKit \
@@ -60,16 +57,16 @@ endif
 
 ifeq ($(FT_UNAME), Linux)
 	MLX_LIB = ./lib/libmlx42_linux.a
-	LIBFT_LIB = ./lib/libft_linux.a ./pars_ing/libts/libts.a
+	LIBTS_LIB = ./pars_ing/libts/libts.a
 	LDFLAGS = -ldl -lglfw -pthread -lm
 
 endif
 
-$(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
-	$(CC) $(CFLAGS) $(OBJ) $(MLX_LIB) $(LIBFT_LIB) $(LDFLAGS) -o $(NAME)
+$(NAME): $(OBJ) $(MLX_LIB) $(LIBTS_LIB)
+	$(CC) $(CFLAGS) $(OBJ) $(MLX_LIB) $(LIBTS_LIB) $(LDFLAGS) -o $(NAME)
 
-$(LIBFT_LIB):
-	make -C $(LIBFT_DIR)
+$(LIBTS_LIB):
+	make -C $(LIBTS_DIR)
 
 %.o: %.c $(CUB3D_HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@

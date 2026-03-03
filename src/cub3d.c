@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/02 20:44:26 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/03 00:08:05 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void clear_image(t_cube *cube)
 {
     int buffer_size = cube->screen_height * cube->screen_width * 4;
-    ft_memset(cube->image->pixels, 0, buffer_size);
+    ts_memset(cube->image->pixels, 0, buffer_size);
 }
 
 unsigned long ft_rand(unsigned long *seed){
@@ -2228,8 +2228,8 @@ void ft_map_init(t_cube *cube, t_nc *nu)
 {
 
     printf("im here\n");
-    cube->map = ft_calloc(nu->y + 1, sizeof(char *));
-    cube->floor_map = ft_calloc(nu->y + 1, sizeof(char *));
+    cube->map = ts_calloc(nu->y + 1, sizeof(char *));
+    cube->floor_map = ts_calloc(nu->y + 1, sizeof(char *));
     if (cube->map == NULL)
     {
         mlx_terminate(cube->mlx);
@@ -2246,7 +2246,7 @@ void ft_map_init(t_cube *cube, t_nc *nu)
     int i = 0;
     while (i < nu->y)
     {
-        cube->map[i] = ft_calloc(nu->x + 1, sizeof(char));
+        cube->map[i] = ts_calloc(nu->x + 1, sizeof(char));
         if (cube->map[i] == NULL)
         {
             mlx_terminate(cube->mlx);
@@ -2309,7 +2309,7 @@ void ft_init_enemies(t_cube *cube){
 //     ma_uint64 length;
 //     ma_uint64 now;
 
-//     cube->audio = ft_calloc(1, sizeof(t_audio));
+//     cube->audio = ts_calloc(1, sizeof(t_audio));
 //     if(ma_engine_init(NULL, &cube->audio->engine) != MA_SUCCESS){
 //         printf("failed to init audio engine :(\n");
 //         exit(1);
@@ -2336,11 +2336,11 @@ void ft_updated_res_init(t_cube *cube){
     free(cube->lerp_buffer);
     free(cube->z_buffer);
     free(cube->rays);
-    cube->prev_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->new_buffer = ft_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
-    cube->lerp_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->rays = ft_calloc(cube->res + 1, sizeof(t_ray));
-    cube->z_buffer = ft_calloc(cube->screen_width + 1, sizeof(double));
+    cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->new_buffer = ts_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
+    cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
+    cube->z_buffer = ts_calloc(cube->screen_width + 1, sizeof(double));
     cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
     cube->line_girth = (int)(cube->screen_width / cube->res);
     cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
@@ -2588,21 +2588,21 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
     cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
     cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
-    cube->projectiles = ft_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
-    cube->prev_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->new_buffer = ft_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
-    cube->lerp_buffer = ft_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->projectiles = ts_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
+    cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+    cube->new_buffer = ts_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
+    cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
     cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
 
     cube->fps = 0;
     cube->grain = true;
     cube->pitch = 0.0;
-    cube->z_buffer = ft_calloc(cube->screen_width, sizeof(double));
-    cube->rays = ft_calloc(cube->res + 1, sizeof(t_ray));
+    cube->z_buffer = ts_calloc(cube->screen_width, sizeof(double));
+    cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
     cube->init_t = tv.tv_sec;
     cube->final_t = tv.tv_sec;
     cube->moving = false;
-    cube->enemy = ft_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
+    cube->enemy = ts_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
     ft_init_enemies(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
