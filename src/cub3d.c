@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/03 22:54:05 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/03 22:55:34 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,16 +95,16 @@ void draw_map_entity(t_cube *cube, double pos_x, double pos_y, double angle){
         x++;
     }
 
-    int arrow_start_x = pos_x + cos(cube->player.angle) * 13;
-    int arrow_start_y = pos_y + sin(cube->player.angle) * 13;
+    int arrow_start_x = pos_x + cos(angle) * 13;
+    int arrow_start_y = pos_y + sin(angle) * 13;
 
     double arrow_angle = PI / 4;
 
-    int left_x = arrow_start_x - (cos(cube->player.angle - arrow_angle) * 9);
-    int left_y = arrow_start_y - (sin(cube->player.angle - arrow_angle) * 9);
+    int left_x = arrow_start_x - (cos(angle - arrow_angle) * 9);
+    int left_y = arrow_start_y - (sin(angle - arrow_angle) * 9);
 
-    int right_x = arrow_start_x - (cos(cube->player.angle + arrow_angle) * 9);
-    int right_y = arrow_start_y - (sin(cube->player.angle + arrow_angle) * 9);
+    int right_x = arrow_start_x - (cos(angle + arrow_angle) * 9);
+    int right_y = arrow_start_y - (sin(angle + arrow_angle) * 9);
 
     ft_draw_line(cube, (t_vect2){arrow_start_x, arrow_start_y, 0, 0}, (t_vect2){left_x, left_y, 0, 0}, 0xff1100ff);
     ft_draw_line(cube, (t_vect2){arrow_start_x, arrow_start_y, 0, 0}, (t_vect2){right_x, right_y, 0, 0}, 0xff1100ff);
