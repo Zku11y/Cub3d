@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/03 00:09:09 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/03 13:37:55 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define WALL_DST 10
 # define TURN_SPEED 0.0015
 # define GRID_SIZE 32.0f
-# define PLAYER_SPEED 500.0f
+# define PLAYER_SPEED 200.0f
 # define HORI 0
 # define VERT 1
 # define MAP_X 30
@@ -77,9 +77,8 @@
 # define HITBOX_DST 30
 # define TILT_ANGLE 2
 # define BLOOD_ANIM_DELAY 20
-# define MINI_MAP_SIZE 200
+# define MINI_MAP_SIZE 400.0f
 # define MINI_MAP_GRID_SIZE MINI_MAP_SIZE / GRID_SIZE
-# define MINI_MAP_OFFSET 20
 
 typedef enum s_direction
 {

@@ -47,7 +47,7 @@ CFLAGS = -O3 $(MLX_INC) $(LIBTS_INC)
 
 ifeq ($(FT_UNAME), Darwin)
 	MLX_LIB = ./lib/libmlx42_mac.a
-	LIBTS_LIB = ./pars_ing/libts/libts.a
+	LIBTS_LIB = ./lib/libts_mac.a
 	LDFLAGS = -L"/goinfre/mdakni/homebrew/Cellar/glfw/3.4/lib" -lglfw \
           -framework Cocoa -framework OpenGL -framework IOKit 
 # LDFLAGS = -lglfw -framework Cocoa -framework OpenGL -framework IOKit \
@@ -57,7 +57,7 @@ endif
 
 ifeq ($(FT_UNAME), Linux)
 	MLX_LIB = ./lib/libmlx42_linux.a
-	LIBTS_LIB = ./pars_ing/libts/libts.a
+	LIBTS_LIB = ./lib/libts_linux.a
 	LDFLAGS = -ldl -lglfw -pthread -lm
 
 endif

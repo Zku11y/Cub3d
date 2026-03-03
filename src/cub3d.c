@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/03 00:08:05 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/03 14:39:36 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,19 +83,19 @@ void draw_player(t_cube *cube)
     int offset;
 
     offset = 3;
-    if(cube->player.x < offset)
-        cube->player.x = offset;
-    else if(cube->player.x > cube->map_x * GRID_SIZE)
-        cube->player.x = cube->map_x * GRID_SIZE - offset;
-    if(cube->player.y < offset)
-        cube->player.y = offset;
-    else if(cube->player.y > cube->map_y * GRID_SIZE)
-        cube->player.y = cube->map_y * GRID_SIZE - offset;
-    x = cube->player.x - offset;
-    while(x < (cube->player.x + offset))
+    // if(cube->player.x < offset)
+    //     cube->player.x = offset;
+    // else if(cube->player.x > cube->map_x * GRID_SIZE)
+    //     cube->player.x = cube->map_x * GRID_SIZE - offset;
+    // if(cube->player.y < offset)
+    //     cube->player.y = offset;
+    // else if(cube->player.y > cube->map_y * GRID_SIZE)
+    //     cube->player.y = cube->map_y * GRID_SIZE - offset;
+    x = (MINI_MAP_SIZE / 2) - offset;
+    while(x < ((MINI_MAP_SIZE / 2) + offset))
     {
-        y = cube->player.y - offset;
-        while(y < (cube->player.y + offset))
+        y = (MINI_MAP_SIZE / 2) - offset;
+        while(y < ((MINI_MAP_SIZE / 2) + offset))
         {
             mlx_put_pixel(cube->image, x, y, 0xff1100ff);
             y++;
@@ -107,38 +107,90 @@ void draw_player(t_cube *cube)
 void grid_line(t_cube *cube, int start, int finish, int cst, bool axis_x)
 {
     int i;
+    int start_y = (int)((cube->player.y) - (MINI_MAP_SIZE / 2.0));
+    int start_x = (int)((cube->player.x) - (MINI_MAP_SIZE / 2.0));
+
+    int x_min = (cube->player.x - (MINI_MAP_SIZE / 2.0));
+    int x_max = (cube->player.x + (MINI_MAP_SIZE / 2.0));
+    int y_min = (cube->player.y - (MINI_MAP_SIZE / 2.0));
+    int y_max = (cube->player.y + (MINI_MAP_SIZE / 2.0));
 
     i = start;
     while(i < finish)
     {
-        if(axis_x)
-            mlx_put_pixel(cube->image, i, cst, 0xffffffff);
-        else
-            mlx_put_pixel(cube->image, cst, i, 0xffffffff);
+        if(axis_x && i > x_min && i < x_max && cst > y_min && cst < y_max){
+            if((i - start_x) >= 0 && (i - start_x) <= MINI_MAP_SIZE && (cst - start_y) >= 0 && (cst - start_y) <= MINI_MAP_SIZE)
+                mlx_put_pixel(cube->image, i - start_x, cst - start_y, 0xffffffff);
+        }
+        else if(!axis_x && i > y_min && i < y_max && cst > x_min && cst < x_max){
+            if((i - start_y) >= 0 && (i - start_y) <= MINI_MAP_SIZE && (cst - start_x) >= 0 && (cst - start_x) <= MINI_MAP_SIZE)
+                mlx_put_pixel(cube->image, cst - start_x, i - start_y, 0xffffffff);
+        }
+        i++;
+    }
+}
+
+void draw_bg(t_cube *cube, int x, int y, uint32_t color){
+    int start_y = (int)((cube->player.y) - (MINI_MAP_SIZE / 2.0));
+    int start_x = (int)((cube->player.x) - (MINI_MAP_SIZE / 2.0));
+
+    // int x_min = (cube->player.x - (MINI_MAP_SIZE / 2.0));
+    // int x_max = (cube->player.x + (MINI_MAP_SIZE / 2.0));
+    // int y_min = (cube->player.y - (MINI_MAP_SIZE / 2.0));
+    // int y_max = (cube->player.y + (MINI_MAP_SIZE / 2.0));
+    
+    int i = 0;
+    int j;
+    while(i < GRID_SIZE){
+        j = 0;
+        while(j < GRID_SIZE){
+
+            if(x + i - start_x >= 0 && x + i - start_x <= MINI_MAP_SIZE && y + j - start_y >= 0 && y + j - start_y <= MINI_MAP_SIZE)
+                mlx_put_pixel(cube->image, x + i - start_x, y + j - start_y, color);
+            j++;
+        }
         i++;
     }
 }
 
 void draw_grid(t_cube *cube)
 {
-    int y = 0;
-    int x = 0;
+    int start_y = (int)((cube->player.y / GRID_SIZE) - (MINI_MAP_GRID_SIZE / 2));
+    int start_x = (int)((cube->player.x / GRID_SIZE) - (MINI_MAP_GRID_SIZE / 2));
+    if(start_y < 0) start_y = 0;
+    if(start_x < 0) start_x = 0;
 
-    while(y < cube->map_y)
+    int end_y = start_y + (MINI_MAP_GRID_SIZE);
+    int end_x = start_x + (MINI_MAP_GRID_SIZE);
+    if(end_y > cube->map_y)
+        end_y = cube->map_y;
+    if(end_x > cube->map_x)
+        end_x = cube->map_x;
+
+    int y = start_y;
+    int x = start_x;
+
+    while(y < end_y)
     {
-        x = 0;
-        while(x < cube->map_x)
+        x = start_x;
+        while(x < end_x)
         {
+            printf("cords : (%d, %d), max : (%d, %d), real max : (%d, %d)\n", x, y, end_x, end_y, cube->map_x, cube->map_y);
+            if(cube->map[y][x] == '1')
+                draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0x000000ff);
+            else
+                draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0xffffffff);
+
             if(cube->map[y][x] == '1')
             {
                 if(y == 0 || cube->map[y - 1][x] != '1')
-                    grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, y * GRID_SIZE, true);
+                    grid_line(cube, (x) * GRID_SIZE, (x + 1) * GRID_SIZE, (y) * GRID_SIZE, true);
                 if(y == cube->map_y - 1 || cube->map[y + 1][x] != '1')
-                    grid_line(cube, x * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
+                    grid_line(cube, (x) * GRID_SIZE, (x + 1) * GRID_SIZE, (y + 1) * GRID_SIZE, true);
                 if(x == 0 || cube->map[y][x - 1] != '1')
-                    grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, x * GRID_SIZE, false);
+                    grid_line(cube, (y) * GRID_SIZE, (y + 1) * GRID_SIZE, (x) * GRID_SIZE, false);
                 if(x == cube->map_x - 1 || cube->map[y][x + 1] != '1')
-                    grid_line(cube, y * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
+                    grid_line(cube, (y) * GRID_SIZE, (y + 1) * GRID_SIZE, (x + 1) * GRID_SIZE, false);
             }
             x++;
         }
@@ -2056,8 +2108,8 @@ void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    ft_draw_enemies(cube);
-    ft_draw_proj(cube);
+    // ft_draw_enemies(cube);
+    // ft_draw_proj(cube);
     ft_weapon(cube);
     ft_heart(cube);
     ft_fov_mod(cube);
