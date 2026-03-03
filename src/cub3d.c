@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/03 16:39:09 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/03 18:58:21 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void draw_player(t_cube *cube)
     int x;
     int offset;
 
-    offset = 3;
+    offset = 5;
     // if(cube->player.x < offset)
     //     cube->player.x = offset;
     // else if(cube->player.x > cube->map_x * GRID_SIZE)
@@ -91,13 +91,15 @@ void draw_player(t_cube *cube)
     //     cube->player.y = offset;
     // else if(cube->player.y > cube->map_y * GRID_SIZE)
     //     cube->player.y = cube->map_y * GRID_SIZE - offset;
-    x = (MINI_MAP_SIZE / 2) - offset;
-    while(x < ((MINI_MAP_SIZE / 2) + offset))
+    x = (cube->mini_map_size / 2) - offset;
+    while(x < ((cube->mini_map_size / 2) + offset))
     {
-        y = (MINI_MAP_SIZE / 2) - offset;
-        while(y < ((MINI_MAP_SIZE / 2) + offset))
+        y = (cube->mini_map_size / 2) - offset;
+        while(y < ((cube->mini_map_size / 2) + offset))
         {
-            mlx_put_pixel(cube->image, x, y, 0xff1100ff);
+            double dst = sqrt(((double)y - (cube->mini_map_size / 2.0)) * ((double)y - (cube->mini_map_size / 2.0)) + ((double)x - (cube->mini_map_size / 2.0)) * ((double)x - (cube->mini_map_size / 2.0)));
+            if(dst < (double)offset)
+                mlx_put_pixel(cube->image, x, y, 0xff1100ff);
             y++;
         }
         x++;
@@ -107,23 +109,23 @@ void draw_player(t_cube *cube)
 void grid_line(t_cube *cube, int start, int finish, int cst, bool axis_x)
 {
     int i;
-    int start_y = (int)((cube->player.y) - (MINI_MAP_SIZE / 2.0));
-    int start_x = (int)((cube->player.x) - (MINI_MAP_SIZE / 2.0));
+    int start_y = (int)((cube->player.y) - (cube->mini_map_size / 2.0));
+    int start_x = (int)((cube->player.x) - (cube->mini_map_size / 2.0));
 
-    int x_min = (cube->player.x - (MINI_MAP_SIZE / 2.0));
-    int x_max = (cube->player.x + (MINI_MAP_SIZE / 2.0));
-    int y_min = (cube->player.y - (MINI_MAP_SIZE / 2.0));
-    int y_max = (cube->player.y + (MINI_MAP_SIZE / 2.0));
+    int x_min = (cube->player.x - (cube->mini_map_size / 2.0));
+    int x_max = (cube->player.x + (cube->mini_map_size / 2.0));
+    int y_min = (cube->player.y - (cube->mini_map_size / 2.0));
+    int y_max = (cube->player.y + (cube->mini_map_size / 2.0));
 
     i = start;
     while(i < finish)
     {
         if(axis_x && i > x_min && i < x_max && cst > y_min && cst < y_max){
-            if((i - start_x) >= 0 && (i - start_x) <= MINI_MAP_SIZE && (cst - start_y) >= 0 && (cst - start_y) <= MINI_MAP_SIZE)
+            if((i - start_x) >= 0 && (i - start_x) <= cube->mini_map_size && (cst - start_y) >= 0 && (cst - start_y) <= cube->mini_map_size)
                 mlx_put_pixel(cube->image, i - start_x, cst - start_y, 0xffffffff);
         }
         else if(!axis_x && i > y_min && i < y_max && cst > x_min && cst < x_max){
-            if((i - start_y) >= 0 && (i - start_y) <= MINI_MAP_SIZE && (cst - start_x) >= 0 && (cst - start_x) <= MINI_MAP_SIZE)
+            if((i - start_y) >= 0 && (i - start_y) <= cube->mini_map_size && (cst - start_x) >= 0 && (cst - start_x) <= cube->mini_map_size)
                 mlx_put_pixel(cube->image, cst - start_x, i - start_y, 0xffffffff);
         }
         i++;
@@ -131,13 +133,13 @@ void grid_line(t_cube *cube, int start, int finish, int cst, bool axis_x)
 }
 
 void draw_bg(t_cube *cube, int x, int y, uint32_t color){
-    int start_y = (int)((cube->player.y) - (MINI_MAP_SIZE / 2.0));
-    int start_x = (int)((cube->player.x) - (MINI_MAP_SIZE / 2.0));
+    int start_y = (int)((cube->player.y) - (cube->mini_map_size / 2.0));
+    int start_x = (int)((cube->player.x) - (cube->mini_map_size / 2.0));
 
-    // int x_min = (cube->player.x - (MINI_MAP_SIZE / 2.0));
-    // int x_max = (cube->player.x + (MINI_MAP_SIZE / 2.0));
-    // int y_min = (cube->player.y - (MINI_MAP_SIZE / 2.0));
-    // int y_max = (cube->player.y + (MINI_MAP_SIZE / 2.0));
+    // int x_min = (cube->player.x - (cube->mini_map_size / 2.0));
+    // int x_max = (cube->player.x + (cube->mini_map_size / 2.0));
+    // int y_min = (cube->player.y - (cube->mini_map_size / 2.0));
+    // int y_max = (cube->player.y + (cube->mini_map_size / 2.0));
     
     int i = 0;
     int j;
@@ -145,9 +147,9 @@ void draw_bg(t_cube *cube, int x, int y, uint32_t color){
         j = 0;
         while(j < GRID_SIZE){
 
-            double dst = sqrt(((double)(x + i - start_x) - MINI_MAP_SIZE / 2.0f) * ((double)(x + i - start_x) - MINI_MAP_SIZE / 2.0f) + ((double)(y + j - start_y) - MINI_MAP_SIZE / 2.0f) * ((double)(y + j - start_y) - MINI_MAP_SIZE / 2.0f));
-            // if(x + i - start_x >= 0 && x + i - start_x <= MINI_MAP_SIZE && y + j - start_y >= 0 && y + j - start_y <= MINI_MAP_SIZE)
-            if(dst < 150.0)
+            double dst = sqrt(((double)(x + i - start_x) - cube->mini_map_size / 2.0f) * ((double)(x + i - start_x) - cube->mini_map_size / 2.0f) + ((double)(y + j - start_y) - cube->mini_map_size / 2.0f) * ((double)(y + j - start_y) - cube->mini_map_size / 2.0f));
+            // if(x + i - start_x >= 0 && x + i - start_x <= cube->mini_map_size && y + j - start_y >= 0 && y + j - start_y <= cube->mini_map_size)
+            if(dst < 0.07 * cube->screen_width_buff)
                 mlx_put_pixel(cube->image, x + i - start_x, y + j - start_y, color);
 
             j++;
@@ -158,13 +160,13 @@ void draw_bg(t_cube *cube, int x, int y, uint32_t color){
 
 void draw_grid(t_cube *cube)
 {
-    int start_y = (int)((cube->player.y / GRID_SIZE) - (MINI_MAP_GRID_SIZE / 2));
-    int start_x = (int)((cube->player.x / GRID_SIZE) - (MINI_MAP_GRID_SIZE / 2));
+    int start_y = (int)((cube->player.y / GRID_SIZE) - (cube->mini_map_grid_size / 2));
+    int start_x = (int)((cube->player.x / GRID_SIZE) - (cube->mini_map_grid_size / 2));
     if(start_y < 0) start_y = 0;
     if(start_x < 0) start_x = 0;
 
-    int end_y = start_y + (MINI_MAP_GRID_SIZE);
-    int end_x = start_x + (MINI_MAP_GRID_SIZE);
+    int end_y = start_y + (cube->mini_map_grid_size);
+    int end_x = start_x + (cube->mini_map_grid_size);
     if(end_y > cube->map_y)
         end_y = cube->map_y;
     if(end_x > cube->map_x)
@@ -176,11 +178,11 @@ void draw_grid(t_cube *cube)
     int i = 0;
     int j;
 
-    while(i < MINI_MAP_SIZE){
+    while(i < cube->mini_map_size){
         j = 0;
-        while(j < MINI_MAP_SIZE){
-            double dst = sqrt(((double)i - (MINI_MAP_SIZE / 2.0)) * ((double)i - (MINI_MAP_SIZE / 2.0)) + ((double)j - (MINI_MAP_SIZE / 2.0)) * ((double)j - (MINI_MAP_SIZE / 2.0)));
-            if(dst < 150.0)
+        while(j < cube->mini_map_size){
+            double dst = sqrt(((double)i - (cube->mini_map_size / 2.0)) * ((double)i - (cube->mini_map_size / 2.0)) + ((double)j - (cube->mini_map_size / 2.0)) * ((double)j - (cube->mini_map_size / 2.0)));
+            if(dst < 0.08 * cube->screen_width_buff)
                 mlx_put_pixel(cube->image, i, j, 0x000000ff);
             j++;
         }
@@ -237,6 +239,7 @@ void ft_mouvement_limits(t_cube *cube)
         if(cube->player.y >= (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST)
             cube->player.y = (GRID_SIZE * (cube->player.grid_y + 1)) - WALL_DST;
     }
+
 }
 
 void ft_turn(t_cube *cube)
@@ -322,9 +325,9 @@ void ft_mouvement(t_cube *cube)
     cube->player.current_speed_LR_Y = ft_lerp_speed(dst_speed_LR_Y, cube->player.current_speed_LR_Y);
     cube->player.x += cube->player.current_speed_FB_X + cube->player.current_speed_LR_X;
     cube->player.y += cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y;
-    ft_mouvement_limits(cube);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
+    ft_mouvement_limits(cube);
 }
 
 void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
@@ -2420,6 +2423,8 @@ void ft_updated_buff_init(t_cube *cube){
     mlx_resize_image(cube->image_death, cube->screen_width_buff, cube->screen_height_buff);
     mlx_set_window_size(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
     // mlx_image_to_window(cube->mlx, cube->image, 0, 0);
+    cube->mini_map_size = 0.2 * cube->screen_width_buff;
+    cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
     cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
     cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
     cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
@@ -2477,6 +2482,8 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
     cube->screen_height = (double)cube->screen_height_buff / (double)cube->upscaling;
     cube->screen_width = (double)cube->screen_width_buff / (double)cube->upscaling;
+    cube->mini_map_size = 0.2 * cube->screen_width_buff;
+    cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
     cube->res = cube->screen_width;
     cube->move_increase = 0.05 * (double)cube->screen_height;
     cube->pitch_max = (double)cube->screen_height * 1.1;

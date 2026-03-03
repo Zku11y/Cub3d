@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/03 13:37:55 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/03 17:59:18 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define FOV 70
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
-# define WALL_DST 10
+# define WALL_DST 3
 # define TURN_SPEED 0.0015
 # define GRID_SIZE 32.0f
 # define PLAYER_SPEED 200.0f
@@ -60,6 +60,7 @@
 # define MOVE_LERP 0.1
 # define FLASH_LERP 0.03
 # define LERP_LERP 0.01
+# define TRP_LERP 0.8
 # define MOVE_INCREASE (0.05 * SCREEN_HEIGHT)
 # define PITCH_MAX (SCREEN_HEIGHT + 100)
 # define MINI_MAP_X 50
@@ -409,6 +410,8 @@ typedef struct s_cube
 	t_vect2			crosshair_hori_end;
 	t_state			state;
 	t_state			prev_state;
+	double			mini_map_size;
+	double			mini_map_grid_size;
 
 	double			tilt_angle;
 	double			shear_factor;
