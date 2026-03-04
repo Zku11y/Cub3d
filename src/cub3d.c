@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/04 05:31:44 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/04 14:35:02 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -850,13 +850,26 @@ void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_
     if(enemy->health_spawn == false)
         return;
 
+    if(enemy->health_animation == 0){
+        enemy->health_offset += 0.15;
+        // enemy->health_offset = ft_lerp_move(10, enemy->health_offset, LERP_LERP);
+        if(enemy->health_offset >= 10)
+            enemy->health_animation = 1;
+    }
+    else if(enemy->health_animation == 1){
+        enemy->health_offset -= 0.15;
+        // enemy->health_offset = ft_lerp_move(-10, enemy->health_offset, LERP_LERP);
+        if(enemy->health_offset <= -10)
+            enemy->health_animation = 0;
+    }
+
     double player_dst = sqrt((cube->player.x - pos_x) * (cube->player.x - pos_x) + (cube->player.y - pos_y) * (cube->player.y - pos_y));
 
     if(player_dst < HITBOX_DST){
         printf("player healed!\n");
-        cube->flash.r = 0.5;
-        cube->flash.g = 2.0;
-        cube->flash.b = 0.5;
+        cube->flash.r = 0.2;
+        cube->flash.g = 3.0;
+        cube->flash.b = 0.2;
         cube->player.HP += 50;
         if(cube->player.HP > MAX_HP)
             cube->player.HP = MAX_HP;
@@ -889,7 +902,7 @@ void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_
 
     double proj_z_offset = (((GRID_SIZE / 2.0) - CAM_H) / dst) * cube->proj_dst;
     int start_x = midX - (texture->width / scale_ratio) / 2;
-    int start_y = ((cube->screen_height / 2.0) + cube->pitch - proj_z_offset) - (texture->height / scale_ratio) / 2;
+    int start_y = ((cube->screen_height / 2.0) + cube->pitch + enemy->health_offset - proj_z_offset) - (texture->height / scale_ratio) / 2;
     int const_y = start_y;
     int end_x = start_x + (texture->width / scale_ratio);
     int end_y = start_y + (texture->height / scale_ratio);
@@ -2540,6 +2553,7 @@ void ft_init_enemies(t_cube *cube){
             cube->enemy[i].health_spawn = false;
 
         cube->enemy[i].health_offset = 0;
+        cube->enemy[i].health_animation = 0;
         cube->enemy[i].health = health_tex;
         cube->enemy[i].x = (posX);
         cube->enemy[i].y = (posY);

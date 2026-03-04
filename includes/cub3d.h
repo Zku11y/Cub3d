@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/04 04:06:01 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/04 14:28:07 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,8 @@ typedef struct s_enemy
 	bool			delay;
 	bool			dead;
 	bool			health_spawn;
-	int				health_offset;
+	double				health_offset;
+	bool			health_animation;
 	mlx_texture_t	*health;
 	int				blood_frame_index;
 	double			player_dst;
