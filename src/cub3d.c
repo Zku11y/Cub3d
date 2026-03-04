@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/04 01:42:54 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/04 05:31:44 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -845,6 +845,107 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     }
 }
 
+void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y){
+
+    if(enemy->health_spawn == false)
+        return;
+
+    double player_dst = sqrt((cube->player.x - pos_x) * (cube->player.x - pos_x) + (cube->player.y - pos_y) * (cube->player.y - pos_y));
+
+    if(player_dst < HITBOX_DST){
+        printf("player healed!\n");
+        cube->flash.r = 0.5;
+        cube->flash.g = 2.0;
+        cube->flash.b = 0.5;
+        cube->player.HP += 50;
+        if(cube->player.HP > MAX_HP)
+            cube->player.HP = MAX_HP;
+        enemy->health_spawn = false;
+        return;
+    }
+
+    double angle_diff = atan2(pos_y - cube->player.y, pos_x - cube->player.x);
+    double tetha_delta = angle_diff - cube->player.angle;
+    while(tetha_delta > PI)
+        tetha_delta -= 2 * PI;
+    while(tetha_delta < -PI)
+        tetha_delta += 2 * PI;
+    
+    int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
+    double dst = sqrt((pos_x - cube->player.x) * (pos_x - cube->player.x) + (pos_y - cube->player.y) * (pos_y - cube->player.y)) * cos(tetha_delta);
+
+    if(dst < 0.1) 
+    return;
+
+    double tmp = 1.0 - (dst / MAX_DST);
+    if(tmp > 1.0)
+        tmp = 1.0;
+    else if(tmp < 0.0)
+        tmp = 0.0;
+
+    double height = (GRID_SIZE / dst) * cube->proj_dst;
+
+    double scale_ratio = texture->height / height;
+
+    double proj_z_offset = (((GRID_SIZE / 2.0) - CAM_H) / dst) * cube->proj_dst;
+    int start_x = midX - (texture->width / scale_ratio) / 2;
+    int start_y = ((cube->screen_height / 2.0) + cube->pitch - proj_z_offset) - (texture->height / scale_ratio) / 2;
+    int const_y = start_y;
+    int end_x = start_x + (texture->width / scale_ratio);
+    int end_y = start_y + (texture->height / scale_ratio);
+    
+    double tex_x = 0;
+    double tex_y = 0;
+
+    if (start_x < 0) {
+        tex_x += (-start_x) * scale_ratio;
+        start_x = 0;
+    }
+
+    if (start_x >= cube->screen_width) return;
+    if (end_x > cube->screen_width) end_x = cube->screen_width;
+
+    if (start_y < 0) {
+        tex_y = (-start_y) * scale_ratio;
+        start_y = 0;
+    }
+    if (start_y >= cube->screen_height) return;
+
+    if (end_x > cube->screen_width) end_x = cube->screen_width;
+    if (end_y > cube->screen_height) end_y = cube->screen_height;
+
+    while(start_x < end_x){
+        start_y = const_y;
+        int x = (int)tex_x;
+        if (x >= (int)texture->width) x = texture->width - 1;
+        if (x < 0) x = 0;
+        tex_y = 0;
+        if(cube->z_buffer[start_x] > dst){
+            cube->z_buffer[start_x] = dst;
+            while(start_y < end_y){
+                int y = (int)tex_y;
+                if (y >= (int)texture->height) y = texture->height - 1;
+                if (y < 0) y = 0;
+    
+                if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
+                    int k = (x * texture->bytes_per_pixel) + (texture->width * texture->bytes_per_pixel * y);
+                    if(texture->pixels[k + 3] > 128){
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
+                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
+                    }
+                }
+                start_y++;
+                tex_y += scale_ratio;
+            }
+        }
+
+        tex_x += scale_ratio;
+        start_x++;
+    }
+}
+
 void ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir){
     t_projectile proj;
 
@@ -876,8 +977,11 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
     if(enemy->dead){
         if(enemy->blood_frame_index >= 12)
+        {
+            ft_health(cube, enemy->health, enemy, enemy->x, enemy->y);
             return;
-        if(current_time - enemy->blood_time > BLOOD_ANIM_DELAY){
+        }
+        else if(current_time - enemy->blood_time > BLOOD_ANIM_DELAY){
             enemy->blood_time = current_time;
             enemy->blood_frame_index++;
         }
@@ -2413,6 +2517,7 @@ void ft_init_enemies(t_cube *cube){
     gettimeofday(&tv, NULL);
     seed = (unsigned long)tv.tv_usec / 100;
 
+    mlx_texture_t *health_tex = mlx_load_png("./white_monster_2.png");
     while(i < ENEMY_NUM){
         cube->enemy[i].HP = 100;
         cube->enemy[i].blood_frame_index = 0;
@@ -2429,6 +2534,13 @@ void ft_init_enemies(t_cube *cube){
             posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
             // printf("2 : posX : %d, posY : %d\n", posX, posY);
         }
+        if((ft_rand(&seed) % 10) < 9)
+            cube->enemy[i].health_spawn = true;
+        else
+            cube->enemy[i].health_spawn = false;
+
+        cube->enemy[i].health_offset = 0;
+        cube->enemy[i].health = health_tex;
         cube->enemy[i].x = (posX);
         cube->enemy[i].y = (posY);
         // printf("pos[%d] : (%d, %d)\n", i, (posX), (posY));

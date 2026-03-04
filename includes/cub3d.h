@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/04 01:41:42 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/04 04:06:01 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,8 @@ typedef struct s_enemy
 	bool			delay;
 	bool			dead;
 	bool			health_spawn;
+	int				health_offset;
+	mlx_texture_t	*health;
 	int				blood_frame_index;
 	double			player_dst;
 	int				start_y;
