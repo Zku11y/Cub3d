@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/04 22:57:00 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/04 23:44:31 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,19 +332,30 @@ void ft_mouvement(t_cube *cube)
 
     cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.9);
 
-    // if(mlx_is_key_down(cube->mlx, ))
+    if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT) && cube->player.move_state == WALK && (mlx_is_key_down(cube->mlx, MLX_KEY_A)
+        || mlx_is_key_down(cube->mlx, MLX_KEY_D) || mlx_is_key_down(cube->mlx, MLX_KEY_W) || mlx_is_key_down(cube->mlx, MLX_KEY_S))){
+        cube->player.dst_speed_mult = 1.5 * PLAYER_SPEED;
+        cube->player.move_state = SPRINT;
+    }
 
+    cube->player.speed_mult = ft_lerp_move(cube->player.dst_speed_mult, cube->player.speed_mult, 0.9);
+    
+    if(cube->player.move_state == SPRINT && !mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT)){
+        cube->player.dst_speed_mult = PLAYER_SPEED;
+        cube->player.move_state = WALK;
+    }
+    
     if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL))
     {
-        if(cube->player.move_state == WALK || cube->player.move_state == SLIDE){
+        if(cube->player.move_state != CROUCH){
             if((int)(cube->player.current_speed_FB_X * 10.0) == 0 && (int)(cube->player.current_speed_LR_X * 10.0) == 0
                 && (int)(cube->player.current_speed_FB_Y * 10.0) == 0 && (int)(cube->player.current_speed_LR_Y * 10.0) == 0)
             {
                 cube->player.move_state = CROUCH;            
-                cube->player.speed_mult /= 4.0;
+                cube->player.dst_speed_mult = 4.0 / PLAYER_SPEED;
                 cube->dst_camera_h = CAM_H / 2.0;
             }
-            else if(cube->player.move_state == WALK)
+            else if(cube->player.move_state == WALK || cube->player.move_state == SPRINT)
             {
                 cube->player.move_state = SLIDE;
                 cube->dst_camera_h = CAM_H / 2.0;                
@@ -357,10 +368,10 @@ void ft_mouvement(t_cube *cube)
             cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
             cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
             cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
-            cube->player.current_speed_FB_X = ft_lerp_move(0.0, cube->player.current_speed_FB_X, 0.995);
-            cube->player.current_speed_FB_Y = ft_lerp_move(0.0, cube->player.current_speed_FB_Y, 0.995);
-            cube->player.current_speed_LR_X = ft_lerp_move(0.0, cube->player.current_speed_LR_X, 0.995);
-            cube->player.current_speed_LR_Y = ft_lerp_move(0.0, cube->player.current_speed_LR_Y, 0.995);
+            cube->player.current_speed_FB_X = ft_lerp_move(0.0, cube->player.current_speed_FB_X, 0.998);
+            cube->player.current_speed_FB_Y = ft_lerp_move(0.0, cube->player.current_speed_FB_Y, 0.998);
+            cube->player.current_speed_LR_X = ft_lerp_move(0.0, cube->player.current_speed_LR_X, 0.998);
+            cube->player.current_speed_LR_Y = ft_lerp_move(0.0, cube->player.current_speed_LR_Y, 0.998);
 
             ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
             cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
@@ -370,9 +381,9 @@ void ft_mouvement(t_cube *cube)
         // printf("crouch with speed == 0\n");
     }
 
-    if(!mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL)){
+    if(!mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL) && cube->player.move_state != SPRINT){
         cube->player.move_state = WALK;            
-        cube->player.speed_mult = PLAYER_SPEED;
+        cube->player.dst_speed_mult = PLAYER_SPEED;
         cube->dst_camera_h = CAM_H;        
     }
 
@@ -2348,7 +2359,18 @@ void ft_fov_mod(t_cube *cube){
         cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
     }
     
-    cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
+    if(cube->player.move_state == WALK)
+        cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
+    else{
+        if(cube->player.move_state == CROUCH)
+            cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, 0.03);
+
+        int dst_fov = 1.5 * cube->init_fov;
+        if(dst_fov > 170)
+            dst_fov = 170;
+        cube->fov = ft_lerp_fov(dst_fov, cube->fov, 0.05);
+    }
+
 }
 
 void ft_game(t_cube *cube){
@@ -2428,6 +2450,8 @@ void state_machine(t_cube *cube){
         ft_tilt(cube);
         ft_upscaling(cube, cube->image);
         draw_crosshair(cube);
+        draw_grid(cube);
+        draw_player(cube);
     }
     else if(cube->state == DIED){
         ft_died(cube);
@@ -2452,8 +2476,6 @@ void ft_update(void *param)
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
-    draw_grid(cube);
-    draw_player(cube);
     // ft_ray_init(cube, &cube->player.ray, cube->player.angle);
     // ft_draw_rays(cube);
     // ft_ceiling(cube);
@@ -2741,6 +2763,7 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
     cube->player.speed_mult = PLAYER_SPEED;
+    cube->player.dst_speed_mult = PLAYER_SPEED;
     cube->player.move_state = WALK;
     cube->player.current_speed_LR_X = 0.0;
     cube->player.current_speed_LR_Y = 0.0;

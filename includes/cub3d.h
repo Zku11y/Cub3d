@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/04 22:33:44 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/04 23:11:47 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ typedef struct s_ray
 typedef enum s_move_state{
 
 	WALK,
+	SPRINT,
 	CROUCH,
 	SLIDE
 	
@@ -178,6 +179,7 @@ typedef struct s_player
 	t_ray			ray;
 	t_move_state    move_state;
 	double			speed_mult;
+	double			dst_speed_mult;
 	double			current_speed_LR_X; 
 	double			current_speed_LR_Y;
 	double			current_speed_FB_X; 
