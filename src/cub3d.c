@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/04 14:35:02 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/04 22:57:00 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,13 +329,60 @@ void ft_mouvement(t_cube *cube)
 {
     ft_angle_limit(&cube->player.angle);
     ft_turn(cube);
-    double max_cos_speed = cos(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-    double max_sin_speed = sin(cube->player.angle) * PLAYER_SPEED * cube->mlx->delta_time;
-    double dst_speed_LR_X = 0.0;
-    double dst_speed_LR_Y = 0.0;
-    double dst_speed_FB_X = 0.0;
-    double dst_speed_FB_Y = 0.0;
-    double target_angle = 0.0;
+
+    cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.9);
+
+    // if(mlx_is_key_down(cube->mlx, ))
+
+    if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL))
+    {
+        if(cube->player.move_state == WALK || cube->player.move_state == SLIDE){
+            if((int)(cube->player.current_speed_FB_X * 10.0) == 0 && (int)(cube->player.current_speed_LR_X * 10.0) == 0
+                && (int)(cube->player.current_speed_FB_Y * 10.0) == 0 && (int)(cube->player.current_speed_LR_Y * 10.0) == 0)
+            {
+                cube->player.move_state = CROUCH;            
+                cube->player.speed_mult /= 4.0;
+                cube->dst_camera_h = CAM_H / 2.0;
+            }
+            else if(cube->player.move_state == WALK)
+            {
+                cube->player.move_state = SLIDE;
+                cube->dst_camera_h = CAM_H / 2.0;                
+            }
+        }
+
+        if(cube->player.move_state == SLIDE){
+            printf("IM SLIDDINNN BOOOOOI\n");
+            cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
+            cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+            cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+            cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+            cube->player.current_speed_FB_X = ft_lerp_move(0.0, cube->player.current_speed_FB_X, 0.995);
+            cube->player.current_speed_FB_Y = ft_lerp_move(0.0, cube->player.current_speed_FB_Y, 0.995);
+            cube->player.current_speed_LR_X = ft_lerp_move(0.0, cube->player.current_speed_LR_X, 0.995);
+            cube->player.current_speed_LR_Y = ft_lerp_move(0.0, cube->player.current_speed_LR_Y, 0.995);
+
+            ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
+            cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
+            cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
+            return;
+        }
+        // printf("crouch with speed == 0\n");
+    }
+
+    if(!mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL)){
+        cube->player.move_state = WALK;            
+        cube->player.speed_mult = PLAYER_SPEED;
+        cube->dst_camera_h = CAM_H;        
+    }
+
+    double max_cos_speed = cos(cube->player.angle) * cube->player.speed_mult * cube->mlx->delta_time;
+    double max_sin_speed = sin(cube->player.angle) * cube->player.speed_mult * cube->mlx->delta_time;
+    cube->player.dst_speed_LR_X = 0.0;
+    cube->player.dst_speed_LR_Y = 0.0;
+    cube->player.dst_speed_FB_X = 0.0;
+    cube->player.dst_speed_FB_Y = 0.0;
+    cube->target_angle = 0.0;
 
     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
     struct timeval tv;
@@ -348,44 +395,46 @@ void ft_mouvement(t_cube *cube)
 
     // printf("attacked : %d, delay : %d\n", cube->player.attacked, cube->player.delay);
 
+     
+    // printf("speed : (%lf), multi : (%d)\n", cube->player.current_speed_FB_X, (int)(cube->player.current_speed_FB_X * 10.0));
+
     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
     {
-        dst_speed_LR_X = -1 * max_sin_speed;
-        dst_speed_LR_Y = max_cos_speed;
-        target_angle = TILT_ANGLE;
+        cube->player.dst_speed_LR_X = -1 * max_sin_speed;
+        cube->player.dst_speed_LR_Y = max_cos_speed;
+        cube->target_angle = TILT_ANGLE;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
     {
-        dst_speed_LR_X = max_sin_speed;
-        dst_speed_LR_Y = -1 * max_cos_speed;
-        target_angle = -TILT_ANGLE;
+        cube->player.dst_speed_LR_X = max_sin_speed;
+        cube->player.dst_speed_LR_Y = -1 * max_cos_speed;
+        cube->target_angle = -TILT_ANGLE;
     }
     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
     {
         cube->player.weapon.move_lerp = ft_lerp_move(-cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
-        dst_speed_FB_X = max_cos_speed;
-        dst_speed_FB_Y = max_sin_speed;
+        cube->player.dst_speed_FB_X = max_cos_speed;
+        cube->player.dst_speed_FB_Y = max_sin_speed;
     }
     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
     {
         cube->player.weapon.move_lerp = ft_lerp_move(cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
-        dst_speed_FB_X = -1 * max_cos_speed;
-        dst_speed_FB_Y = -1 * max_sin_speed;
+        cube->player.dst_speed_FB_X = -1 * max_cos_speed;
+        cube->player.dst_speed_FB_Y = -1 * max_sin_speed;
     }
     else{
         cube->player.weapon.move_lerp = ft_lerp_move(0, cube->player.weapon.move_lerp, RECOIL_LERP);
     }
 
-    cube->tilt_angle = ft_lerp_tilt(target_angle, cube->tilt_angle);
+    cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
     cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
     cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
-    cube->player.current_speed_FB_X = ft_lerp_speed(dst_speed_FB_X, cube->player.current_speed_FB_X);
-    cube->player.current_speed_FB_Y = ft_lerp_speed(dst_speed_FB_Y, cube->player.current_speed_FB_Y);
-    cube->player.current_speed_LR_X = ft_lerp_speed(dst_speed_LR_X, cube->player.current_speed_LR_X);
-    cube->player.current_speed_LR_Y = ft_lerp_speed(dst_speed_LR_Y, cube->player.current_speed_LR_Y);
-    // cube->player.x += cube->player.current_speed_FB_X + cube->player.current_speed_LR_X;
-    // cube->player.y += cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y;
+    cube->player.current_speed_FB_X = ft_lerp_speed(cube->player.dst_speed_FB_X, cube->player.current_speed_FB_X);
+    cube->player.current_speed_FB_Y = ft_lerp_speed(cube->player.dst_speed_FB_Y, cube->player.current_speed_FB_Y);
+    cube->player.current_speed_LR_X = ft_lerp_speed(cube->player.dst_speed_LR_X, cube->player.current_speed_LR_X);
+    cube->player.current_speed_LR_Y = ft_lerp_speed(cube->player.dst_speed_LR_Y, cube->player.current_speed_LR_Y);
+
     ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
@@ -661,7 +710,7 @@ void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, doubl
             j = 0;
             double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
             len = ((GRID_SIZE) / length) * cube->proj_dst;
-            double proj_z_offset = (((GRID_SIZE / 2.0) - CAM_H) / length) * cube->proj_dst;
+            double proj_z_offset = (((GRID_SIZE / 2.0) - (cube->camera_h)) / length) * cube->proj_dst;
             start.y = ((cube->screen_height - len) / 2) + cube->pitch - proj_z_offset;
             end.x = start.x;
             end.y = start.y + len;
@@ -786,7 +835,7 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
 
     double scale_ratio = projectile->texture->height / height;
 
-    double proj_z_offset = (((GRID_SIZE / 2.0) - CAM_H) / dst) * cube->proj_dst;
+    double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
     int start_x = midX - (projectile->texture->width / scale_ratio) / 2;
     int start_y = ((cube->screen_height / 2.0) + cube->pitch - proj_z_offset) - (projectile->texture->height / scale_ratio) / 2;
     int const_y = start_y;
@@ -900,7 +949,7 @@ void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_
 
     double scale_ratio = texture->height / height;
 
-    double proj_z_offset = (((GRID_SIZE / 2.0) - CAM_H) / dst) * cube->proj_dst;
+    double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
     int start_x = midX - (texture->width / scale_ratio) / 2;
     int start_y = ((cube->screen_height / 2.0) + cube->pitch + enemy->health_offset - proj_z_offset) - (texture->height / scale_ratio) / 2;
     int const_y = start_y;
@@ -1075,7 +1124,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
     double scale_ratio = texture->height / height;
 
-    double proj_z_offset = (((GRID_SIZE / 2.0) - CAM_H) / dst) * cube->proj_dst;
+    double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
     int start_x = midX - (texture->width / scale_ratio) / 2;
     int start_y = ((cube->screen_height / 2.0) + cube->pitch - proj_z_offset) - (texture->height / scale_ratio) / 2;
     int const_y = start_y;
@@ -1357,7 +1406,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 //     t_vect2 PlayerPos = (t_vect2){(cube->player.x), (cube->player.y), 0, 0};
 //     // t_vect2 PlayerPos = (t_vect2){cube->player.x, cube->player.y, 0, 0};
 //     // double posZ = cube->screen_height / 2.0;
-//     // double posZ = (CAM_H) * PROJ_DST;
+//     // double posZ = (cube->camera_h) * PROJ_DST;
 //     double posZ = V_PROJ_DST;
 //     int i = posZ + 1;
 //     while(i < cube->screen_height)
@@ -1413,7 +1462,7 @@ void ft_ceiling(t_cube *cube)
     {
         // if replace cube->screen_height with cube->screen_width you get ceiling textures PS: found it by accident :P
         double p = (cube->screen_height / 2.0) - (float)i;   // distance from horizon in screen pixels
-        double rowDst = (CAM_H * PROJ_DST) / p;
+        double rowDst = (cube->camera_h * PROJ_DST) / p;
 
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(cube->player.x) + rowDst * RayDirR.x, (cube->player.y) + rowDst * RayDirR.y, 0, 0};
@@ -1473,7 +1522,7 @@ void ft_floor(t_cube *cube)
     {
         // if replace cube->screen_height with cube->screen_width you get ceiling textures PS: found it by accident :P
         double p = (float)i - cube->screen_height / 2.0;
-        double rowDst = (CAM_H * PROJ_DST) / p;
+        double rowDst = (cube->camera_h * PROJ_DST) / p;
 
         t_vect2 floorL = (t_vect2){(cube->player.x) + rowDst * RayDirL.x, (cube->player.y) + rowDst * RayDirL.y, 0, 0};
         t_vect2 floorR = (t_vect2){(cube->player.x) + rowDst * RayDirR.x, (cube->player.y) + rowDst * RayDirR.y, 0, 0};
@@ -1574,7 +1623,7 @@ void ft_floor_ceiling(t_cube *cube){
     t_vect2 RayDirR = (t_vect2){DirX + PlaneX, DirY + PlaneY,0 ,0};
     double mid_point = (cube->screen_height / 2.0) + cube->pitch;
 
-    double cam_height = CAM_H;
+    double cam_height = cube->camera_h;
     double p = 0;
     mlx_texture_t *tex;
     int i = 0;
@@ -1582,12 +1631,12 @@ void ft_floor_ceiling(t_cube *cube){
         if(i < mid_point){
             p = (mid_point) - (float)i;
             tex = cube->texture3;
-            cam_height = GRID_SIZE - CAM_H;
+            cam_height = GRID_SIZE - (cube->camera_h); // + for crouch - for jump
         }
         else{
             p = (float)i - (mid_point);
             tex = cube->texture2;
-            cam_height = CAM_H;
+            cam_height = cube->camera_h;  // - for crouch + for jump
         }
 
         if(p == 0.0) p = 1.0;
@@ -2307,8 +2356,8 @@ void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    ft_draw_enemies(cube);
-    ft_draw_proj(cube);
+    // ft_draw_enemies(cube);
+    // ft_draw_proj(cube);
     ft_weapon(cube);
     ft_heart(cube);
     ft_fov_mod(cube);
@@ -2399,7 +2448,7 @@ void ft_update(void *param)
     // ft_rectangle(cube, (t_vect2){0, cube->screen_height / 2, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x57493eff);
     gettimeofday(&tv, NULL);
  
-    printf("player : (%d, %d)\n", (int)cube->player.x, (int)cube->player.y);
+    // printf("player : (%d, %d)\n", (int)cube->player.x, (int)cube->player.y);
     if(cube->state != cube->prev_state)
         state_transition(cube, cube->state);
     state_machine(cube);
@@ -2664,8 +2713,11 @@ void ft_init(t_cube *cube, t_nc *nu)
 
     // ft_init_audio(cube);
     gettimeofday(&tv, NULL);
+    cube->camera_h = CAM_H;
+    cube->dst_camera_h = CAM_H;
     cube->map_x = nu->x;
     cube->map_y = nu->y;
+    cube->is_sliding = false;
     cube->upscaling = UPSCALING_RATE;
     cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
@@ -2688,6 +2740,8 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->player.delay = false;
     cube->player.atk_delay = 1;
     cube->player.DMG = 50;
+    cube->player.speed_mult = PLAYER_SPEED;
+    cube->player.move_state = WALK;
     cube->player.current_speed_LR_X = 0.0;
     cube->player.current_speed_LR_Y = 0.0;
     cube->player.current_speed_FB_X = 0.0;
@@ -2796,6 +2850,7 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->menu.state = 0;
 
     cube->tilt_angle = 0.0;
+    cube->target_angle = 0.0;
     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
     cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
     cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;

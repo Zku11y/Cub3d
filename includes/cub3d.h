@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/04 14:28:07 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/04 22:33:44 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,15 @@ typedef struct s_ray
 	double			normal_dst;
 	bool			collision;
 }					t_ray;
+
+typedef enum s_move_state{
+
+	WALK,
+	CROUCH,
+	SLIDE
+	
+}					t_move_state;
+
 typedef struct s_player
 {
 	double			x;
@@ -167,10 +176,16 @@ typedef struct s_player
 	int				grid_x;
 	int				grid_y;
 	t_ray			ray;
+	t_move_state    move_state;
+	double			speed_mult;
 	double			current_speed_LR_X; 
 	double			current_speed_LR_Y;
 	double			current_speed_FB_X; 
 	double			current_speed_FB_Y;
+	double			dst_speed_LR_X; 
+	double			dst_speed_LR_Y;
+	double			dst_speed_FB_X; 
+	double			dst_speed_FB_Y;
 	t_direction		last_LR;
 	t_direction		last_FB;
 	int				HP;
@@ -357,6 +372,7 @@ typedef struct s_flash{
 
 }	t_flash;
 
+
 typedef struct s_cube
 {
 	mlx_t			*mlx;
@@ -365,6 +381,8 @@ typedef struct s_cube
 	int				screen_height;
 	int				screen_width_buff;
 	int				screen_height_buff;
+	double			camera_h;
+	double			dst_camera_h;
 	int				res;
 	int				fov;
 	int				init_fov;
@@ -418,9 +436,12 @@ typedef struct s_cube
 	double			mini_map_grid_size;
 
 	double			tilt_angle;
+	double			target_angle;
 	double			shear_factor;
 	double			tilt_addition_height;
 	double			tilt_addition_width;
+
+	bool			is_sliding;
 
 	t_menu			menu;
 
