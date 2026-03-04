@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/03 22:06:15 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/04 01:41:42 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,7 @@ typedef struct s_enemy
 	unsigned long	blood_time;
 	bool			delay;
 	bool			dead;
+	bool			health_spawn;
 	int				blood_frame_index;
 	double			player_dst;
 	int				start_y;

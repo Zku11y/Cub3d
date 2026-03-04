@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/03 22:55:34 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/04 01:42:54 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,9 +230,9 @@ void draw_grid(t_cube *cube)
         while(x < end_x)
         {
             if(cube->map[y][x] == '1')
-                draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0x000000ff);
+                draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0x676767ff);
             else
-                draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0xffffffff);
+                draw_bg(cube, x * GRID_SIZE, y * GRID_SIZE, 0x969696ff);
 
             // if(cube->map[y][x] == '1')
             // {
@@ -900,6 +900,8 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
     t_vect2 player_dir = (t_vect2){(cube->player.x - enemy->x) / enemy->player_dst, (cube->player.y - enemy->y) / enemy->player_dst, 0, 0};
     player_dir.x *= ENEMY_SPEED;
     player_dir.y *= ENEMY_SPEED;
+
+    // draw_map_entity(cube, cube->player.x - enemy->x + (MINI_MAP_SIZE / 2), cube->player.y - enemy->y + (MINI_MAP_SIZE / 2), acos((cube->player.x - enemy->x) / enemy->player_dst));
 
     if(enemy->dead == false && enemy->player_dst < MIN_ATK_DST){
         if(enemy->delay == false){
@@ -2188,8 +2190,8 @@ void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    // ft_draw_enemies(cube);
-    // ft_draw_proj(cube);
+    ft_draw_enemies(cube);
+    ft_draw_proj(cube);
     ft_weapon(cube);
     ft_heart(cube);
     ft_fov_mod(cube);
