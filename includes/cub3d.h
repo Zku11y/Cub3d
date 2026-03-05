@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/05 17:29:52 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/05 20:15:20 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@
 # define ENEMY_NUM 7
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
-# define CROSSHAIR_COLOR 0xff0000ff
-# define MIN_ATK_DST 300
+# define CROSSHAIR_COLOR 0xffffffff
+# define MIN_ATK_DST 150
 # define MAX_PROJECTILES 100
 # define MAX_RECOIL 30
 # define HITBOX_DST 30
@@ -420,6 +420,7 @@ typedef struct s_cube
 	mlx_texture_t	*texture6;
 	mlx_texture_t	*texture_died;
 	mlx_texture_t	*texture_pump;
+	mlx_texture_t	*crosshair;
 	double			min_length;
 	int8_t			*prev_buffer;
 	int8_t			*new_buffer;

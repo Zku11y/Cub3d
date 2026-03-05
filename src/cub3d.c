@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/05 17:53:43 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/05 20:44:44 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,7 @@ void ft_mouvement(t_cube *cube)
     ft_turn(cube);
     ft_angle_limit(&cube->player.angle);
 
-    cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.9);
+    cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.85);
 
     if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT) && cube->player.move_state == WALK && (mlx_is_key_down(cube->mlx, MLX_KEY_A)
         || mlx_is_key_down(cube->mlx, MLX_KEY_D) || mlx_is_key_down(cube->mlx, MLX_KEY_W) || mlx_is_key_down(cube->mlx, MLX_KEY_S))){
@@ -1763,8 +1763,37 @@ void ft_upscaling(t_cube *cube, mlx_image_t *image){
 
 void draw_crosshair(t_cube *cube){
 
-    ft_rectangle(cube, cube->crosshair_hori_start, cube->crosshair_hori_end, cube->menu.settings.crosshair.color);
-    ft_rectangle(cube, cube->crosshair_vert_start, cube->crosshair_vert_end, cube->menu.settings.crosshair.color);
+    // ft_rectangle(cube, cube->crosshair_hori_start, cube->crosshair_hori_end, cube->menu.settings.crosshair.color);
+    // ft_rectangle(cube, cube->crosshair_vert_start, cube->crosshair_vert_end, cube->menu.settings.crosshair.color);
+    int x = 0;
+    int y = 0;
+    int tex_x;
+    int tex_y;
+
+    while(y < cube->screen_height_buff){
+        x = 0;
+        tex_y = (double)(y) * ((double)(cube->crosshair->height) / (double)(cube->screen_height_buff));
+        while(x < cube->screen_width_buff){
+            tex_x = (double)(x) * ((double)(cube->crosshair->width) / (double)(cube->screen_width_buff));
+            int pixel_cords = ((y) * 4 * cube->screen_width_buff) + ((x) * 4);
+            int title_cords = (tex_y * 4 * cube->crosshair->width) + (tex_x * 4);
+            if(tex_x >= cube->crosshair->width || tex_y >= cube->crosshair->height || cube->crosshair->pixels[tex_y * 4 * cube->crosshair->width + tex_x * 4 + 3] < 127){
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 0] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 1] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 2] = 0;
+                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 3] = 255;
+                x++;
+                continue;
+            }
+            cube->image->pixels[pixel_cords + 0] = cube->crosshair->pixels[title_cords + 0];
+            cube->image->pixels[pixel_cords + 1] = cube->crosshair->pixels[title_cords + 1];
+            cube->image->pixels[pixel_cords + 2] = cube->crosshair->pixels[title_cords + 2];
+            cube->image->pixels[pixel_cords + 3] = cube->crosshair->pixels[title_cords + 3];
+            x++;
+        }
+        y++;
+    }    
+
 }
 
 void ft_prev_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y){
@@ -1887,8 +1916,26 @@ void ft_crosshair_color(t_cube *cube){
         int x = start_x + (0.1 * (end_x - start_x));
         int y = start_y + (0.1 * (end_y - start_y));
         int color = prev[mouse_y * cube->screen_width_buff + mouse_x];
-        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
-            cube->menu.settings.crosshair.color = color;
+        if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
+            uint32_t *crosshair = (uint32_t *)cube->crosshair->pixels;            
+            int i = 0;
+            int j = 0;
+            while(j < cube->crosshair->height){
+                i = 0;
+
+                while(i < cube->crosshair->width){
+                    
+                    int index = j * cube->crosshair->width + i;
+
+                    if(crosshair[index] == (uint32_t)cube->menu.settings.crosshair.color)
+                        crosshair[index] = color;
+                    i++;
+                }
+                j++;
+            }
+
+            cube->menu.settings.crosshair.color = color;            
+        }
 
         while(y < end_y){
             x = start_x;
@@ -2282,9 +2329,9 @@ void ft_weapon(t_cube *cube){
         cube->player.weapon.pitch_back = false;
         cube->player.weapon.pitch_og = cube->pitch;
         cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
-        cube->fov += (0.2 * cube->init_fov);
-        if(cube->fov > 170)
-            cube->fov = 170;
+        // cube->fov += (0.2 * cube->init_fov);
+        // if(cube->fov > 170)
+        //     cube->fov = 170;
         cube->player.weapon.texture = cube->player.weapon.shoot_texture;
         cube->player.weapon.frame_delay = current_time;
         cube->player.weapon.delay = true;
@@ -2381,7 +2428,7 @@ void ft_fov_mod(t_cube *cube){
         int dst_fov = 1.5 * cube->init_fov;
         if(dst_fov > 170)
             dst_fov = 170;
-        cube->fov = ft_lerp_fov(dst_fov, cube->fov, 0.05);
+        cube->fov = ft_lerp_fov(dst_fov, cube->fov, 0.04);
     }
 
 }
@@ -2978,6 +3025,7 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->texture5 = mlx_load_png("./Monster_1.png");
     cube->texture6 = mlx_load_png("./job_app.png");
     cube->texture_died = mlx_load_png("./you_died.png");
+    cube->crosshair = mlx_load_png("./crosshair_2.png");
     cube->line_girth = (int)(cube->screen_width / cube->res);
     if(cube->line_girth == 0)
         cube->line_girth = 1;
