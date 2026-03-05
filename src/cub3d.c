@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/05 00:03:25 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/05 11:22:01 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,8 +327,8 @@ void ft_turn(t_cube *cube)
 
 void ft_mouvement(t_cube *cube)
 {
-    ft_angle_limit(&cube->player.angle);
     ft_turn(cube);
+    ft_angle_limit(&cube->player.angle);
 
     cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.9);
 
@@ -454,13 +454,25 @@ void ft_mouvement(t_cube *cube)
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 }
 
+void set_screen_buff_limits(t_cube *cube, t_vect2 *len)
+{
+    if(len->x > cube->screen_width_buff)
+        len->x = cube->screen_width_buff - 1;
+    else if(len->x < 0)
+        len->x = 0;
+    if(len->y > cube->screen_height_buff)
+        len->y = cube->screen_height_buff - 1;
+    else if(len->y < 0)
+        len->y = 0;
+}
+
 void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
 {
     t_vect2 add;
     t_vect2 mod;
 
-    ft_limit_cords(cube, &start);
-    ft_limit_cords(cube, &finish);
+    set_screen_buff_limits(cube, &start);
+    set_screen_buff_limits(cube, &finish);
     mod.x = finish.x - start.x; // -GRID_SIZE
     mod.y = finish.y - start.y; // -100
     if(fabs(mod.x) >= fabs(mod.y))
@@ -2417,6 +2429,7 @@ void ft_died(t_cube *cube){
 void state_transition(t_cube *cube, t_state dest){
     if(dest == GAME){
         mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_DISABLED);
+        mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
         mlx_image_to_window(cube->mlx, cube->image, 0, 0);
         cube->prev_state = GAME;
     }
@@ -2495,7 +2508,7 @@ void ft_update(void *param)
     cube->fps++;
     if(cube->final_t - cube->init_t == 1)
     {
-        printf("fps : %d, player HP : %d\n", cube->fps, cube->player.HP);
+        printf("fps : %d, player HP : %d, player angle : %lf\n", cube->fps, cube->player.HP, cube->player.angle);
         cube->init_t = cube->final_t;
         cube->fps = 0;
     }
@@ -2757,8 +2770,8 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->mouse_sens = TURN_SPEED;
     cube->proj_dst = ((double)cube->screen_width / 2.0) / tan(((double)cube->fov / 2.0) * RADIANT_RATE);
     cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
-    cube->player.x = GRID_SIZE * (double)nu->hi->x;
-    cube->player.y = GRID_SIZE * (double)nu->hi->y;
+    cube->player.x = (GRID_SIZE * (double)nu->hi->x) + GRID_SIZE / 2.0;
+    cube->player.y = (GRID_SIZE * (double)nu->hi->y) + GRID_SIZE / 2.0;
     cube->player.HP = MAX_HP;
     cube->player.delay = false;
     cube->player.atk_delay = 1;
@@ -2774,7 +2787,16 @@ void ft_init(t_cube *cube, t_nc *nu)
     cube->player.last_LR = LEFT;
     cube->player.attacked = false;
     cube->player.hit = false;
-    cube->player.angle = 0;
+    
+    if(cube->map[nu->hi->y][nu->hi->x] == 'E')
+        cube->player.angle = 0;
+    else if(cube->map[nu->hi->y][nu->hi->x] == 'W')
+        cube->player.angle = PI;
+    else if(cube->map[nu->hi->y][nu->hi->x] == 'S')
+        cube->player.angle = PI / 2.0;
+    else if(cube->map[nu->hi->y][nu->hi->x] == 'N')
+        cube->player.angle = (PI / 2.0) + PI;
+
     cube->state = MENU;
     cube->prev_state = MENU;
 

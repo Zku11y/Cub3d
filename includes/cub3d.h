@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/04 23:11:47 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/05 11:26:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@
 # define VERT 1
 # define MAP_X 30
 # define MAP_Y 30
-# define MAX_DST 1000
+# define MAX_DST 200
 # define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
 # define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
 # define CAM_H (GRID_SIZE / 2.0)
@@ -66,9 +66,9 @@
 # define MINI_MAP_X 50
 # define MINI_MAP_Y 50
 # define MAP_SIZE 100
-# define ENEMY_RADIUS 500.0
+# define ENEMY_RADIUS 50.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 10
+# define ENEMY_NUM 5
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xff0000ff
