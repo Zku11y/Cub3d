@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/05 11:22:01 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/05 17:53:43 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1112,7 +1112,7 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 
 
     if(enemy->delay == true){
-        if((int)(tv.tv_sec - enemy->atk_time) == enemy->atk_delay)
+        if((int)(tv.tv_sec - enemy->atk_time) >= enemy->atk_delay)
             enemy->delay = false;
     }
 
