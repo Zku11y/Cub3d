@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/04 23:44:31 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/05 00:03:25 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,15 +347,10 @@ void ft_mouvement(t_cube *cube)
     
     if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL))
     {
-        if(cube->player.move_state != CROUCH){
-            if((int)(cube->player.current_speed_FB_X * 10.0) == 0 && (int)(cube->player.current_speed_LR_X * 10.0) == 0
-                && (int)(cube->player.current_speed_FB_Y * 10.0) == 0 && (int)(cube->player.current_speed_LR_Y * 10.0) == 0)
-            {
-                cube->player.move_state = CROUCH;            
-                cube->player.dst_speed_mult = 4.0 / PLAYER_SPEED;
-                cube->dst_camera_h = CAM_H / 2.0;
-            }
-            else if(cube->player.move_state == WALK || cube->player.move_state == SPRINT)
+        if(cube->player.move_state == WALK || cube->player.move_state == SPRINT)
+        {
+            if((int)(cube->player.current_speed_FB_X * 10.0) != 0 || (int)(cube->player.current_speed_LR_X * 10.0) != 0
+                || (int)(cube->player.current_speed_FB_Y * 10.0) != 0 || (int)(cube->player.current_speed_LR_Y * 10.0) != 0)            
             {
                 cube->player.move_state = SLIDE;
                 cube->dst_camera_h = CAM_H / 2.0;                
@@ -363,7 +358,7 @@ void ft_mouvement(t_cube *cube)
         }
 
         if(cube->player.move_state == SLIDE){
-            printf("IM SLIDDINNN BOOOOOI\n");
+            // printf("IM SLIDDINNN BOOOOOI\n");
             cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
             cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
             cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
@@ -376,6 +371,14 @@ void ft_mouvement(t_cube *cube)
             ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
             cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
             cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
+            if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
+                struct timeval tv;
+                gettimeofday(&tv, NULL);
+                printf("left mouse click pressed!\n");
+                cube->player.delay = true;
+                cube->player.attacked = true;
+                cube->player.atk_time = tv.tv_sec;
+            }
             return;
         }
         // printf("crouch with speed == 0\n");
@@ -2362,8 +2365,6 @@ void ft_fov_mod(t_cube *cube){
     if(cube->player.move_state == WALK)
         cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
     else{
-        if(cube->player.move_state == CROUCH)
-            cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, 0.03);
 
         int dst_fov = 1.5 * cube->init_fov;
         if(dst_fov > 170)
@@ -2378,8 +2379,8 @@ void ft_game(t_cube *cube){
     ft_draw_rays(cube);
     ft_floor_ceiling(cube);
     ft_draw_world(cube);
-    // ft_draw_enemies(cube);
-    // ft_draw_proj(cube);
+    ft_draw_enemies(cube);
+    ft_draw_proj(cube);
     ft_weapon(cube);
     ft_heart(cube);
     ft_fov_mod(cube);
