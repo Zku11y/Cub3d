@@ -1,5 +1,5 @@
 
-#include "../head.h"
+#include "../../includes/cub3d.h"
 
 void free_mp(t_mp *mp)
 {

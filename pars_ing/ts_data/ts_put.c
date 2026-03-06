@@ -1,5 +1,5 @@
 
-#include "../head.h"
+#include "../../includes/cub3d.h"
 
 char *ts_get_img(t_teto *teto, t_key key)
 {

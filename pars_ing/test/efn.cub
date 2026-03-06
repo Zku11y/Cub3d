@@ -1,8 +1,8 @@
 
-NO ./path_to_the_north_diddy
-SO ./path_to_the_south_diddy
-WE ./path_to_the_west_diddy
-EA ./path_to_the_east_diddy
+NO ./miku.png
+SO ./miku.png
+WE ./miku.png
+EA ./miku.png
 
 F 0,0, 1
 C 0,0,0000000000000000000000111

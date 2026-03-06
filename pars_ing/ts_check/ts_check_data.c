@@ -1,22 +1,33 @@
 
-#include "../head.h"
+#include "../../includes/cub3d.h"
+
+void ts_cln_pngs(t_nc *nu)
+{
+    int i = NO;
+
+    while (i < EA && nu->txtrs[i])
+    {
+        mlx_delete_texture(nu->txtrs[i]);
+        i++;
+    }
+}
 
 int ts_check_data(t_nc *nu)
 {
-    // int i;
+    int i;
 
-    // i = NO;
+    i = NO;
     if (!nu)
         return 1;
     if (!nu->imgs[NO] || !nu->imgs[SO]
         || !nu->imgs[WE] || !nu->imgs[EA])
         return 1;
-    // while (i <= EA)
-    // {
-    //     nu->txtrs[i] = mlx_load_png(nu->imgs[i]);
-    //     if (!nu->txtrs[i])
-    //         return 1;
-    //     i++;
-    // }
+    while (i <= EA)
+    {
+        nu->txtrs[i] = mlx_load_png(nu->imgs[i]);
+        if (!nu->txtrs[i])
+            return (ts_cln_pngs(nu), 1);
+        i++;
+    }
     return 0;
 }

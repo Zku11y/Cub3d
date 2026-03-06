@@ -1,5 +1,5 @@
 
-#include "../head.h"
+#include "../../includes/cub3d.h"
 
 int rec(char **map, int x, int y, int m_x, int m_y)
 {

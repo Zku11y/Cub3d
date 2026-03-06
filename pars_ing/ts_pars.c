@@ -1,5 +1,5 @@
 
-#include "head.h"
+#include "../includes/cub3d.h"
 
 void ts_free_one_nomap(t_nc *nu)
 {
@@ -20,6 +20,7 @@ void free_nu(t_nc *nu)
         nu = nu->next;
         free(ts->hi);
         free_nu_map(ts->map);
+        ts_cln_pngs(ts);
         ts_free_one_nomap(ts);
     }
 }

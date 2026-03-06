@@ -1,5 +1,5 @@
 
-#include "../head.h"
+#include "../../includes/cub3d.h"
 
 t_teto *ts_get(char *lain, t_key key)
 {

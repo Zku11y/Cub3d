@@ -1,5 +1,5 @@
 
-#include "../head.h"
+#include "../../includes/cub3d.h"
 
 int ts_mt(char *lain)
 {
