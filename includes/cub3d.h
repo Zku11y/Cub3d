@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/06 00:51:52 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/06 02:44:06 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void ts_cln_pngs(t_nc *nu);
 # define MAP_SIZE 100
 # define ENEMY_RADIUS 50.0
 # define ENEMY_SPEED 1
-# define ENEMY_NUM 7
+# define ENEMY_NUM 15
 # define CROSSHAIR_LEN 7.0
 # define CROSSHAIR_GIRTH 1.0
 # define CROSSHAIR_COLOR 0xffffffff
@@ -539,3 +539,18 @@ t_vect2				vert_first_point(t_cube *cube, t_ray *ray);
 void 				ft_updated_res_init(t_cube *cube);
 void 				ft_updated_buff_init(t_cube *cube);
 void 				ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color);
+
+void				ft_init_0(t_cube *cube, t_nc *nu);
+void				ft_init_1(t_cube *cube, t_nc *nu);
+void				ft_init_2(t_cube *cube, t_nc *nu);
+void				ft_init_3(t_cube *cube, t_nc *nu);
+void				ft_init_4(t_cube *cube, t_nc *nu);
+void				ft_init_5(t_cube *cube, t_nc *nu);
+void				ft_init_6(t_cube *cube, t_nc *nu);
+void				ft_init_7(t_cube *cube, t_nc *nu);
+void				ft_init_8(t_cube *cube, t_nc *nu);
+void				ft_init_9(t_cube *cube, t_nc *nu);
+void				ft_init_10(t_cube *cube, t_nc *nu);
+void				ft_init_11(t_cube *cube, t_nc *nu);
+
+void 				ft_init_enemies(t_cube *cube);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/05 21:47:25 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/06 02:28:21 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2789,269 +2789,283 @@ void ft_updated_buff_init(t_cube *cube){
     ft_updated_res_init(cube);
 }
 
-
-void ft_init(t_cube *cube, t_nc *nu)
-{
-    struct timeval tv;
-
-    // ft_init_audio(cube);
-    gettimeofday(&tv, NULL);
-    cube->camera_h = CAM_H;
-    cube->dst_camera_h = CAM_H;
-    cube->map_x = nu->x;
-    cube->map_y = nu->y;
-    cube->is_sliding = false;
-    cube->upscaling = UPSCALING_RATE;
-    cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
-    cube->screen_width_buff = SCREEN_WIDTH_BUFF;
-    cube->screen_height = (double)cube->screen_height_buff / (double)cube->upscaling;
-    cube->screen_width = (double)cube->screen_width_buff / (double)cube->upscaling;
-    cube->mini_map_size = 0.2 * cube->screen_width_buff;
-    cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
-    cube->res = cube->screen_width;
-    cube->move_increase = 0.05 * (double)cube->screen_height;
-    cube->pitch_max = (double)cube->screen_height * 1.1;
-    cube->init_fov = FOV;
-    cube->fov = cube->init_fov;
-    cube->prev_fov = cube->init_fov;
-    cube->mouse_sens = TURN_SPEED;
-    cube->proj_dst = ((double)cube->screen_width / 2.0) / tan(((double)cube->fov / 2.0) * RADIANT_RATE);
-    cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
-    cube->player.x = (GRID_SIZE * (double)nu->hi->x) + GRID_SIZE / 2.0;
-    cube->player.y = (GRID_SIZE * (double)nu->hi->y) + GRID_SIZE / 2.0;
-    cube->player.HP = MAX_HP;
-    cube->player.delay = false;
-    cube->player.atk_delay = 1;
-    cube->player.DMG = 50;
-    cube->player.speed_mult = PLAYER_SPEED;
-    cube->player.dst_speed_mult = PLAYER_SPEED;
-    cube->player.move_state = WALK;
-    cube->player.current_speed_LR_X = 0.0;
-    cube->player.current_speed_LR_Y = 0.0;
-    cube->player.current_speed_FB_X = 0.0;
-    cube->player.current_speed_FB_Y = 0.0;
-    cube->player.last_FB = UP;
-    cube->player.last_LR = LEFT;
-    cube->player.attacked = false;
-    cube->player.hit = false;
-    
-    if(cube->map[nu->hi->y][nu->hi->x] == 'E')
-        cube->player.angle = 0;
-    else if(cube->map[nu->hi->y][nu->hi->x] == 'W')
-        cube->player.angle = PI;
-    else if(cube->map[nu->hi->y][nu->hi->x] == 'S')
-        cube->player.angle = PI / 2.0;
-    else if(cube->map[nu->hi->y][nu->hi->x] == 'N')
-        cube->player.angle = (PI / 2.0) + PI;
-
-    cube->state = MENU;
-    cube->prev_state = MENU;
-
-    cube->menu.title = mlx_load_png("./menu_screen_1.png");
-    cube->menu.settings.background = mlx_load_png("./settings_assets/settings_background.png");
-    cube->menu.settings.fov.bar_1 = mlx_load_png("./settings_assets/bar_1.png");
-    cube->menu.settings.bar_2 = mlx_load_png("./settings_assets/bar_2.png");
-    cube->menu.settings.fov.slider_1 = mlx_load_png("./settings_assets/slider_1.png");
-    cube->menu.settings.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
-
-    cube->menu.settings.upscaling.x1_glow = mlx_load_png("./settings_assets/x1_glow.png");
-    cube->menu.settings.upscaling.x2_glow = mlx_load_png("./settings_assets/x2_glow.png");
-    cube->menu.settings.upscaling.x3_glow = mlx_load_png("./settings_assets/x3_glow.png");
-    cube->menu.settings.upscaling.x4_glow = mlx_load_png("./settings_assets/x4_glow.png");
-    cube->menu.settings.upscaling.x5_glow = mlx_load_png("./settings_assets/x5_glow.png");
-    cube->menu.settings.upscaling.x6_glow = mlx_load_png("./settings_assets/x6_glow.png");
-    cube->menu.settings.upscaling.x7_glow = mlx_load_png("./settings_assets/x7_glow.png");
-    cube->menu.settings.upscaling.x8_glow = mlx_load_png("./settings_assets/x8_glow.png");
-    cube->menu.settings.upscaling.start_x15 = 0.089 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x15 = 0.11 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_x26 = 0.162 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x26 = 0.183 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_x37 = 0.235 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x37 = 0.256 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_x48 = 0.310 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x48 = 0.331 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
-    cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
-    cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
-    cube->menu.settings.upscaling.end_y5678 = 0.9 * cube->screen_height_buff;
-    if(cube->upscaling == 1)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x1_glow;
-    else if(cube->upscaling == 2)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x2_glow;
-    else if(cube->upscaling == 3)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x3_glow;
-    else if(cube->upscaling == 4)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x4_glow;
-    else if(cube->upscaling == 5)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x5_glow;
-    else if(cube->upscaling == 6)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x6_glow;
-    else if(cube->upscaling == 7)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x7_glow;
-    else if(cube->upscaling == 8)
-        cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x8_glow;
-
-    cube->menu.settings.mouse_held = 0;
-
-    cube->menu.settings.fov.slider_start_y = 0.20 * cube->screen_height_buff;
-    cube->menu.settings.fov.slider_end_y = 0.24 * cube->screen_height_buff;
-    cube->menu.settings.fov.slider_start_x = 0.065 * cube->screen_width_buff;
-    cube->menu.settings.fov.slider_end_x = 0.354 * cube->screen_width_buff;
-    cube->menu.settings.fov.min_fov = 30;
-    cube->menu.settings.fov.max_fov = 150;
-
-    cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
-    cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
-    cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
-    cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
-    cube->menu.settings.mouse_sens.slider_end_x = 0.895 * cube->screen_width_buff;
-    cube->menu.settings.mouse_sens.min_sens = 0.0002;
-    cube->menu.settings.mouse_sens.max_sens = 0.0040;
-
-    cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
-    cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
-    cube->menu.settings.resolution.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
-    cube->menu.settings.resolution.res_1080_glow = mlx_load_png("./settings_assets/1920_1080_glow.png");
-    if(cube->screen_height_buff == 1080)
-        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow; 
-    if(cube->screen_height_buff == 900)
-        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow; 
-    if(cube->screen_height_buff == 720)
-        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow; 
-    if(cube->screen_height_buff == 480)
-        cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow; 
-    cube->menu.settings.resolution.start_x_1080 = 0.055 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_1080 = 0.175 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_900 = 0.245 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_900 = 0.358 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_720 = 0.057 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_720 = 0.173 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_480 = 0.265 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_480 = 0.365 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_y_1080_900 = 0.48 * cube->screen_height_buff;
-    cube->menu.settings.resolution.end_y_1080_900 = 0.51 * cube->screen_height_buff;
-    cube->menu.settings.resolution.start_y_720_480 = 0.59 * cube->screen_height_buff;
-    cube->menu.settings.resolution.end_y_720_480 = 0.62 * cube->screen_height_buff;
-
-    cube->menu.settings.crosshair.border = mlx_load_png("./settings_assets/border.png");
-    cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
-    cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
-    cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
-    cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
-    cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
-
-    cube->menu.state = 0;
-
-    cube->tilt_angle = 0.0;
-    cube->target_angle = 0.0;
-    cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
-    cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
-    cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
-
-    cube->player.weapon.DMG = 50;
-    cube->player.weapon.fire_rate = 2;
-    cube->player.weapon.idle_texture = mlx_load_png("./shotgun_idle.png");
-    // cube->player.weapon.idle_texture_2 = mlx_load_png("./shotgun_idle_2.png");
-    cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
-    cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
-    cube->player.weapon.texture = cube->player.weapon.idle_texture;
-    cube->player.weapon.pitch_increase = 1;
-    cube->player.weapon.pitch_increased = 0;
-    cube->player.weapon.idle_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-    cube->player.weapon.idle_frame = 0;
-    cube->player.weapon.move_lerp = 0;
-    cube->player.weapon.pitch_changed = false;
-
-    cube->heart.frame_1 = mlx_load_png("./blood_lvl_1.png");
-    cube->heart.frame_2 = mlx_load_png("./blood_lvl_2.png");
-    cube->heart.frame_3 = mlx_load_png("./blood_lvl_3.png");
-    cube->heart.frame_4 = mlx_load_png("./blood_lvl_4.png");
-    cube->heart.prev_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-    cube->heart.frame = 0;
-    cube->heart.last_angle = 0;
-    cube->heart.last_pitch = 0;
-    cube->heart.added_angle = 0;
-    cube->heart.added_pitch = 0;
-    cube->heart.blur_lerp = BLUR_LERP;
-    cube->heart.blood_op = 0.0;
-
-    cube->blood_explosion.frame[0] = mlx_load_png("./blood_explosion/1_0.png");
-    cube->blood_explosion.frame[1] = mlx_load_png("./blood_explosion/1_1.png");
-    cube->blood_explosion.frame[2] = mlx_load_png("./blood_explosion/1_2.png");
-    cube->blood_explosion.frame[3] = mlx_load_png("./blood_explosion/1_3.png");
-    cube->blood_explosion.frame[4] = mlx_load_png("./blood_explosion/1_4.png");
-    cube->blood_explosion.frame[5] = mlx_load_png("./blood_explosion/1_5.png");
-    cube->blood_explosion.frame[6] = mlx_load_png("./blood_explosion/1_6.png");
-    cube->blood_explosion.frame[7] = mlx_load_png("./blood_explosion/1_7.png");
-    cube->blood_explosion.frame[8] = mlx_load_png("./blood_explosion/1_8.png");
-    cube->blood_explosion.frame[9] = mlx_load_png("./blood_explosion/1_9.png");
-    cube->blood_explosion.frame[10] = mlx_load_png("./blood_explosion/1_10.png");
-    cube->blood_explosion.frame[11] = mlx_load_png("./blood_explosion/1_11.png");
-
-    cube->flash.r = 1.0;
-    cube->flash.g = 1.0;
-    cube->flash.b = 1.0;
-    cube->flash.dst_r = 1.0;
-    cube->flash.dst_g = 1.0;
-    cube->flash.dst_b = 1.0;
-    cube->flash.flashed = false;
-
-    cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
-    cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
-    cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
-    cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
-    cube->projectiles = ts_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
-    cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->new_buffer = ts_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
-    cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
-
-    cube->fps = 0;
-    cube->grain = true;
-    cube->pitch = 0.0;
-    cube->z_buffer = ts_calloc(cube->screen_width, sizeof(double));
-    cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
-    cube->init_t = tv.tv_sec;
-    cube->final_t = tv.tv_sec;
-    cube->moving = false;
-    cube->enemy = ts_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
-    ft_init_enemies(cube);
-    cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
-    cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-    cube->texture = mlx_load_png("./s2 Concrete Squares Grey.png");
-    cube->texture2 = mlx_load_png("./Tiles_Rectangle_Grey_1.png");
-    cube->texture3 = mlx_load_png("./Concrete_02_Grey_1.png");
-    cube->texture4 = mlx_load_png("./job_dude.png");
-    cube->texture5 = mlx_load_png("./Monster_1.png");
-    cube->texture6 = mlx_load_png("./job_app.png");
-    cube->texture_died = mlx_load_png("./you_died.png");
-    cube->crosshair = mlx_load_png("./crosshair_2.png");
-    cube->line_girth = (int)(cube->screen_width / cube->res);
-    if(cube->line_girth == 0)
-        cube->line_girth = 1;
-    cube->mlx = mlx_init(cube->screen_width_buff, cube->screen_height_buff, "cub3d", true);
-    if(cube->mlx == NULL)
-    {
-        perror("mlx init error :");
-        exit(EXIT_FAILURE);
-    }
-    cube->image = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
-    if(cube->image == NULL)
-    {
-        mlx_terminate(cube->mlx);
-        perror("image init error :");
-        exit(EXIT_FAILURE);
-    }
-    cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
-    if(cube->image_death == NULL)
-    {
-        mlx_terminate(cube->mlx);
-        perror("image init error :");
-        exit(EXIT_FAILURE);
-    }
-    mlx_image_to_window(cube->mlx, cube->image, 0, 0);
-    mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
+void ft_init(t_cube *cube, t_nc *nu){
+    ft_init_0(cube, nu);
+    ft_init_1(cube, nu);
+    ft_init_2(cube, nu);
+    ft_init_3(cube, nu);
+    ft_init_4(cube, nu);
+    ft_init_5(cube, nu);
+    ft_init_6(cube, nu);
+    ft_init_7(cube, nu);
+    ft_init_8(cube, nu);
+    ft_init_9(cube, nu);
+    ft_init_10(cube, nu);
+    ft_init_11(cube, nu);
 }
+
+// void ft_init(t_cube *cube, t_nc *nu)
+// {
+//     struct timeval tv;
+
+//     // ft_init_audio(cube);
+//     gettimeofday(&tv, NULL);
+//     cube->camera_h = CAM_H;
+//     cube->dst_camera_h = CAM_H;
+//     cube->map_x = nu->x;
+//     cube->map_y = nu->y;
+//     cube->is_sliding = false;
+//     cube->upscaling = UPSCALING_RATE;
+//     cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
+//     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
+//     cube->screen_height = (double)cube->screen_height_buff / (double)cube->upscaling;
+//     cube->screen_width = (double)cube->screen_width_buff / (double)cube->upscaling;
+//     cube->mini_map_size = 0.2 * cube->screen_width_buff;
+//     cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
+//     cube->res = cube->screen_width;
+//     cube->move_increase = 0.05 * (double)cube->screen_height;
+//     cube->pitch_max = (double)cube->screen_height * 1.1;
+//     cube->init_fov = FOV;
+//     cube->fov = cube->init_fov;
+//     cube->prev_fov = cube->init_fov;
+//     cube->mouse_sens = TURN_SPEED;
+//     cube->proj_dst = ((double)cube->screen_width / 2.0) / tan(((double)cube->fov / 2.0) * RADIANT_RATE);
+//     cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
+//     cube->player.x = (GRID_SIZE * (double)nu->hi->x) + GRID_SIZE / 2.0;
+//     cube->player.y = (GRID_SIZE * (double)nu->hi->y) + GRID_SIZE / 2.0;
+//     cube->player.HP = MAX_HP;
+//     cube->player.delay = false;
+//     cube->player.atk_delay = 1;
+//     cube->player.DMG = 50;
+//     cube->player.speed_mult = PLAYER_SPEED;
+//     cube->player.dst_speed_mult = PLAYER_SPEED;
+//     cube->player.move_state = WALK;
+//     cube->player.current_speed_LR_X = 0.0;
+//     cube->player.current_speed_LR_Y = 0.0;
+//     cube->player.current_speed_FB_X = 0.0;
+//     cube->player.current_speed_FB_Y = 0.0;
+//     cube->player.last_FB = UP;
+//     cube->player.last_LR = LEFT;
+//     cube->player.attacked = false;
+//     cube->player.hit = false;
+    
+//     if(cube->map[nu->hi->y][nu->hi->x] == 'E')
+//         cube->player.angle = 0;
+//     else if(cube->map[nu->hi->y][nu->hi->x] == 'W')
+//         cube->player.angle = PI;
+//     else if(cube->map[nu->hi->y][nu->hi->x] == 'S')
+//         cube->player.angle = PI / 2.0;
+//     else if(cube->map[nu->hi->y][nu->hi->x] == 'N')
+//         cube->player.angle = (PI / 2.0) + PI;
+
+//     cube->state = MENU;
+//     cube->prev_state = MENU;
+
+//     cube->menu.title = mlx_load_png("./menu_screen_1.png");
+//     cube->menu.settings.background = mlx_load_png("./settings_assets/settings_background.png");
+//     cube->menu.settings.fov.bar_1 = mlx_load_png("./settings_assets/bar_1.png");
+//     cube->menu.settings.bar_2 = mlx_load_png("./settings_assets/bar_2.png");
+//     cube->menu.settings.fov.slider_1 = mlx_load_png("./settings_assets/slider_1.png");
+//     cube->menu.settings.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
+
+//     cube->menu.settings.upscaling.x1_glow = mlx_load_png("./settings_assets/x1_glow.png");
+//     cube->menu.settings.upscaling.x2_glow = mlx_load_png("./settings_assets/x2_glow.png");
+//     cube->menu.settings.upscaling.x3_glow = mlx_load_png("./settings_assets/x3_glow.png");
+//     cube->menu.settings.upscaling.x4_glow = mlx_load_png("./settings_assets/x4_glow.png");
+//     cube->menu.settings.upscaling.x5_glow = mlx_load_png("./settings_assets/x5_glow.png");
+//     cube->menu.settings.upscaling.x6_glow = mlx_load_png("./settings_assets/x6_glow.png");
+//     cube->menu.settings.upscaling.x7_glow = mlx_load_png("./settings_assets/x7_glow.png");
+//     cube->menu.settings.upscaling.x8_glow = mlx_load_png("./settings_assets/x8_glow.png");
+//     cube->menu.settings.upscaling.start_x15 = 0.089 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.end_x15 = 0.11 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.start_x26 = 0.162 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.end_x26 = 0.183 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.start_x37 = 0.235 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.end_x37 = 0.256 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.start_x48 = 0.310 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.end_x48 = 0.331 * cube->screen_width_buff;
+//     cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
+//     cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
+//     cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
+//     cube->menu.settings.upscaling.end_y5678 = 0.9 * cube->screen_height_buff;
+//     if(cube->upscaling == 1)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x1_glow;
+//     else if(cube->upscaling == 2)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x2_glow;
+//     else if(cube->upscaling == 3)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x3_glow;
+//     else if(cube->upscaling == 4)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x4_glow;
+//     else if(cube->upscaling == 5)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x5_glow;
+//     else if(cube->upscaling == 6)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x6_glow;
+//     else if(cube->upscaling == 7)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x7_glow;
+//     else if(cube->upscaling == 8)
+//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x8_glow;
+
+//     cube->menu.settings.mouse_held = 0;
+
+//     cube->menu.settings.fov.slider_start_y = 0.20 * cube->screen_height_buff;
+//     cube->menu.settings.fov.slider_end_y = 0.24 * cube->screen_height_buff;
+//     cube->menu.settings.fov.slider_start_x = 0.065 * cube->screen_width_buff;
+//     cube->menu.settings.fov.slider_end_x = 0.354 * cube->screen_width_buff;
+//     cube->menu.settings.fov.min_fov = 30;
+//     cube->menu.settings.fov.max_fov = 150;
+
+//     cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
+//     cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
+//     cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
+//     cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
+//     cube->menu.settings.mouse_sens.slider_end_x = 0.895 * cube->screen_width_buff;
+//     cube->menu.settings.mouse_sens.min_sens = 0.0002;
+//     cube->menu.settings.mouse_sens.max_sens = 0.0040;
+
+//     cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
+//     cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
+//     cube->menu.settings.resolution.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
+//     cube->menu.settings.resolution.res_1080_glow = mlx_load_png("./settings_assets/1920_1080_glow.png");
+//     if(cube->screen_height_buff == 1080)
+//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow; 
+//     if(cube->screen_height_buff == 900)
+//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow; 
+//     if(cube->screen_height_buff == 720)
+//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow; 
+//     if(cube->screen_height_buff == 480)
+//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow; 
+//     cube->menu.settings.resolution.start_x_1080 = 0.055 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.end_x_1080 = 0.175 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.start_x_900 = 0.245 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.end_x_900 = 0.358 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.start_x_720 = 0.057 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.end_x_720 = 0.173 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.start_x_480 = 0.265 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.end_x_480 = 0.365 * cube->screen_width_buff;
+//     cube->menu.settings.resolution.start_y_1080_900 = 0.48 * cube->screen_height_buff;
+//     cube->menu.settings.resolution.end_y_1080_900 = 0.51 * cube->screen_height_buff;
+//     cube->menu.settings.resolution.start_y_720_480 = 0.59 * cube->screen_height_buff;
+//     cube->menu.settings.resolution.end_y_720_480 = 0.62 * cube->screen_height_buff;
+
+//     cube->menu.settings.crosshair.border = mlx_load_png("./settings_assets/border.png");
+//     cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
+//     cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
+//     cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
+//     cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
+//     cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
+
+//     cube->menu.state = 0;
+
+//     cube->tilt_angle = 0.0;
+//     cube->target_angle = 0.0;
+//     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+//     cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+//     cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+
+//     cube->player.weapon.DMG = 50;
+//     cube->player.weapon.fire_rate = 2;
+//     cube->player.weapon.idle_texture = mlx_load_png("./shotgun_idle.png");
+//     // cube->player.weapon.idle_texture_2 = mlx_load_png("./shotgun_idle_2.png");
+//     cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun_test.png");
+//     cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun_test.png");
+//     cube->player.weapon.texture = cube->player.weapon.idle_texture;
+//     cube->player.weapon.pitch_increase = 1;
+//     cube->player.weapon.pitch_increased = 0;
+//     cube->player.weapon.idle_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+//     cube->player.weapon.idle_frame = 0;
+//     cube->player.weapon.move_lerp = 0;
+//     cube->player.weapon.pitch_changed = false;
+
+//     cube->heart.frame_1 = mlx_load_png("./blood_lvl_1.png");
+//     cube->heart.frame_2 = mlx_load_png("./blood_lvl_2.png");
+//     cube->heart.frame_3 = mlx_load_png("./blood_lvl_3.png");
+//     cube->heart.frame_4 = mlx_load_png("./blood_lvl_4.png");
+//     cube->heart.prev_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+//     cube->heart.frame = 0;
+//     cube->heart.last_angle = 0;
+//     cube->heart.last_pitch = 0;
+//     cube->heart.added_angle = 0;
+//     cube->heart.added_pitch = 0;
+//     cube->heart.blur_lerp = BLUR_LERP;
+//     cube->heart.blood_op = 0.0;
+
+//     cube->blood_explosion.frame[0] = mlx_load_png("./blood_explosion/1_0.png");
+//     cube->blood_explosion.frame[1] = mlx_load_png("./blood_explosion/1_1.png");
+//     cube->blood_explosion.frame[2] = mlx_load_png("./blood_explosion/1_2.png");
+//     cube->blood_explosion.frame[3] = mlx_load_png("./blood_explosion/1_3.png");
+//     cube->blood_explosion.frame[4] = mlx_load_png("./blood_explosion/1_4.png");
+//     cube->blood_explosion.frame[5] = mlx_load_png("./blood_explosion/1_5.png");
+//     cube->blood_explosion.frame[6] = mlx_load_png("./blood_explosion/1_6.png");
+//     cube->blood_explosion.frame[7] = mlx_load_png("./blood_explosion/1_7.png");
+//     cube->blood_explosion.frame[8] = mlx_load_png("./blood_explosion/1_8.png");
+//     cube->blood_explosion.frame[9] = mlx_load_png("./blood_explosion/1_9.png");
+//     cube->blood_explosion.frame[10] = mlx_load_png("./blood_explosion/1_10.png");
+//     cube->blood_explosion.frame[11] = mlx_load_png("./blood_explosion/1_11.png");
+
+//     cube->flash.r = 1.0;
+//     cube->flash.g = 1.0;
+//     cube->flash.b = 1.0;
+//     cube->flash.dst_r = 1.0;
+//     cube->flash.dst_g = 1.0;
+//     cube->flash.dst_b = 1.0;
+//     cube->flash.flashed = false;
+
+//     cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
+//     cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
+//     cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
+//     cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
+//     cube->projectiles = ts_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
+//     cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+//     cube->new_buffer = ts_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
+//     cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+//     cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
+
+//     cube->fps = 0;
+//     cube->grain = true;
+//     cube->pitch = 0.0;
+//     cube->z_buffer = ts_calloc(cube->screen_width, sizeof(double));
+//     cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
+//     cube->init_t = tv.tv_sec;
+//     cube->final_t = tv.tv_sec;
+//     cube->moving = false;
+//     cube->enemy = ts_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
+//     ft_init_enemies(cube);
+//     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
+//     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
+//     cube->texture = mlx_load_png("./s2 Concrete Squares Grey.png");
+//     cube->texture2 = mlx_load_png("./Tiles_Rectangle_Grey_1.png");
+//     cube->texture3 = mlx_load_png("./Concrete_02_Grey_1.png");
+//     cube->texture4 = mlx_load_png("./job_dude.png");
+//     cube->texture5 = mlx_load_png("./Monster_1.png");
+//     cube->texture6 = mlx_load_png("./job_app.png");
+//     cube->texture_died = mlx_load_png("./you_died.png");
+//     cube->crosshair = mlx_load_png("./crosshair_2.png");
+//     cube->line_girth = (int)(cube->screen_width / cube->res);
+//     if(cube->line_girth == 0)
+//         cube->line_girth = 1;
+//     cube->mlx = mlx_init(cube->screen_width_buff, cube->screen_height_buff, "cub3d", true);
+//     if(cube->mlx == NULL)
+//     {
+//         perror("mlx init error :");
+//         exit(EXIT_FAILURE);
+//     }
+//     cube->image = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
+//     if(cube->image == NULL)
+//     {
+//         mlx_terminate(cube->mlx);
+//         perror("image init error :");
+//         exit(EXIT_FAILURE);
+//     }
+//     cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
+//     if(cube->image_death == NULL)
+//     {
+//         mlx_terminate(cube->mlx);
+//         perror("image init error :");
+//         exit(EXIT_FAILURE);
+//     }
+//     mlx_image_to_window(cube->mlx, cube->image, 0, 0);
+//     mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
+// }
 
 void f(){
     system("leaks -q cub3d");
@@ -3145,9 +3159,11 @@ int main(int ac, char **av)
     if (ac < 2)
     return 1;
     t_cube cube;
+    printf("before\n");
     nu = ts_pars(&av[1]);
     if (!nu)
     return 1;
+    printf("after\n");
     ts_print_nu(nu); // -- ts just prnt REMOVE IT
     ft_map_init(&cube, nu);
 

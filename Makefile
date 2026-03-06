@@ -1,6 +1,6 @@
 NAME = cub3d
 
-SRC = src/cub3d.c src/raycasting.c \
+SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./pars_ing/ts_data/ts_teto.c \
 	./pars_ing/ts_check/rec_map.c\
 	./pars_ing/ts_check/dot_chk.c \
@@ -13,6 +13,9 @@ SRC = src/cub3d.c src/raycasting.c \
 	./pars_ing/ts_data/ts_read.c \
 	./pars_ing/ts_data/ts_read_map.c \
 	./pars_ing/ts_pars.c \
+	./render_ing/ft_init/ft_init_0.c \
+	./render_ing/ft_init/ft_init_1.c \
+	./render_ing/ft_init/ft_init_2.c \
 
 OBJ = $(SRC:.c=.o)
 
