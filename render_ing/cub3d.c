@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/07 02:14:06 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 06:09:21 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,6 +352,10 @@ void ft_mouvement(t_cube *cube)
             if((int)(cube->player.current_speed_FB_X * 10.0) != 0 || (int)(cube->player.current_speed_LR_X * 10.0) != 0
                 || (int)(cube->player.current_speed_FB_Y * 10.0) != 0 || (int)(cube->player.current_speed_LR_Y * 10.0) != 0)            
             {
+                cube->player.current_speed_FB_X *= 1.5;
+                cube->player.current_speed_FB_Y *= 1.5;
+                cube->player.current_speed_LR_X *= 1.5;
+                cube->player.current_speed_LR_Y *= 1.5;
                 cube->player.move_state = SLIDE;
                 cube->dst_camera_h = CAM_H / 2.0;                
             }
@@ -1990,265 +1994,265 @@ void ft_res(t_cube *cube){
     ft_renderer(cube, cube->menu.settings.res.texture, 0, 0);
 }
 
-void ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture){
-    if(upscale == cube->ups)
-        return;
-    cube->menu.settings.ups.texture = texture;
-    cube->ups = upscale;
-    cube->screen_height = cube->screen_height_buff / cube->ups;
-    cube->screen_width = cube->screen_width_buff / cube->ups;
-    ft_updated_res_init(cube);
-}
+// void ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture){
+//     if(upscale == cube->ups)
+//         return;
+//     cube->menu.settings.ups.texture = texture;
+//     cube->ups = upscale;
+//     cube->screen_height = cube->screen_height_buff / cube->ups;
+//     cube->screen_width = cube->screen_width_buff / cube->ups;
+//     ft_updated_res_init(cube);
+// }
 
-void ft_upscale(t_cube *cube){
-    int mouse_x;
-    int mouse_y;
+// void ft_upscale(t_cube *cube){
+//     int mouse_x;
+//     int mouse_y;
 
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(cube->menu.settings.mouse_held != UPS)
-        return(ft_renderer(cube, cube->menu.settings.ups.texture, 0, 0));
+//     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+//     if(cube->menu.settings.mouse_held != UPS)
+//         return(ft_renderer(cube, cube->menu.settings.ups.texture, 0, 0));
 
-    if(mouse_y > cube->menu.settings.ups.start_y1234 && mouse_y < cube->menu.settings.ups.end_y1234){
-        if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x15)
-            ft_update_screen_res(cube, 1, cube->menu.settings.ups.x1_glow);
-        else if(mouse_x > cube->menu.settings.ups.start_x26 && mouse_x < cube->menu.settings.ups.end_x26)
-            ft_update_screen_res(cube, 2, cube->menu.settings.ups.x2_glow);
-        else if(mouse_x > cube->menu.settings.ups.start_x37 && mouse_x < cube->menu.settings.ups.end_x37)
-            ft_update_screen_res(cube, 3, cube->menu.settings.ups.x3_glow);
-        else if(mouse_x > cube->menu.settings.ups.start_x48 && mouse_x < cube->menu.settings.ups.end_x48)
-            ft_update_screen_res(cube, 4, cube->menu.settings.ups.x4_glow);
-    }
-    else if(mouse_y > cube->menu.settings.ups.start_y5678 && mouse_y < cube->menu.settings.ups.end_y5678){
-        if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x15)
-            ft_update_screen_res(cube, 5, cube->menu.settings.ups.x5_glow);
-        else if(mouse_x > cube->menu.settings.ups.start_x26 && mouse_x < cube->menu.settings.ups.end_x26)
-            ft_update_screen_res(cube, 6, cube->menu.settings.ups.x6_glow);
-        else if(mouse_x > cube->menu.settings.ups.start_x37 && mouse_x < cube->menu.settings.ups.end_x37)
-            ft_update_screen_res(cube, 7, cube->menu.settings.ups.x7_glow);
-        else if(mouse_x > cube->menu.settings.ups.start_x48 && mouse_x < cube->menu.settings.ups.end_x48)
-            ft_update_screen_res(cube, 8, cube->menu.settings.ups.x8_glow);
-    }
-    ft_renderer(cube, cube->menu.settings.ups.texture, 0, 0);
-}
+//     if(mouse_y > cube->menu.settings.ups.start_y1234 && mouse_y < cube->menu.settings.ups.end_y1234){
+//         if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x15)
+//             ft_update_screen_res(cube, 1, cube->menu.settings.ups.x1_glow);
+//         else if(mouse_x > cube->menu.settings.ups.start_x26 && mouse_x < cube->menu.settings.ups.end_x26)
+//             ft_update_screen_res(cube, 2, cube->menu.settings.ups.x2_glow);
+//         else if(mouse_x > cube->menu.settings.ups.start_x37 && mouse_x < cube->menu.settings.ups.end_x37)
+//             ft_update_screen_res(cube, 3, cube->menu.settings.ups.x3_glow);
+//         else if(mouse_x > cube->menu.settings.ups.start_x48 && mouse_x < cube->menu.settings.ups.end_x48)
+//             ft_update_screen_res(cube, 4, cube->menu.settings.ups.x4_glow);
+//     }
+//     else if(mouse_y > cube->menu.settings.ups.start_y5678 && mouse_y < cube->menu.settings.ups.end_y5678){
+//         if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x15)
+//             ft_update_screen_res(cube, 5, cube->menu.settings.ups.x5_glow);
+//         else if(mouse_x > cube->menu.settings.ups.start_x26 && mouse_x < cube->menu.settings.ups.end_x26)
+//             ft_update_screen_res(cube, 6, cube->menu.settings.ups.x6_glow);
+//         else if(mouse_x > cube->menu.settings.ups.start_x37 && mouse_x < cube->menu.settings.ups.end_x37)
+//             ft_update_screen_res(cube, 7, cube->menu.settings.ups.x7_glow);
+//         else if(mouse_x > cube->menu.settings.ups.start_x48 && mouse_x < cube->menu.settings.ups.end_x48)
+//             ft_update_screen_res(cube, 8, cube->menu.settings.ups.x8_glow);
+//     }
+//     ft_renderer(cube, cube->menu.settings.ups.texture, 0, 0);
+// }
 
-void ft_settings(t_cube *cube){
-    int mouse_x;
-    int mouse_y;
+// void ft_settings(t_cube *cube){
+//     int mouse_x;
+//     int mouse_y;
 
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(cube->menu.settings.mouse_held == NOTHING && mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
-        if(mouse_y > (cube->menu.settings.fov.slider_start_y) && mouse_y < (cube->menu.settings.fov.slider_end_y)
-         && mouse_x < (cube->menu.settings.fov.slider_end_x) && mouse_x > (cube->menu.settings.fov.slider_start_x))
-            cube->menu.settings.mouse_held = FOV_SLIDER;
-        else if(mouse_x > cube->menu.settings.res.start_x_1080 && mouse_y > cube->menu.settings.res.start_y_1080_900
-         && mouse_x < cube->menu.settings.res.end_x_480 && mouse_y < cube->menu.settings.res.end_y_480)
-            cube->menu.settings.mouse_held = RESOLUTION;
-        else if(mouse_y > (cube->menu.settings.mouse_sens.slider_start_y) && mouse_y < (cube->menu.settings.mouse_sens.slider_end_y)
-         && mouse_x < (cube->menu.settings.mouse_sens.slider_end_x) && mouse_x > (cube->menu.settings.mouse_sens.slider_start_x))
-            cube->menu.settings.mouse_held = MOUSE_SENS_SLIDER;
-        else if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x48
-         && mouse_y > cube->menu.settings.ups.start_y1234 && mouse_y < cube->menu.settings.ups.end_y5678)
-            cube->menu.settings.mouse_held = UPS;
-    }
-    if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
-        cube->menu.settings.mouse_held = NOTHING;
-    }
-    ft_fov_slider(cube);
-    ft_res(cube);
-    if(cube->menu.settings.mouse_held == NOTHING || cube->menu.settings.mouse_held == MOUSE_SENS_SLIDER)
-        ft_crosshair_color(cube);
-    ft_mouse_sens(cube);
-    ft_upscale(cube);
-    printf("screen_buff : (%d, %d), screen_res : (%d, %d), ups : %d\n",cube->screen_width, cube->screen_height, cube->screen_width_buff, cube->screen_height_buff, cube->ups);
-}
+//     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+//     if(cube->menu.settings.mouse_held == NOTHING && mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
+//         if(mouse_y > (cube->menu.settings.fov.slider_start_y) && mouse_y < (cube->menu.settings.fov.slider_end_y)
+//          && mouse_x < (cube->menu.settings.fov.slider_end_x) && mouse_x > (cube->menu.settings.fov.slider_start_x))
+//             cube->menu.settings.mouse_held = FOV_SLIDER;
+//         else if(mouse_x > cube->menu.settings.res.start_x_1080 && mouse_y > cube->menu.settings.res.start_y_1080_900
+//          && mouse_x < cube->menu.settings.res.end_x_480 && mouse_y < cube->menu.settings.res.end_y_480)
+//             cube->menu.settings.mouse_held = RESOLUTION;
+//         else if(mouse_y > (cube->menu.settings.mouse_sens.slider_start_y) && mouse_y < (cube->menu.settings.mouse_sens.slider_end_y)
+//          && mouse_x < (cube->menu.settings.mouse_sens.slider_end_x) && mouse_x > (cube->menu.settings.mouse_sens.slider_start_x))
+//             cube->menu.settings.mouse_held = MOUSE_SENS_SLIDER;
+//         else if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x48
+//          && mouse_y > cube->menu.settings.ups.start_y1234 && mouse_y < cube->menu.settings.ups.end_y5678)
+//             cube->menu.settings.mouse_held = UPS;
+//     }
+//     if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
+//         cube->menu.settings.mouse_held = NOTHING;
+//     }
+//     ft_fov_slider(cube);
+//     ft_res(cube);
+//     if(cube->menu.settings.mouse_held == NOTHING || cube->menu.settings.mouse_held == MOUSE_SENS_SLIDER)
+//         ft_crosshair_color(cube);
+//     ft_mouse_sens(cube);
+//     ft_upscale(cube);
+//     printf("screen_buff : (%d, %d), screen_res : (%d, %d), ups : %d\n",cube->screen_width, cube->screen_height, cube->screen_width_buff, cube->screen_height_buff, cube->ups);
+// }
 
-void ft_menu(t_cube *cube){
+// void ft_menu(t_cube *cube){
     
-    // int start_x = (cube->screen_width - (cube->menu.title->width)) / 2;
-    // int start_y = (cube->screen_height - (cube->menu.title->height)) / 2;
-    int start_x = 0;
-    int start_y = 0;
-    int x = start_x;
-    int y = 0;
-    int tex_x;
-    int tex_y;
-    mlx_texture_t   *texture;
+//     // int start_x = (cube->screen_width - (cube->menu.title->width)) / 2;
+//     // int start_y = (cube->screen_height - (cube->menu.title->height)) / 2;
+//     int start_x = 0;
+//     int start_y = 0;
+//     int x = start_x;
+//     int y = 0;
+//     int tex_x;
+//     int tex_y;
+//     mlx_texture_t   *texture;
 
-    if(cube->menu.state == 0)
-        texture = cube->menu.title;
-    else
-        texture = cube->menu.settings.background;
+//     if(cube->menu.state == 0)
+//         texture = cube->menu.title;
+//     else
+//         texture = cube->menu.settings.background;
 
-    double ratio_y = ((double)(texture->height) / (double)(cube->screen_height_buff));
-    double ratio_x = ((double)(texture->width) / (double)(cube->screen_width_buff));
-
-
-    while(y < cube->screen_height_buff){
-        x = start_x;
-        tex_y = (double)(y) * ratio_y;
-        while(x < cube->screen_width_buff){
-            tex_x = (double)(x) * ratio_x;
-            int pixel_cords = (y * 4 * cube->screen_width_buff) + (x * 4);
-            int title_cords = (tex_y * 4 * texture->width) + (tex_x * 4);
-            if(tex_x >= texture->width || tex_y >= texture->height || texture->pixels[tex_y * 4 * texture->width + tex_x * 4 + 3] < 127){
-                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 0] = 0;
-                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 1] = 0;
-                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 2] = 0;
-                // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 3] = 255;
-                x++;
-                continue;
-            }
-            cube->image->pixels[pixel_cords + 0] = texture->pixels[title_cords + 0];
-            cube->image->pixels[pixel_cords + 1] = texture->pixels[title_cords + 1];
-            cube->image->pixels[pixel_cords + 2] = texture->pixels[title_cords + 2];
-            cube->image->pixels[pixel_cords + 3] = texture->pixels[title_cords + 3];
-            x++;
-        }
-        y++;
-    }
-    int mouse_x;
-    int mouse_y;
-
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-
-    if(cube->menu.state == 1){
-        ft_settings(cube);
-    if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
-         && ((double)mouse_x > ((double)cube->screen_width_buff * 0.0156) && (double)mouse_x < ((double)cube->screen_width_buff * 0.0468))
-         && ((double)mouse_y > ((double)cube->screen_height_buff * 0.0277)) && ((double)mouse_y < (double)cube->screen_height_buff * 0.0833))
-            cube->menu.state = 0;
-        return;
-    }
-
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_ENTER))
-        cube->state = GAME;
+//     double ratio_y = ((double)(texture->height) / (double)(cube->screen_height_buff));
+//     double ratio_x = ((double)(texture->width) / (double)(cube->screen_width_buff));
 
 
+//     while(y < cube->screen_height_buff){
+//         x = start_x;
+//         tex_y = (double)(y) * ratio_y;
+//         while(x < cube->screen_width_buff){
+//             tex_x = (double)(x) * ratio_x;
+//             int pixel_cords = (y * 4 * cube->screen_width_buff) + (x * 4);
+//             int title_cords = (tex_y * 4 * texture->width) + (tex_x * 4);
+//             if(tex_x >= texture->width || tex_y >= texture->height || texture->pixels[tex_y * 4 * texture->width + tex_x * 4 + 3] < 127){
+//                 // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 0] = 0;
+//                 // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 1] = 0;
+//                 // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 2] = 0;
+//                 // cube->prev_buffer[(y * 4 * cube->screen_width_buff) + (x * 4) + 3] = 255;
+//                 x++;
+//                 continue;
+//             }
+//             cube->image->pixels[pixel_cords + 0] = texture->pixels[title_cords + 0];
+//             cube->image->pixels[pixel_cords + 1] = texture->pixels[title_cords + 1];
+//             cube->image->pixels[pixel_cords + 2] = texture->pixels[title_cords + 2];
+//             cube->image->pixels[pixel_cords + 3] = texture->pixels[title_cords + 3];
+//             x++;
+//         }
+//         y++;
+//     }
+//     int mouse_x;
+//     int mouse_y;
 
-    // if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (mouse_x > (cube->screen_width_buff * 0.86) &&
-    //  mouse_x < (cube->screen_width_buff * 0.95)) && (mouse_y > (cube->screen_height_buff * 0.91)) && (mouse_y < cube->screen_height_buff * 0.97))
-    if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
-     && ((double)mouse_x > ((double)cube->screen_width_buff * 0.92) && (double)mouse_x < ((double)cube->screen_width_buff * 0.97))
-     && ((double)mouse_y > ((double)cube->screen_height_buff * 0.85)) && ((double)mouse_y < (double)cube->screen_height_buff * 0.95))
-        cube->menu.state = 1;
-}
+//     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
 
-void ft_draw_enemies(t_cube *cube){
+//     if(cube->menu.state == 1){
+//         ft_settings(cube);
+//     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
+//          && ((double)mouse_x > ((double)cube->screen_width_buff * 0.0156) && (double)mouse_x < ((double)cube->screen_width_buff * 0.0468))
+//          && ((double)mouse_y > ((double)cube->screen_height_buff * 0.0277)) && ((double)mouse_y < (double)cube->screen_height_buff * 0.0833))
+//             cube->menu.state = 0;
+//         return;
+//     }
 
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    int i = 0;
-    i = 0;
-    while(i < ENEMY_NUM){
-        int j = i;
-        while(j < ENEMY_NUM){
-            if(cube->enemy[j].player_dst > cube->enemy[i].player_dst){
-                t_enemy tmp = cube->enemy[i];
-                cube->enemy[i] = cube->enemy[j];
-                cube->enemy[j] = tmp;
-            }
-            j++;
-        }
-        i++;
-    }
-    i = 0;
+//     if(mlx_is_key_down(cube->mlx, MLX_KEY_ENTER))
+//         cube->state = GAME;
 
 
-    if(cube->player.delay == true){
-        if((int)(tv.tv_sec - cube->player.atk_time) >= cube->player.weapon.fire_rate)
-            cube->player.delay = false;
-    }
 
-    while(i < ENEMY_NUM){
-        if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (cube->screen_height / 2)) &&
-                (cube->enemy[ENEMY_NUM - 1 - i].end_y > (cube->screen_height / 2)))
-        if(cube->player.delay == true && cube->player.attacked == true){
-            if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (cube->screen_height / 2)) &&
-                (cube->enemy[ENEMY_NUM - 1 - i].end_y > (cube->screen_height / 2)) && (cube->enemy[ENEMY_NUM - 1 - i].player_dst < cube->rays[cube->res / 2].length)){
-                    printf("enemy %d attacked! enemy HP: %d\n", ENEMY_NUM - 1 - i, cube->enemy[ENEMY_NUM - 1 - i].HP);
-                    cube->enemy[ENEMY_NUM - 1 - i].HP -= cube->player.weapon.DMG;                                  
-                }
-        }
+//     // if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && (mouse_x > (cube->screen_width_buff * 0.86) &&
+//     //  mouse_x < (cube->screen_width_buff * 0.95)) && (mouse_y > (cube->screen_height_buff * 0.91)) && (mouse_y < cube->screen_height_buff * 0.97))
+//     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
+//      && ((double)mouse_x > ((double)cube->screen_width_buff * 0.92) && (double)mouse_x < ((double)cube->screen_width_buff * 0.97))
+//      && ((double)mouse_y > ((double)cube->screen_height_buff * 0.85)) && ((double)mouse_y < (double)cube->screen_height_buff * 0.95))
+//         cube->menu.state = 1;
+// }
 
-        ft_enemy(cube, &cube->enemy[i], cube->texture4);
-        i++;
-    }
-}
+// void ft_draw_enemies(t_cube *cube){
 
-void ft_draw_proj(t_cube *cube){
-    int i = 0;
-    while(i < MAX_PROJECTILES){
-        if(cube->projectiles[i].in_use == 1)
-            ft_projectile(cube, &cube->projectiles[i]);
-        i++;
-    }
-}
+//     struct timeval tv;
+//     gettimeofday(&tv, NULL);
+//     int i = 0;
+//     i = 0;
+//     while(i < ENEMY_NUM){
+//         int j = i;
+//         while(j < ENEMY_NUM){
+//             if(cube->enemy[j].player_dst > cube->enemy[i].player_dst){
+//                 t_enemy tmp = cube->enemy[i];
+//                 cube->enemy[i] = cube->enemy[j];
+//                 cube->enemy[j] = tmp;
+//             }
+//             j++;
+//         }
+//         i++;
+//     }
+//     i = 0;
 
-void ft_tilt(t_cube *cube){
-    int x;
-    int y;
-    int max_new_x;
-    int max_new_y;
-    double prev_x;
-    double prev_y;
-    double offset;
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 
-    max_new_x = cube->screen_width - (cube->tilt_addition_width * 2);
-    max_new_y = cube->screen_height - (cube->tilt_addition_height * 2);
+//     if(cube->player.delay == true){
+//         if((int)(tv.tv_sec - cube->player.atk_time) >= cube->player.weapon.fire_rate)
+//             cube->player.delay = false;
+//     }
 
-    if(!cube->flash.flashed && (cube->player.delay == true || cube->player.hit == true)){
-        if(cube->player.delay == true){
-            cube->flash.r = 2.0;
-            cube->flash.g = 2.0;
-            cube->flash.b = 2.0;
-        }
-        else{
-            cube->flash.r = 3.0;
-            cube->flash.g = 0.2;
-            cube->flash.b = 0.2;
-        }
-        cube->flash.flashed = true;
-        cube->player.hit = false;
-    }
+//     while(i < ENEMY_NUM){
+//         if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (cube->screen_height / 2)) &&
+//                 (cube->enemy[ENEMY_NUM - 1 - i].end_y > (cube->screen_height / 2)))
+//         if(cube->player.delay == true && cube->player.attacked == true){
+//             if(is_looking(cube, &cube->enemy[ENEMY_NUM - 1 - i]) && (cube->enemy[ENEMY_NUM - 1 - i].start_y < (cube->screen_height / 2)) &&
+//                 (cube->enemy[ENEMY_NUM - 1 - i].end_y > (cube->screen_height / 2)) && (cube->enemy[ENEMY_NUM - 1 - i].player_dst < cube->rays[cube->res / 2].length)){
+//                     printf("enemy %d attacked! enemy HP: %d\n", ENEMY_NUM - 1 - i, cube->enemy[ENEMY_NUM - 1 - i].HP);
+//                     cube->enemy[ENEMY_NUM - 1 - i].HP -= cube->player.weapon.DMG;                                  
+//                 }
+//         }
 
-    if(cube->flash.flashed && cube->player.delay == false)
-        cube->flash.flashed = false;
+//         ft_enemy(cube, &cube->enemy[i], cube->texture4);
+//         i++;
+//     }
+// }
 
-    // printf("r : %lf, g : %lf, b : %lf\n", cube->flash.r, cube->flash.g, cube->flash.b);
+// void ft_draw_proj(t_cube *cube){
+//     int i = 0;
+//     while(i < MAX_PROJECTILES){
+//         if(cube->projectiles[i].in_use == 1)
+//             ft_projectile(cube, &cube->projectiles[i]);
+//         i++;
+//     }
+// }
 
-    cube->flash.r = ft_lerp_fov(cube->flash.dst_r, cube->flash.r, FLASH_LERP);
-    cube->flash.g = ft_lerp_fov(cube->flash.dst_g, cube->flash.g, FLASH_LERP);
-    cube->flash.b = ft_lerp_fov(cube->flash.dst_b, cube->flash.b, FLASH_LERP);
+// void ft_tilt(t_cube *cube){
+//     int x;
+//     int y;
+//     int max_new_x;
+//     int max_new_y;
+//     double prev_x;
+//     double prev_y;
+//     double offset;
+//     struct timeval tv;
+//     gettimeofday(&tv, NULL);
+//     long time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 
-    x = 0;
-    while(x < max_new_x){
-        y = 0;
-        prev_x = (double)x + cube->tilt_addition_width;
-        offset = (prev_x - (cube->screen_width / 2.0)) * cube->shear_factor; 
-        while(y < max_new_y){
-            prev_y = ((double)y + cube->tilt_addition_height) + offset;
-            if(prev_y >= 0 && prev_y < cube->screen_height){
-                int new_dst = (max_new_x * y * 4) + (x * 4);
-                int prev_dst = (cube->screen_width * (int)prev_y * 4) + ((int)prev_x * 4);
-                cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r;
-                if((uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r > 255)
-                    cube->new_buffer[new_dst + 0] = (uint8_t)255;
-                cube->new_buffer[new_dst + 1] = (uint8_t)cube->prev_buffer[prev_dst + 1] * cube->flash.g;
-                if((uint8_t)cube->prev_buffer[prev_dst + 1] * cube->flash.g > 255)
-                    cube->new_buffer[new_dst + 1] = (uint8_t)255;
-                cube->new_buffer[new_dst + 2] = (uint8_t)cube->prev_buffer[prev_dst + 2] * cube->flash.b;
-                if((uint8_t)cube->prev_buffer[prev_dst + 2] * cube->flash.b > 255)
-                    cube->new_buffer[new_dst + 2] = (uint8_t)255;
-                cube->new_buffer[new_dst + 3] = (uint8_t)cube->prev_buffer[prev_dst + 3];
-            }
-            y++;
-        }
-        x++;
-    }
-}
+//     max_new_x = cube->screen_width - (cube->tilt_addition_width * 2);
+//     max_new_y = cube->screen_height - (cube->tilt_addition_height * 2);
+
+//     if(!cube->flash.flashed && (cube->player.delay == true || cube->player.hit == true)){
+//         if(cube->player.delay == true){
+//             cube->flash.r = 2.0;
+//             cube->flash.g = 2.0;
+//             cube->flash.b = 2.0;
+//         }
+//         else{
+//             cube->flash.r = 3.0;
+//             cube->flash.g = 0.2;
+//             cube->flash.b = 0.2;
+//         }
+//         cube->flash.flashed = true;
+//         cube->player.hit = false;
+//     }
+
+//     if(cube->flash.flashed && cube->player.delay == false)
+//         cube->flash.flashed = false;
+
+//     // printf("r : %lf, g : %lf, b : %lf\n", cube->flash.r, cube->flash.g, cube->flash.b);
+
+//     cube->flash.r = ft_lerp_fov(cube->flash.dst_r, cube->flash.r, FLASH_LERP);
+//     cube->flash.g = ft_lerp_fov(cube->flash.dst_g, cube->flash.g, FLASH_LERP);
+//     cube->flash.b = ft_lerp_fov(cube->flash.dst_b, cube->flash.b, FLASH_LERP);
+
+//     x = 0;
+//     while(x < max_new_x){
+//         y = 0;
+//         prev_x = (double)x + cube->tilt_addition_width;
+//         offset = (prev_x - (cube->screen_width / 2.0)) * cube->shear_factor; 
+//         while(y < max_new_y){
+//             prev_y = ((double)y + cube->tilt_addition_height) + offset;
+//             if(prev_y >= 0 && prev_y < cube->screen_height){
+//                 int new_dst = (max_new_x * y * 4) + (x * 4);
+//                 int prev_dst = (cube->screen_width * (int)prev_y * 4) + ((int)prev_x * 4);
+//                 cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r;
+//                 if((uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r > 255)
+//                     cube->new_buffer[new_dst + 0] = (uint8_t)255;
+//                 cube->new_buffer[new_dst + 1] = (uint8_t)cube->prev_buffer[prev_dst + 1] * cube->flash.g;
+//                 if((uint8_t)cube->prev_buffer[prev_dst + 1] * cube->flash.g > 255)
+//                     cube->new_buffer[new_dst + 1] = (uint8_t)255;
+//                 cube->new_buffer[new_dst + 2] = (uint8_t)cube->prev_buffer[prev_dst + 2] * cube->flash.b;
+//                 if((uint8_t)cube->prev_buffer[prev_dst + 2] * cube->flash.b > 255)
+//                     cube->new_buffer[new_dst + 2] = (uint8_t)255;
+//                 cube->new_buffer[new_dst + 3] = (uint8_t)cube->prev_buffer[prev_dst + 3];
+//             }
+//             y++;
+//         }
+//         x++;
+//     }
+// }
 
 // dst_y = abs(dst_y);
 // int i = 0;
@@ -2270,169 +2274,169 @@ void ft_tilt(t_cube *cube){
 //     i++;
 // }
 
-void ft_heart(t_cube *cube){
-    if((double)cube->player.HP > (0.8 * (double)MAX_HP))
-        return ((void)(cube->heart.blur_lerp = BLUR_LERP));
-    else if((double)cube->player.HP > (0.6 * (double)MAX_HP) && (double)cube->player.HP <= (0.8 * (double)MAX_HP))
-{
-    ft_prev_renderer(cube, cube->heart.frame_1, 0, 0);
-    cube->heart.blur_lerp = 0.4;
-}
-    else if((double)cube->player.HP > (0.4 * (double)MAX_HP) && (double)cube->player.HP <= (0.6 * (double)MAX_HP))
-{
-    ft_prev_renderer(cube, cube->heart.frame_2, 0, 0);
-    cube->heart.blur_lerp = 0.3;
-}
-    else if((double)cube->player.HP > (0.2 * (double)MAX_HP) && (double)cube->player.HP <= (0.4 * (double)MAX_HP))
-{
-    ft_prev_renderer(cube, cube->heart.frame_3, 0, 0);
-    cube->heart.blur_lerp = 0.2;
-}
-else
-{
-    ft_prev_renderer(cube, cube->heart.frame_4, 0, 0);
-    cube->heart.blur_lerp = 0.1;
-}
-}
+// void ft_heart(t_cube *cube){
+//     if((double)cube->player.HP > (0.8 * (double)MAX_HP))
+//         return ((void)(cube->heart.blur_lerp = BLUR_LERP));
+//     else if((double)cube->player.HP > (0.6 * (double)MAX_HP) && (double)cube->player.HP <= (0.8 * (double)MAX_HP))
+// {
+//     ft_prev_renderer(cube, cube->heart.frame_1, 0, 0);
+//     cube->heart.blur_lerp = 0.4;
+// }
+//     else if((double)cube->player.HP > (0.4 * (double)MAX_HP) && (double)cube->player.HP <= (0.6 * (double)MAX_HP))
+// {
+//     ft_prev_renderer(cube, cube->heart.frame_2, 0, 0);
+//     cube->heart.blur_lerp = 0.3;
+// }
+//     else if((double)cube->player.HP > (0.2 * (double)MAX_HP) && (double)cube->player.HP <= (0.4 * (double)MAX_HP))
+// {
+//     ft_prev_renderer(cube, cube->heart.frame_3, 0, 0);
+//     cube->heart.blur_lerp = 0.2;
+// }
+// else
+// {
+//     ft_prev_renderer(cube, cube->heart.frame_4, 0, 0);
+//     cube->heart.blur_lerp = 0.1;
+// }
+// }
 
-void ft_weapon(t_cube *cube){
-    int start_x = cube->screen_width * 0.1;
-    int start_y = (cube->screen_height * 0.1);
-    // int start_x = 0;
-    // int start_y = 0;
-    int x = start_x;
-    int y = start_y;
+// void ft_weapon(t_cube *cube){
+//     int start_x = cube->screen_width * 0.1;
+//     int start_y = (cube->screen_height * 0.1);
+//     // int start_x = 0;
+//     // int start_y = 0;
+//     int x = start_x;
+//     int y = start_y;
 
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+//     struct timeval tv;
+//     gettimeofday(&tv, NULL);
+//     long current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 
-// printf("pitch_changed : %d, delay : %d\n", cube->player.weapon.pitch_changed, cube->player.delay);
+// // printf("pitch_changed : %d, delay : %d\n", cube->player.weapon.pitch_changed, cube->player.delay);
 
 
-// code for 2nd idle frame
-    // if(cube->player.delay == false){
-    //     if(current_time - cube->player.weapon.idle_time > 500){
-    //         cube->player.weapon.idle_frame = !cube->player.weapon.idle_frame;   
-    //         cube->player.weapon.idle_time = current_time;
-    //     }
-    //     if(cube->player.weapon.idle_frame == 0)
-    //         cube->player.weapon.texture = cube->player.weapon.idle_texture;
-    //     else
-    //         cube->player.weapon.texture = cube->player.weapon.idle_texture_2;
-    // }
+// // code for 2nd idle frame
+//     // if(cube->player.delay == false){
+//     //     if(current_time - cube->player.weapon.idle_time > 500){
+//     //         cube->player.weapon.idle_frame = !cube->player.weapon.idle_frame;   
+//     //         cube->player.weapon.idle_time = current_time;
+//     //     }
+//     //     if(cube->player.weapon.idle_frame == 0)
+//     //         cube->player.weapon.texture = cube->player.weapon.idle_texture;
+//     //     else
+//     //         cube->player.weapon.texture = cube->player.weapon.idle_texture_2;
+//     // }
 
-    if(cube->player.attacked == true){
-        // cube->pitch += 10;
-        // cube->player.weapon.pitch_dst = cube->pitch + 10;
-        printf("THE PLAYER WAS ATTACKED!!!!\n");
-        cube->player.weapon.pitch_changed = true;
-        cube->player.weapon.pitch_back = false;
-        cube->player.weapon.pitch_og = cube->pitch;
-        cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
-        // cube->fov += (0.2 * cube->init_fov);
-        // if(cube->fov > 170)
-        //     cube->fov = 170;
-        cube->player.weapon.texture = cube->player.weapon.shoot_texture;
-        cube->player.weapon.frame_delay = current_time;
-        cube->player.weapon.delay = true;
-        cube->player.attacked = false;
-    }
+//     if(cube->player.attacked == true){
+//         // cube->pitch += 10;
+//         // cube->player.weapon.pitch_dst = cube->pitch + 10;
+//         printf("THE PLAYER WAS ATTACKED!!!!\n");
+//         cube->player.weapon.pitch_changed = true;
+//         cube->player.weapon.pitch_back = false;
+//         cube->player.weapon.pitch_og = cube->pitch;
+//         cube->player.weapon.pitch_dst = cube->pitch + cube->player.weapon.pitch_increase;
+//         // cube->fov += (0.2 * cube->init_fov);
+//         // if(cube->fov > 170)
+//         //     cube->fov = 170;
+//         cube->player.weapon.texture = cube->player.weapon.shoot_texture;
+//         cube->player.weapon.frame_delay = current_time;
+//         cube->player.weapon.delay = true;
+//         cube->player.attacked = false;
+//     }
 
-    if(cube->player.weapon.pitch_changed){
-        // cube->pitch += ft_lerp_fov(cube->player.weapon.pitch_dst, cube->pitch, RECOIL_LERP);
-        // printf("here\n");
+//     if(cube->player.weapon.pitch_changed){
+//         // cube->pitch += ft_lerp_fov(cube->player.weapon.pitch_dst, cube->pitch, RECOIL_LERP);
+//         // printf("here\n");
     
-        if(!cube->player.weapon.pitch_back){
-            cube->pitch += cube->player.weapon.pitch_increase * 4.0;
-            cube->player.weapon.pitch_increased += cube->player.weapon.pitch_increase * 4.0;
-            if(cube->player.weapon.pitch_increased >= MAX_RECOIL){
-                cube->player.weapon.pitch_increased = 0;
-                cube->player.weapon.pitch_dst = cube->player.weapon.pitch_og;
-                cube->player.weapon.pitch_back = true;
-            }
-            // printf("top done!\n");
-        }
+//         if(!cube->player.weapon.pitch_back){
+//             cube->pitch += cube->player.weapon.pitch_increase * 4.0;
+//             cube->player.weapon.pitch_increased += cube->player.weapon.pitch_increase * 4.0;
+//             if(cube->player.weapon.pitch_increased >= MAX_RECOIL){
+//                 cube->player.weapon.pitch_increased = 0;
+//                 cube->player.weapon.pitch_dst = cube->player.weapon.pitch_og;
+//                 cube->player.weapon.pitch_back = true;
+//             }
+//             // printf("top done!\n");
+//         }
 
-        if(cube->player.weapon.pitch_back){
-            cube->pitch -= cube->player.weapon.pitch_increase;
-            cube->player.weapon.pitch_increased += cube->player.weapon.pitch_increase;
-            if(cube->player.weapon.pitch_increased >= MAX_RECOIL){
-                cube->player.weapon.pitch_increased = 0;
-                // cube->pitch = cube->player.weapon.pitch_og;
-                cube->player.weapon.pitch_changed = false;
-            }
-            // printf("bottom done!\n");
-        }
-    }
+//         if(cube->player.weapon.pitch_back){
+//             cube->pitch -= cube->player.weapon.pitch_increase;
+//             cube->player.weapon.pitch_increased += cube->player.weapon.pitch_increase;
+//             if(cube->player.weapon.pitch_increased >= MAX_RECOIL){
+//                 cube->player.weapon.pitch_increased = 0;
+//                 // cube->pitch = cube->player.weapon.pitch_og;
+//                 cube->player.weapon.pitch_changed = false;
+//             }
+//             // printf("bottom done!\n");
+//         }
+//     }
 
-    // if((cube->player.weapon.pitch_changed == true) && (cube->pitch < cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase))
-    //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase, cube->pitch, RECOIL_LERP);
-    // else
-    //     cube->player.weapon.pitch_back = true;
+//     // if((cube->player.weapon.pitch_changed == true) && (cube->pitch < cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase))
+//     //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og + cube->player.weapon.pitch_increase, cube->pitch, RECOIL_LERP);
+//     // else
+//     //     cube->player.weapon.pitch_back = true;
 
-    // if((cube->player.weapon.pitch_back == true) && cube->pitch > cube->player.weapon.pitch_og)
-    //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og, cube->pitch, RECOIL_LERP);
-    // else
-    //     cube->player.weapon.pitch_back = false;
+//     // if((cube->player.weapon.pitch_back == true) && cube->pitch > cube->player.weapon.pitch_og)
+//     //     cube->pitch = ft_lerp_fov(cube->player.weapon.pitch_og, cube->pitch, RECOIL_LERP);
+//     // else
+//     //     cube->player.weapon.pitch_back = false;
 
-    while(y < cube->screen_height){
-        x = start_x;
-        int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)((cube->screen_height + cube->player.weapon.move_lerp)));
-        while(x < cube->screen_width){
+//     while(y < cube->screen_height){
+//         x = start_x;
+//         int tex_y = (double)(y - start_y) * ((double)(cube->player.weapon.texture->height) / (double)((cube->screen_height + cube->player.weapon.move_lerp)));
+//         while(x < cube->screen_width){
             
-            int tex_x = (double)(x - start_x) * ((double)(cube->player.weapon.texture->width) / (double)(cube->screen_width - start_x));
-            int prev_cords = ((int)(y) * 4 * cube->screen_width) + ((int)x * 4);
-            int weapon_cords = tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4;
-            if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[weapon_cords + 3] == 0){
-                x++;
-                continue;
-            }
-            // if(y + cube->player.weapon.move_lerp < cube->screen_height){
-                cube->prev_buffer[prev_cords + 0] = cube->player.weapon.texture->pixels[weapon_cords + 0];
-                cube->prev_buffer[prev_cords + 1] = cube->player.weapon.texture->pixels[weapon_cords + 1];
-                cube->prev_buffer[prev_cords + 2] = cube->player.weapon.texture->pixels[weapon_cords + 2];
-                cube->prev_buffer[prev_cords + 3] = cube->player.weapon.texture->pixels[weapon_cords + 3];
-            // }
-            x++;
-        }
-        y++;
-    }
+//             int tex_x = (double)(x - start_x) * ((double)(cube->player.weapon.texture->width) / (double)(cube->screen_width - start_x));
+//             int prev_cords = ((int)(y) * 4 * cube->screen_width) + ((int)x * 4);
+//             int weapon_cords = tex_y * 4 * cube->player.weapon.texture->width + tex_x * 4;
+//             if(tex_x >= cube->player.weapon.texture->width || tex_y >= cube->player.weapon.texture->height || cube->player.weapon.texture->pixels[weapon_cords + 3] == 0){
+//                 x++;
+//                 continue;
+//             }
+//             // if(y + cube->player.weapon.move_lerp < cube->screen_height){
+//                 cube->prev_buffer[prev_cords + 0] = cube->player.weapon.texture->pixels[weapon_cords + 0];
+//                 cube->prev_buffer[prev_cords + 1] = cube->player.weapon.texture->pixels[weapon_cords + 1];
+//                 cube->prev_buffer[prev_cords + 2] = cube->player.weapon.texture->pixels[weapon_cords + 2];
+//                 cube->prev_buffer[prev_cords + 3] = cube->player.weapon.texture->pixels[weapon_cords + 3];
+//             // }
+//             x++;
+//         }
+//         y++;
+//     }
 
-    int time = (int)(current_time - cube->player.weapon.frame_delay);
+//     int time = (int)(current_time - cube->player.weapon.frame_delay);
 
-    if(cube->player.delay == true){
-        if(time >= 150 && time <= 500)
-            cube->player.weapon.texture = cube->player.weapon.idle_texture;
-        else if(time > 500 && time <= 800)
-            cube->player.weapon.texture = cube->player.weapon.pump_texture;
-        else if(time > 800 && time <= 900){
-            cube->player.weapon.texture = cube->player.weapon.idle_texture;
-            cube->player.delay = false;
-        }
-    }
-    // printf("delay : %d, attacked : %d\n", cube->player.delay, cube->player.attacked);
-}
+//     if(cube->player.delay == true){
+//         if(time >= 150 && time <= 500)
+//             cube->player.weapon.texture = cube->player.weapon.idle_texture;
+//         else if(time > 500 && time <= 800)
+//             cube->player.weapon.texture = cube->player.weapon.pump_texture;
+//         else if(time > 800 && time <= 900){
+//             cube->player.weapon.texture = cube->player.weapon.idle_texture;
+//             cube->player.delay = false;
+//         }
+//     }
+//     // printf("delay : %d, attacked : %d\n", cube->player.delay, cube->player.attacked);
+// }
 
-void ft_fov_mod(t_cube *cube){
-    if(cube->fov != cube->prev_fov){
-        cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
-        cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
-        cube->prev_fov = cube->fov;
-        cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
-    }
+// void ft_fov_mod(t_cube *cube){
+//     if(cube->fov != cube->prev_fov){
+//         cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE); // performance increase possible here
+//         cube->half_fov_rad = tan((cube->fov / 2.0) * RADIANT_RATE);
+//         cube->prev_fov = cube->fov;
+//         cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
+//     }
     
-    if(cube->player.move_state == WALK)
-        cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
-    else{
+//     if(cube->player.move_state == WALK)
+//         cube->fov = ft_lerp_fov(cube->init_fov, cube->fov, FOV_LERP);
+//     else{
 
-        int dst_fov = 1.5 * cube->init_fov;
-        if(dst_fov > 170)
-            dst_fov = 170;
-        cube->fov = ft_lerp_fov(dst_fov, cube->fov, 0.04);
-    }
+//         int dst_fov = 1.5 * cube->init_fov;
+//         if(dst_fov > 170)
+//             dst_fov = 170;
+//         cube->fov = ft_lerp_fov(dst_fov, cube->fov, 0.04);
+//     }
 
-}
+// }
 
 // void ft_game(t_cube *cube){
 //     ft_mouvement(cube);

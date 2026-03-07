@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/07 02:13:07 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 06:09:12 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,65 @@ typedef struct s_vars
 	double				i;
 	double				j;
 }					t_vars;
+
+typedef struct s_vars2
+{
+	int			*x;
+	int			*y;
+	int			*start_x;
+	int			*start_y;
+	int			*tex_x;
+	int			*tex_y;
+	int			*prev_cords;
+	int			*weapon_cords;
+}					t_vars2;
+
+typedef struct s_vars3
+{
+	int			x;
+	int			y;
+	int			start_x;
+	int			start_y;
+	int			tex_x;
+	int			tex_y;
+	int			prev_cords;
+	int			weapon_cords;
+	long		current_time;
+}					t_vars3;
+
+typedef struct s_vars4
+{
+
+    int x;
+    int y;
+    int max_new_x;
+    int max_new_y;
+    double prev_x;
+    double prev_y;
+    double offset;
+    struct timeval tv;
+    long time; 
+
+}					t_vars4;
+
+typedef struct s_vars5
+{
+
+	int				start_x;
+	int				start_y;
+	int				x;
+	int				y;
+	int				tex_x;
+	int				tex_y;
+	mlx_texture_t	*texture;
+	double			ratio_y;
+	double			ratio_x;
+	int				pixel_cords;
+	int				title_cords;
+	int				mouse_x;
+	int				mouse_y;
+
+}					t_vars5;
 
 typedef struct s_ray
 {
@@ -602,3 +661,20 @@ void 				ft_ups(t_cube *cube, mlx_image_t *image);
 void				draw_crosshair(t_cube *cube);
 void				draw_grid(t_cube *cube);
 void				draw_player(t_cube *cube);
+void				ft_weapon(t_cube *cube);
+void 				ft_prev_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
+void				ft_heart(t_cube *cube);
+void				ft_tilt(t_cube *cube);
+void				ft_draw_proj(t_cube *cube);
+bool 				is_looking(t_cube *cube, t_enemy *enemy);
+void 				ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture);
+void 				ft_projectile(t_cube *cube, t_projectile *projectile);
+void				ft_menu(t_cube *cube);
+void				ft_settings(t_cube *cube);
+void				ft_crosshair_color(t_cube *cube);
+void				ft_fov_slider(t_cube *cube);
+void				ft_res(t_cube *cube);
+void				ft_mouse_sens(t_cube *cube);
+void				ft_upscale(t_cube *cube);
+void 				ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture);
+void 				ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
