@@ -25,6 +25,7 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_utils/ft_utils.c \
 	./render_ing/ft_weapon/ft_weapon.c \
 	./render_ing/ft_player/ft_heart.c \
+	./render_ing/ft_player/ft_health.c \
 	./render_ing/ft_render/ft_tilt.c \
 	./render_ing/ft_render/ft_render.c \
 	./render_ing/ft_render/ft_render2.c \

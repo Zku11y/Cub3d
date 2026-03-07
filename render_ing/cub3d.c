@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/07 21:11:31 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 22:12:13 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -924,142 +924,142 @@ void ft_projectile(t_cube *cube, t_projectile *projectile){
     }
 }
 
-void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y){
+// void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y){
 
-    if(enemy->health_spawn == false)
-        return;
+//     if(enemy->health_spawn == false)
+//         return;
 
-    if(enemy->health_animation == 0){
-        enemy->health_offset += 0.15;
-        // enemy->health_offset = ft_lerp_move(10, enemy->health_offset, LERP_LERP);
-        if(enemy->health_offset >= 10)
-            enemy->health_animation = 1;
-    }
-    else if(enemy->health_animation == 1){
-        enemy->health_offset -= 0.15;
-        // enemy->health_offset = ft_lerp_move(-10, enemy->health_offset, LERP_LERP);
-        if(enemy->health_offset <= -10)
-            enemy->health_animation = 0;
-    }
+//     if(enemy->health_animation == 0){
+//         enemy->health_offset += 0.15;
+//         // enemy->health_offset = ft_lerp_move(10, enemy->health_offset, LERP_LERP);
+//         if(enemy->health_offset >= 10)
+//             enemy->health_animation = 1;
+//     }
+//     else if(enemy->health_animation == 1){
+//         enemy->health_offset -= 0.15;
+//         // enemy->health_offset = ft_lerp_move(-10, enemy->health_offset, LERP_LERP);
+//         if(enemy->health_offset <= -10)
+//             enemy->health_animation = 0;
+//     }
 
-    double player_dst = sqrt((cube->player.x - pos_x) * (cube->player.x - pos_x) + (cube->player.y - pos_y) * (cube->player.y - pos_y));
+//     double player_dst = sqrt((cube->player.x - pos_x) * (cube->player.x - pos_x) + (cube->player.y - pos_y) * (cube->player.y - pos_y));
 
-    if(player_dst < HITBOX_DST){
-        printf("player healed!\n");
-        cube->flash.r = 0.2;
-        cube->flash.g = 3.0;
-        cube->flash.b = 0.2;
-        cube->player.HP += 50;
-        if(cube->player.HP > MAX_HP)
-            cube->player.HP = MAX_HP;
-        enemy->health_spawn = false;
-        return;
-    }
+//     if(player_dst < HITBOX_DST){
+//         printf("player healed!\n");
+//         cube->flash.r = 0.2;
+//         cube->flash.g = 3.0;
+//         cube->flash.b = 0.2;
+//         cube->player.HP += 50;
+//         if(cube->player.HP > MAX_HP)
+//             cube->player.HP = MAX_HP;
+//         enemy->health_spawn = false;
+//         return;
+//     }
 
-    double angle_diff = atan2(pos_y - cube->player.y, pos_x - cube->player.x);
-    double tetha_delta = angle_diff - cube->player.angle;
-    while(tetha_delta > PI)
-        tetha_delta -= 2 * PI;
-    while(tetha_delta < -PI)
-        tetha_delta += 2 * PI;
+//     double angle_diff = atan2(pos_y - cube->player.y, pos_x - cube->player.x);
+//     double tetha_delta = angle_diff - cube->player.angle;
+//     while(tetha_delta > PI)
+//         tetha_delta -= 2 * PI;
+//     while(tetha_delta < -PI)
+//         tetha_delta += 2 * PI;
     
-    int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
-    double dst = sqrt((pos_x - cube->player.x) * (pos_x - cube->player.x) + (pos_y - cube->player.y) * (pos_y - cube->player.y)) * cos(tetha_delta);
+//     int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
+//     double dst = sqrt((pos_x - cube->player.x) * (pos_x - cube->player.x) + (pos_y - cube->player.y) * (pos_y - cube->player.y)) * cos(tetha_delta);
 
-    if(dst < 0.1) 
-    return;
+//     if(dst < 0.1) 
+//     return;
 
-    double tmp = 1.0 - (dst / MAX_DST);
-    if(tmp > 1.0)
-        tmp = 1.0;
-    else if(tmp < 0.0)
-        tmp = 0.0;
+//     double tmp = 1.0 - (dst / MAX_DST);
+//     if(tmp > 1.0)
+//         tmp = 1.0;
+//     else if(tmp < 0.0)
+//         tmp = 0.0;
 
-    double height = (GRID_SIZE / dst) * cube->proj_dst;
+//     double height = (GRID_SIZE / dst) * cube->proj_dst;
 
-    double scale_ratio = texture->height / height;
+//     double scale_ratio = texture->height / height;
 
-    double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
-    int start_x = midX - (texture->width / scale_ratio) / 2;
-    int start_y = ((cube->screen_height / 2.0) + cube->pitch + enemy->health_offset - proj_z_offset) - (texture->height / scale_ratio) / 2;
-    int const_y = start_y;
-    int end_x = start_x + (texture->width / scale_ratio);
-    int end_y = start_y + (texture->height / scale_ratio);
+//     double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
+//     int start_x = midX - (texture->width / scale_ratio) / 2;
+//     int start_y = ((cube->screen_height / 2.0) + cube->pitch + enemy->health_offset - proj_z_offset) - (texture->height / scale_ratio) / 2;
+//     int const_y = start_y;
+//     int end_x = start_x + (texture->width / scale_ratio);
+//     int end_y = start_y + (texture->height / scale_ratio);
     
-    double tex_x = 0;
-    double tex_y = 0;
+//     double tex_x = 0;
+//     double tex_y = 0;
 
-    if (start_x < 0) {
-        tex_x += (-start_x) * scale_ratio;
-        start_x = 0;
-    }
+//     if (start_x < 0) {
+//         tex_x += (-start_x) * scale_ratio;
+//         start_x = 0;
+//     }
 
-    if (start_x >= cube->screen_width) return;
-    if (end_x > cube->screen_width) end_x = cube->screen_width;
+//     if (start_x >= cube->screen_width) return;
+//     if (end_x > cube->screen_width) end_x = cube->screen_width;
 
-    if (start_y < 0) {
-        tex_y = (-start_y) * scale_ratio;
-        start_y = 0;
-    }
-    if (start_y >= cube->screen_height) return;
+//     if (start_y < 0) {
+//         tex_y = (-start_y) * scale_ratio;
+//         start_y = 0;
+//     }
+//     if (start_y >= cube->screen_height) return;
 
-    if (end_x > cube->screen_width) end_x = cube->screen_width;
-    if (end_y > cube->screen_height) end_y = cube->screen_height;
+//     if (end_x > cube->screen_width) end_x = cube->screen_width;
+//     if (end_y > cube->screen_height) end_y = cube->screen_height;
 
-    while(start_x < end_x){
-        start_y = const_y;
-        int x = (int)tex_x;
-        if (x >= (int)texture->width) x = texture->width - 1;
-        if (x < 0) x = 0;
-        tex_y = 0;
-        if(cube->z_buffer[start_x] > dst){
-            while(start_y < end_y){
-                int y = (int)tex_y;
-                if (y >= (int)texture->height) y = texture->height - 1;
-                if (y < 0) y = 0;
+//     while(start_x < end_x){
+//         start_y = const_y;
+//         int x = (int)tex_x;
+//         if (x >= (int)texture->width) x = texture->width - 1;
+//         if (x < 0) x = 0;
+//         tex_y = 0;
+//         if(cube->z_buffer[start_x] > dst){
+//             while(start_y < end_y){
+//                 int y = (int)tex_y;
+//                 if (y >= (int)texture->height) y = texture->height - 1;
+//                 if (y < 0) y = 0;
     
-                if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
-                    int k = (x * texture->bytes_per_pixel) + (texture->width * texture->bytes_per_pixel * y);
-                    if(texture->pixels[k + 3] > 128 && cube->z_buffer[start_x] >= dst){
-                        cube->z_buffer[start_x] = dst;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
-                    }
-                }
-                start_y++;
-                tex_y += scale_ratio;
-            }
-        }
+//                 if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
+//                     int k = (x * texture->bytes_per_pixel) + (texture->width * texture->bytes_per_pixel * y);
+//                     if(texture->pixels[k + 3] > 128 && cube->z_buffer[start_x] >= dst){
+//                         cube->z_buffer[start_x] = dst;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = texture->pixels[k + 0] * tmp;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = texture->pixels[k + 1] * tmp;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = texture->pixels[k + 2] * tmp;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = texture->pixels[k + 3];
+//                     }
+//                 }
+//                 start_y++;
+//                 tex_y += scale_ratio;
+//             }
+//         }
 
-        tex_x += scale_ratio;
-        start_x++;
-    }
-}
+//         tex_x += scale_ratio;
+//         start_x++;
+//     }
+// }
 
-void ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir){
-    t_projectile proj;
+// void ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir){
+//     t_projectile proj;
 
-    proj.x = enemy->x;
-    proj.y = enemy->y;
-    // proj.dir = (t_vect2){-1 * dir->x, -1 * dir->y, 0, 0};
-    proj.dir = *dir;
-    proj.in_use = 1;
-    proj.DMG = enemy->DMG;
-    proj.texture = cube->texture6;
-    proj.dst_traveled = 0;
-    proj.speed = 7;
+//     proj.x = enemy->x;
+//     proj.y = enemy->y;
+//     // proj.dir = (t_vect2){-1 * dir->x, -1 * dir->y, 0, 0};
+//     proj.dir = *dir;
+//     proj.in_use = 1;
+//     proj.DMG = enemy->DMG;
+//     proj.texture = cube->texture6;
+//     proj.dst_traveled = 0;
+//     proj.speed = 7;
 
-    int i = 0;
-    while(i < MAX_PROJECTILES){
-        if(cube->projectiles[i].in_use == 0){
-            cube->projectiles[i] = proj;
-            break;
-        }
-        i++;
-    }
-}
+//     int i = 0;
+//     while(i < MAX_PROJECTILES){
+//         if(cube->projectiles[i].in_use == 0){
+//             cube->projectiles[i] = proj;
+//             break;
+//         }
+//         i++;
+//     }
+// }
 
 // void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
 

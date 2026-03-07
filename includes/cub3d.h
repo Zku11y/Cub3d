@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/07 21:10:13 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 22:11:01 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,6 +379,7 @@ typedef struct s_vars10
 	struct timeval	tv;
 	long			current_time;
 	t_vect2			player_dir;
+	double			player_dst;
 	double			angle_diff;
 	double			tetha_delta;
 	int				midX;
@@ -392,6 +393,8 @@ typedef struct s_vars10
 	int				const_y;
 	int				end_x;
 	int				end_y;
+	int				pos_x;
+	int				pos_y;
 	double			tex_x;
 	double			tex_y;
 	int				x;
@@ -793,7 +796,9 @@ void 				ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int star
 void				ft_update_screen_buff(t_cube *cube, mlx_texture_t *texture, int new_w, int new_h);
 void				ft_floor_ceiling(t_cube *cube);
 bool 				check_screen_limits(t_cube *cube, t_vect2 len);
-void 				ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y);
+void 				ft_health(t_cube *cube, t_enemy *enemy);
 void 				ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir);
 void				ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
 void				ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
+bool				ft_health2(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
+void				ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);

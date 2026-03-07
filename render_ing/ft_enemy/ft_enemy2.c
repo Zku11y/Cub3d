@@ -8,8 +8,7 @@ bool	ft_enemy2(t_cube *cube, t_enemy *enemy, mlx_texture_t **texture,
 	if (enemy->dead)
 	{
 		if (enemy->blood_frame_index >= 12)
-			return (ft_health(cube, enemy->health, enemy, enemy->x, enemy->y),
-				false);
+			return (ft_health(cube, enemy), false);
 		else if (vars->current_time - enemy->blood_time > BLOOD_ANIM_DELAY)
 		{
 			enemy->blood_time = vars->current_time;
