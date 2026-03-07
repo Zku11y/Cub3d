@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/07 06:09:12 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 19:42:44 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,6 +287,118 @@ typedef struct s_vars5
 	int				mouse_y;
 
 }					t_vars5;
+
+typedef struct s_vars6
+{
+
+	int				 mouse_x;
+	int				 mouse_y;
+	int				 start_x;
+	int				 start_y;
+	int				 end_x;
+	int				 end_y;
+	int				 x;
+	int				 y;
+	int				 color;
+	int				 i;
+	int				 j;
+	int				 index;
+	uint32_t		 *crosshair;
+	uint32_t		 *prev;
+
+}					t_vars6;
+
+typedef struct s_vars7
+{
+	int			x;
+	int			y;
+	int			tex_x;
+	int			tex_y;
+	int			pixel_cords;
+	int			title_cords;
+	mlx_texture_t *texture;
+
+}					t_vars7;
+
+typedef struct s_vars8
+{
+
+	uint32_t	*new;
+	uint32_t	*prev;
+	int			screen_H;
+	int			screen_W;
+	double		iter_x;
+	double		iter_y;
+	double		prev_x;
+	double		prev_y;
+	int			new_x;
+	int			new_y;
+
+}					t_vars8;
+
+typedef struct s_vars9
+{
+
+	double			DirX;
+	double			DirY;
+	double			PlaneX;
+	double			PlaneY;
+	t_vect2			RayDirL;
+	t_vect2			RayDirR;
+	double			mid_point;
+	double			cam_height;
+	double			p;
+	mlx_texture_t	*tex;
+	int				i;
+	double			rowDst;
+	t_vect2			floorL;
+	t_vect2			floorR;
+	t_vect2			step;
+	t_vect2			ft_floor;
+	double			tmp;
+	int				j;
+	double			fracX;
+	double			fracY;
+	int				texX;
+	int				texY;
+	int				k;
+	uint8_t			r;
+	uint8_t			g;
+	uint8_t			b;
+	uint8_t			a;
+	int				y_iter;
+	t_vect2			coords;
+	int				iter;
+
+
+}					t_vars9;
+
+typedef struct s_vars10
+{
+
+	struct timeval	tv;
+	long			current_time;
+	t_vect2			player_dir;
+	double			angle_diff;
+	double			tetha_delta;
+	int				midX;
+	double			dst;
+	double			tmp;
+	double			height;
+	double			scale_ratio;
+	double			proj_z_offset;
+	int				start_x;
+	int				start_y;
+	int				const_y;
+	int				end_x;
+	int				end_y;
+	double			tex_x;
+	double			tex_y;
+	int				x;
+	int				y;
+	int				k;	
+
+}					t_vars10;
 
 typedef struct s_ray
 {
@@ -678,3 +790,8 @@ void				ft_mouse_sens(t_cube *cube);
 void				ft_upscale(t_cube *cube);
 void 				ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture);
 void 				ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
+void				ft_update_screen_buff(t_cube *cube, mlx_texture_t *texture, int new_w, int new_h);
+void				ft_floor_ceiling(t_cube *cube);
+bool 				check_screen_limits(t_cube *cube, t_vect2 len);
+void 				ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y);
+void 				ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir);

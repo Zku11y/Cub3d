@@ -26,9 +26,15 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_weapon/ft_weapon.c \
 	./render_ing/ft_player/ft_heart.c \
 	./render_ing/ft_render/ft_tilt.c \
+	./render_ing/ft_render/ft_render.c \
+	./render_ing/ft_render/ft_render2.c \
+	./render_ing/ft_render/ft_floor_ceiling.c \
 	./render_ing/ft_enemy/ft_enemy.c \
+	./render_ing/ft_enemy/ft_enemy2.c \
 	./render_ing/ft_menu/ft_menu.c \
 	./render_ing/ft_menu/ft_menu2.c \
+	./render_ing/ft_menu/ft_menu3.c \
+	./render_ing/ft_menu/ft_menu4.c \
 
 
 OBJ = $(SRC:.c=.o)
