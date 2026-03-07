@@ -31,6 +31,7 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_render/ft_floor_ceiling.c \
 	./render_ing/ft_enemy/ft_enemy.c \
 	./render_ing/ft_enemy/ft_enemy2.c \
+	./render_ing/ft_enemy/ft_enemy3.c \
 	./render_ing/ft_menu/ft_menu.c \
 	./render_ing/ft_menu/ft_menu2.c \
 	./render_ing/ft_menu/ft_menu3.c \

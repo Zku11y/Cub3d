@@ -1,6 +1,6 @@
 #include "../../includes/cub3d.h"
 
-void	ft_enemy2(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
+bool	ft_enemy2(t_cube *cube, t_enemy *enemy, mlx_texture_t **texture,
 		t_vars10 *vars)
 {
 	gettimeofday(&vars->tv, NULL);
@@ -8,26 +8,25 @@ void	ft_enemy2(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
 	if (enemy->dead)
 	{
 		if (enemy->blood_frame_index >= 12)
-		{
-			ft_health(cube, enemy->health, enemy, enemy->x, enemy->y);
-			return ;
-		}
+			return (ft_health(cube, enemy->health, enemy, enemy->x, enemy->y),
+				false);
 		else if (vars->current_time - enemy->blood_time > BLOOD_ANIM_DELAY)
 		{
 			enemy->blood_time = vars->current_time;
 			enemy->blood_frame_index++;
 		}
 		if (enemy->blood_frame_index < 12)
-			texture = cube->blood.frame[enemy->blood_frame_index];
+			*texture = cube->blood.frame[enemy->blood_frame_index];
 		else
-			return ;
+			return (false);
 	}
 	if (enemy->dead == false && enemy->HP <= 0)
 	{
-		texture = cube->blood.frame[enemy->blood_frame_index];
+		*texture = cube->blood.frame[enemy->blood_frame_index];
 		enemy->blood_time = vars->current_time;
 		enemy->dead = true;
 	}
+	return (true);
 }
 
 bool	ft_enemy3(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
@@ -117,43 +116,13 @@ bool	ft_enemy5(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
 	return (true);
 }
 
-void	ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
-		t_vars10 *vars)
-{
-	vars->y = (int)vars->tex_y;
-	if (vars->y >= (int)texture->height)
-		vars->y = texture->height - 1;
-	if (vars->y < 0)
-		vars->y = 0;
-	if (!check_screen_limits(cube, (t_vect2){vars->start_x, vars->start_y, 0, 0}))
-	{
-		vars->k = (vars->x * texture->bytes_per_pixel) + (texture->width
-				* texture->bytes_per_pixel * vars->y);
-		if (texture->pixels[vars->k + 3] > 128)
-		{
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4) + 0] = texture->pixels[vars->k + 0]
-				* vars->tmp;
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4) + 1] = texture->pixels[vars->k + 1]
-				* vars->tmp;
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4) + 2] = texture->pixels[vars->k + 2]
-				* vars->tmp;
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4) + 3] = texture->pixels[vars->k + 3];
-		}
-	}
-	vars->start_y++;
-}
-
 void	ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture)
 {
 	t_vars10	vars;
 
-	ft_enemy2(cube, enemy, texture, &vars);
-	if (!ft_enemy3(cube, enemy, texture, &vars) || !ft_enemy4(cube, enemy,
-			texture, &vars) || !ft_enemy5(cube, enemy, texture, &vars))
+	if (!ft_enemy2(cube, enemy, &texture, &vars) || !ft_enemy3(cube, enemy,
+			texture, &vars) || !ft_enemy4(cube, enemy, texture, &vars)
+		|| !ft_enemy5(cube, enemy, texture, &vars))
 		return ;
 	if (vars.end_x > cube->screen_width)
 		vars.end_x = cube->screen_width;
@@ -168,25 +137,5 @@ void	ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture)
 		vars.end_x = cube->screen_width;
 	if (vars.end_y > cube->screen_height)
 		vars.end_y = cube->screen_height;
-	while (vars.start_x < vars.end_x)
-	{
-		vars.start_y = vars.const_y;
-		vars.x = (int)vars.tex_x;
-		if (vars.x >= (int)texture->width)
-			vars.x = texture->width - 1;
-		if (vars.x < 0)
-			vars.x = 0;
-		vars.tex_y = 0;
-		if (cube->z_buffer[vars.start_x] > vars.dst)
-		{
-			cube->z_buffer[vars.start_x] = vars.dst;
-			while (vars.start_y < vars.end_y)
-			{
-				ft_enemy6(cube, enemy, texture, &vars);
-				vars.tex_y += vars.scale_ratio;
-			}
-		}
-		vars.tex_x += vars.scale_ratio;
-		vars.start_x++;
-	}
+	ft_enemy7(cube, enemy, texture, &vars);
 }

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/07 19:42:44 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 21:10:13 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -795,3 +795,5 @@ void				ft_floor_ceiling(t_cube *cube);
 bool 				check_screen_limits(t_cube *cube, t_vect2 len);
 void 				ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y);
 void 				ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir);
+void				ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
+void				ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
