@@ -102,6 +102,12 @@
       "overviewRulerColor": "red"
   }
 ],
+
+  {
+    "42header.username": string,
+    "42header.email": string
+  }
+
 }
 // "highlight.regexes": {
 //   // This finds all standalone "1"s (your walls)
@@ -122,3 +128,4 @@
 //     ]
 //   }
 // }
+

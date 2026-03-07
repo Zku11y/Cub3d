@@ -16,6 +16,12 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_init/ft_init_0.c \
 	./render_ing/ft_init/ft_init_1.c \
 	./render_ing/ft_init/ft_init_2.c \
+	./render_ing/ft_init/ft_update_buff_init.c \
+	./render_ing/ft_init/ft_update_res_init.c \
+	./render_ing/ft_init/ft_map_init.c \
+	./render_ing/ft_state_machine/ft_state.c \
+	./render_ing/ft_state_machine/ft_state_2.c \
+	./render_ing/ft_utils/ft_lerp.c \
 
 OBJ = $(SRC:.c=.o)
 

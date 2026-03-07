@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/06 02:28:21 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 02:14:06 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,25 +55,25 @@ void ft_angle_limit(double *angle)
         *angle = *angle - (2 * PI);
 }
 
-uint8_t ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate){
-    return (new * lerp_rate) + (old * (1.0 - lerp_rate));
-}
+// uint8_t ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate){
+//     return (new * lerp_rate) + (old * (1.0 - lerp_rate));
+// }
 
-double ft_lerp_speed(double dst, double current){
-    return (dst * SPEED_LERP) + (current * (1.0 - SPEED_LERP));
-}
+// double ft_lerp_speed(double dst, double current){
+//     return (dst * SPEED_LERP) + (current * (1.0 - SPEED_LERP));
+// }
 
-double ft_lerp_tilt(double dst, double current){
-    return (dst * TILT_LERP) + (current * (1.0 - TILT_LERP));
-}
+// double ft_lerp_tilt(double dst, double current){
+//     return (dst * TILT_LERP) + (current * (1.0 - TILT_LERP));
+// }
 
-double ft_lerp_fov(double dst, double current, double lerp_rate){
-    return (dst * lerp_rate) + (current * (1.0 - lerp_rate));
-}
+// double ft_lerp_fov(double dst, double current, double lerp_rate){
+//     return (dst * lerp_rate) + (current * (1.0 - lerp_rate));
+// }
 
-double ft_lerp_move(double dst, double current, double lerp_rate){
-    return (current * lerp_rate) + (dst * (1.0 - lerp_rate));
-}
+// double ft_lerp_move(double dst, double current, double lerp_rate){
+//     return (current * lerp_rate) + (dst * (1.0 - lerp_rate));
+// }
 
 void draw_map_entity(t_cube *cube, double pos_x, double pos_y, double angle){
     int y;
@@ -1074,14 +1074,14 @@ void ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture){
             enemy->blood_frame_index++;
         }
         if(enemy->blood_frame_index < 12)
-            texture = cube->blood_explosion.frame[enemy->blood_frame_index];
+            texture = cube->blood.frame[enemy->blood_frame_index];
         else
             return;
     }
     
     if(enemy->dead == false && enemy->HP <= 0) 
     {
-        texture = cube->blood_explosion.frame[enemy->blood_frame_index];
+        texture = cube->blood.frame[enemy->blood_frame_index];
         enemy->blood_time = current_time;
         enemy->dead = true;
     }
@@ -1534,6 +1534,7 @@ void ft_ceiling(t_cube *cube)
         i++;
     }
 }
+
 void ft_floor(t_cube *cube)
 {
     double DirX = cos(cube->player.angle);
@@ -1729,7 +1730,7 @@ void ft_floor_ceiling(t_cube *cube){
     }
 }
 
-void ft_upscaling(t_cube *cube, mlx_image_t *image){
+void ft_ups(t_cube *cube, mlx_image_t *image){
     uint32_t *new = (uint32_t *)image->pixels;
     uint32_t *prev = (uint32_t *)cube->prev_buffer;
     int screen_H = cube->screen_height;
@@ -1951,51 +1952,51 @@ void ft_crosshair_color(t_cube *cube){
 void ft_update_screen_buff(t_cube *cube, mlx_texture_t *texture, int new_w, int new_h){
     if(new_w == cube->screen_width_buff && new_h == cube->screen_height_buff)
         return;
-    cube->menu.settings.resolution.texture = texture;
+    cube->menu.settings.res.texture = texture;
     cube->screen_height_buff = new_h;
     cube->screen_width_buff = new_w;
-    cube->screen_height = cube->screen_height_buff / cube->upscaling;
-    cube->screen_width = cube->screen_width_buff / cube->upscaling;
+    cube->screen_height = cube->screen_height_buff / cube->ups;
+    cube->screen_width = cube->screen_width_buff / cube->ups;
     ft_updated_buff_init(cube);
 }
 
-void ft_resolution(t_cube *cube){
+void ft_res(t_cube *cube){
     int mouse_x;
     int mouse_y;
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
     if(cube->menu.settings.mouse_held != RESOLUTION)
-        return(ft_renderer(cube, cube->menu.settings.resolution.texture, 0, 0));
+        return(ft_renderer(cube, cube->menu.settings.res.texture, 0, 0));
 
-    if(mouse_y > cube->menu.settings.resolution.start_y_1080_900 && mouse_y < cube->menu.settings.resolution.end_y_1080_900){
+    if(mouse_y > cube->menu.settings.res.start_y_1080_900 && mouse_y < cube->menu.settings.res.end_y_1080_900){
 
-        if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_x < cube->menu.settings.resolution.end_x_1080)
-            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_1080_glow, 1920, 1080);
+        if(mouse_x > cube->menu.settings.res.start_x_1080 && mouse_x < cube->menu.settings.res.end_x_1080)
+            ft_update_screen_buff(cube, cube->menu.settings.res._1080, 1920, 1080);
 
-        else if(mouse_x > cube->menu.settings.resolution.start_x_900 && mouse_x < cube->menu.settings.resolution.end_x_900)
-            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_900_glow, 1600, 900);
-
-    }
-    else if(mouse_y > cube->menu.settings.resolution.start_y_720_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480){
-
-        if(mouse_x > cube->menu.settings.resolution.start_x_720 && mouse_x < cube->menu.settings.resolution.end_x_720)
-            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_720_glow, 1280, 720);
-
-        else if(mouse_x > cube->menu.settings.resolution.start_x_480 && mouse_x < cube->menu.settings.resolution.end_x_480)
-            ft_update_screen_buff(cube, cube->menu.settings.resolution.res_480_glow, 720, 480);
+        else if(mouse_x > cube->menu.settings.res.start_x_900 && mouse_x < cube->menu.settings.res.end_x_900)
+            ft_update_screen_buff(cube, cube->menu.settings.res._900, 1600, 900);
 
     }
+    else if(mouse_y > cube->menu.settings.res.start_y_480 && mouse_y < cube->menu.settings.res.end_y_480){
 
-    ft_renderer(cube, cube->menu.settings.resolution.texture, 0, 0);
+        if(mouse_x > cube->menu.settings.res.start_x_720 && mouse_x < cube->menu.settings.res.end_x_720)
+            ft_update_screen_buff(cube, cube->menu.settings.res._720, 1280, 720);
+
+        else if(mouse_x > cube->menu.settings.res.start_x_480 && mouse_x < cube->menu.settings.res.end_x_480)
+            ft_update_screen_buff(cube, cube->menu.settings.res._480, 720, 480);
+
+    }
+
+    ft_renderer(cube, cube->menu.settings.res.texture, 0, 0);
 }
 
 void ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture){
-    if(upscale == cube->upscaling)
+    if(upscale == cube->ups)
         return;
-    cube->menu.settings.upscaling.texture = texture;
-    cube->upscaling = upscale;
-    cube->screen_height = cube->screen_height_buff / cube->upscaling;
-    cube->screen_width = cube->screen_width_buff / cube->upscaling;
+    cube->menu.settings.ups.texture = texture;
+    cube->ups = upscale;
+    cube->screen_height = cube->screen_height_buff / cube->ups;
+    cube->screen_width = cube->screen_width_buff / cube->ups;
     ft_updated_res_init(cube);
 }
 
@@ -2004,30 +2005,30 @@ void ft_upscale(t_cube *cube){
     int mouse_y;
 
     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    if(cube->menu.settings.mouse_held != UPSCALING)
-        return(ft_renderer(cube, cube->menu.settings.upscaling.texture, 0, 0));
+    if(cube->menu.settings.mouse_held != UPS)
+        return(ft_renderer(cube, cube->menu.settings.ups.texture, 0, 0));
 
-    if(mouse_y > cube->menu.settings.upscaling.start_y1234 && mouse_y < cube->menu.settings.upscaling.end_y1234){
-        if(mouse_x > cube->menu.settings.upscaling.start_x15 && mouse_x < cube->menu.settings.upscaling.end_x15)
-            ft_update_screen_res(cube, 1, cube->menu.settings.upscaling.x1_glow);
-        else if(mouse_x > cube->menu.settings.upscaling.start_x26 && mouse_x < cube->menu.settings.upscaling.end_x26)
-            ft_update_screen_res(cube, 2, cube->menu.settings.upscaling.x2_glow);
-        else if(mouse_x > cube->menu.settings.upscaling.start_x37 && mouse_x < cube->menu.settings.upscaling.end_x37)
-            ft_update_screen_res(cube, 3, cube->menu.settings.upscaling.x3_glow);
-        else if(mouse_x > cube->menu.settings.upscaling.start_x48 && mouse_x < cube->menu.settings.upscaling.end_x48)
-            ft_update_screen_res(cube, 4, cube->menu.settings.upscaling.x4_glow);
+    if(mouse_y > cube->menu.settings.ups.start_y1234 && mouse_y < cube->menu.settings.ups.end_y1234){
+        if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x15)
+            ft_update_screen_res(cube, 1, cube->menu.settings.ups.x1_glow);
+        else if(mouse_x > cube->menu.settings.ups.start_x26 && mouse_x < cube->menu.settings.ups.end_x26)
+            ft_update_screen_res(cube, 2, cube->menu.settings.ups.x2_glow);
+        else if(mouse_x > cube->menu.settings.ups.start_x37 && mouse_x < cube->menu.settings.ups.end_x37)
+            ft_update_screen_res(cube, 3, cube->menu.settings.ups.x3_glow);
+        else if(mouse_x > cube->menu.settings.ups.start_x48 && mouse_x < cube->menu.settings.ups.end_x48)
+            ft_update_screen_res(cube, 4, cube->menu.settings.ups.x4_glow);
     }
-    else if(mouse_y > cube->menu.settings.upscaling.start_y5678 && mouse_y < cube->menu.settings.upscaling.end_y5678){
-        if(mouse_x > cube->menu.settings.upscaling.start_x15 && mouse_x < cube->menu.settings.upscaling.end_x15)
-            ft_update_screen_res(cube, 5, cube->menu.settings.upscaling.x5_glow);
-        else if(mouse_x > cube->menu.settings.upscaling.start_x26 && mouse_x < cube->menu.settings.upscaling.end_x26)
-            ft_update_screen_res(cube, 6, cube->menu.settings.upscaling.x6_glow);
-        else if(mouse_x > cube->menu.settings.upscaling.start_x37 && mouse_x < cube->menu.settings.upscaling.end_x37)
-            ft_update_screen_res(cube, 7, cube->menu.settings.upscaling.x7_glow);
-        else if(mouse_x > cube->menu.settings.upscaling.start_x48 && mouse_x < cube->menu.settings.upscaling.end_x48)
-            ft_update_screen_res(cube, 8, cube->menu.settings.upscaling.x8_glow);
+    else if(mouse_y > cube->menu.settings.ups.start_y5678 && mouse_y < cube->menu.settings.ups.end_y5678){
+        if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x15)
+            ft_update_screen_res(cube, 5, cube->menu.settings.ups.x5_glow);
+        else if(mouse_x > cube->menu.settings.ups.start_x26 && mouse_x < cube->menu.settings.ups.end_x26)
+            ft_update_screen_res(cube, 6, cube->menu.settings.ups.x6_glow);
+        else if(mouse_x > cube->menu.settings.ups.start_x37 && mouse_x < cube->menu.settings.ups.end_x37)
+            ft_update_screen_res(cube, 7, cube->menu.settings.ups.x7_glow);
+        else if(mouse_x > cube->menu.settings.ups.start_x48 && mouse_x < cube->menu.settings.ups.end_x48)
+            ft_update_screen_res(cube, 8, cube->menu.settings.ups.x8_glow);
     }
-    ft_renderer(cube, cube->menu.settings.upscaling.texture, 0, 0);
+    ft_renderer(cube, cube->menu.settings.ups.texture, 0, 0);
 }
 
 void ft_settings(t_cube *cube){
@@ -2039,26 +2040,26 @@ void ft_settings(t_cube *cube){
         if(mouse_y > (cube->menu.settings.fov.slider_start_y) && mouse_y < (cube->menu.settings.fov.slider_end_y)
          && mouse_x < (cube->menu.settings.fov.slider_end_x) && mouse_x > (cube->menu.settings.fov.slider_start_x))
             cube->menu.settings.mouse_held = FOV_SLIDER;
-        else if(mouse_x > cube->menu.settings.resolution.start_x_1080 && mouse_y > cube->menu.settings.resolution.start_y_1080_900
-         && mouse_x < cube->menu.settings.resolution.end_x_480 && mouse_y < cube->menu.settings.resolution.end_y_720_480)
+        else if(mouse_x > cube->menu.settings.res.start_x_1080 && mouse_y > cube->menu.settings.res.start_y_1080_900
+         && mouse_x < cube->menu.settings.res.end_x_480 && mouse_y < cube->menu.settings.res.end_y_480)
             cube->menu.settings.mouse_held = RESOLUTION;
         else if(mouse_y > (cube->menu.settings.mouse_sens.slider_start_y) && mouse_y < (cube->menu.settings.mouse_sens.slider_end_y)
          && mouse_x < (cube->menu.settings.mouse_sens.slider_end_x) && mouse_x > (cube->menu.settings.mouse_sens.slider_start_x))
             cube->menu.settings.mouse_held = MOUSE_SENS_SLIDER;
-        else if(mouse_x > cube->menu.settings.upscaling.start_x15 && mouse_x < cube->menu.settings.upscaling.end_x48
-         && mouse_y > cube->menu.settings.upscaling.start_y1234 && mouse_y < cube->menu.settings.upscaling.end_y5678)
-            cube->menu.settings.mouse_held = UPSCALING;
+        else if(mouse_x > cube->menu.settings.ups.start_x15 && mouse_x < cube->menu.settings.ups.end_x48
+         && mouse_y > cube->menu.settings.ups.start_y1234 && mouse_y < cube->menu.settings.ups.end_y5678)
+            cube->menu.settings.mouse_held = UPS;
     }
     if(cube->menu.settings.mouse_held != NOTHING && !mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)){
         cube->menu.settings.mouse_held = NOTHING;
     }
     ft_fov_slider(cube);
-    ft_resolution(cube);
+    ft_res(cube);
     if(cube->menu.settings.mouse_held == NOTHING || cube->menu.settings.mouse_held == MOUSE_SENS_SLIDER)
         ft_crosshair_color(cube);
     ft_mouse_sens(cube);
     ft_upscale(cube);
-    printf("screen_buff : (%d, %d), screen_res : (%d, %d), upscaling : %d\n",cube->screen_width, cube->screen_height, cube->screen_width_buff, cube->screen_height_buff, cube->upscaling);
+    printf("screen_buff : (%d, %d), screen_res : (%d, %d), ups : %d\n",cube->screen_width, cube->screen_height, cube->screen_width_buff, cube->screen_height_buff, cube->ups);
 }
 
 void ft_menu(t_cube *cube){
@@ -2433,92 +2434,92 @@ void ft_fov_mod(t_cube *cube){
 
 }
 
-void ft_game(t_cube *cube){
-    ft_mouvement(cube);
-    ft_draw_rays(cube);
-    ft_floor_ceiling(cube);
-    ft_draw_world(cube);
-    ft_draw_enemies(cube);
-    ft_draw_proj(cube);
-    ft_weapon(cube);
-    ft_heart(cube);
-    ft_fov_mod(cube);
-    if(cube->player.HP == 0)
-        cube->state = DIED;
-}
+// void ft_game(t_cube *cube){
+//     ft_mouvement(cube);
+//     ft_draw_rays(cube);
+//     ft_floor_ceiling(cube);
+//     ft_draw_world(cube);
+//     ft_draw_enemies(cube);
+//     ft_draw_proj(cube);
+//     ft_weapon(cube);
+//     ft_heart(cube);
+//     ft_fov_mod(cube);
+//     if(cube->player.HP == 0)
+//         cube->state = DIED;
+// }
 
-void ft_died(t_cube *cube){
-    int x = 0;
-    int y = 0;
-    double i = 0;
-    double j = 0;
-    double i_iter = (double)cube->texture_died->width / (double)cube->screen_width;
-    double j_iter = (double)cube->texture_died->height / (double)cube->screen_height;
+// void ft_died(t_cube *cube){
+//     int x = 0;
+//     int y = 0;
+//     double i = 0;
+//     double j = 0;
+//     double i_iter = (double)cube->texture_died->width / (double)cube->screen_width;
+//     double j_iter = (double)cube->texture_died->height / (double)cube->screen_height;
 
-    while(x < cube->screen_width){
-        y = 0;
-        j = 0;
-        while(y < cube->screen_height){
-            if((int)i >= (int)cube->texture_died->width) i = cube->texture_died->width - 1;
-            if((int)j >= (int)cube->texture_died->height) j = cube->texture_died->height - 1;
-            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 0] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 0)];
-            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 1] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 1)];
-            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 2] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 2)];
-            cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 3] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 3)];
-            y++;
-            j += j_iter;
-        }
-        i += i_iter;
-        x++;
-    }
-}
+//     while(x < cube->screen_width){
+//         y = 0;
+//         j = 0;
+//         while(y < cube->screen_height){
+//             if((int)i >= (int)cube->texture_died->width) i = cube->texture_died->width - 1;
+//             if((int)j >= (int)cube->texture_died->height) j = cube->texture_died->height - 1;
+//             cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 0] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 0)];
+//             cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 1] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 1)];
+//             cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 2] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 2)];
+//             cube->prev_buffer[(y * 4 * cube->screen_width) + (x * 4) + 3] = cube->texture_died->pixels[(int)(((int)j * cube->texture_died->bytes_per_pixel * cube->texture_died->width) + ((int)i * cube->texture_died->bytes_per_pixel) + 3)];
+//             y++;
+//             j += j_iter;
+//         }
+//         i += i_iter;
+//         x++;
+//     }
+// }
 
-void state_transition(t_cube *cube, t_state dest){
-    if(dest == GAME){
-        mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_DISABLED);
-        mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
-        mlx_image_to_window(cube->mlx, cube->image, 0, 0);
-        cube->prev_state = GAME;
-    }
-    else if(dest == DIED){
-        mlx_image_to_window(cube->mlx, cube->image_death, 0, 0);
-        cube->prev_state = DIED;
-    }
-    else if(dest == MENU){
-        cube->prev_state = MENU;
-        mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_NORMAL);
-        // clear_image(cube);
-    }
-}
+// void state_transition(t_cube *cube, t_state dest){
+//     if(dest == GAME){
+//         mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_DISABLED);
+//         mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
+//         mlx_image_to_window(cube->mlx, cube->image, 0, 0);
+//         cube->prev_state = GAME;
+//     }
+//     else if(dest == DIED){
+//         mlx_image_to_window(cube->mlx, cube->image_death, 0, 0);
+//         cube->prev_state = DIED;
+//     }
+//     else if(dest == MENU){
+//         cube->prev_state = MENU;
+//         mlx_set_cursor_mode(cube->mlx, MLX_MOUSE_NORMAL);
+//         // clear_image(cube);
+//     }
+// }
 
-void state_machine(t_cube *cube){
-    if(cube->state == MENU){
-        ft_menu(cube);
-        // ft_upscaling(cube, cube->image);
-    }   
-    else if(cube->state == GAME){
-        int i = 0;
-        while(i < cube->screen_height * cube->screen_width * 4){
-            cube->lerp_buffer[i] = cube->prev_buffer[i];
-            i++;
-        }
-        ft_game(cube);
-        i = 0;
-        while(i < cube->screen_height * cube->screen_width * 4){
-            cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i], cube->heart.blur_lerp);
-            i++;
-        }
-        ft_tilt(cube);
-        ft_upscaling(cube, cube->image);
-        draw_crosshair(cube);
-        draw_grid(cube);
-        draw_player(cube);
-    }
-    else if(cube->state == DIED){
-        ft_died(cube);
-        ft_upscaling(cube, cube->image_death);
-    }
-}
+// void state_machine(t_cube *cube){
+//     if(cube->state == MENU){
+//         ft_menu(cube);
+//         // ft_ups(cube, cube->image);
+//     }   
+//     else if(cube->state == GAME){
+//         int i = 0;
+//         while(i < cube->screen_height * cube->screen_width * 4){
+//             cube->lerp_buffer[i] = cube->prev_buffer[i];
+//             i++;
+//         }
+//         ft_game(cube);
+//         i = 0;
+//         while(i < cube->screen_height * cube->screen_width * 4){
+//             cube->prev_buffer[i] = ft_lerp_pixels(cube->prev_buffer[i], cube->lerp_buffer[i], cube->heart.blur_lerp);
+//             i++;
+//         }
+//         ft_tilt(cube);
+//         ft_ups(cube, cube->image);
+//         draw_crosshair(cube);
+//         draw_grid(cube);
+//         draw_player(cube);
+//     }
+//     else if(cube->state == DIED){
+//         ft_died(cube);
+//         ft_ups(cube, cube->image_death);
+//     }
+// }
 
 
 void ft_update(void *param)
@@ -2546,7 +2547,7 @@ void ft_update(void *param)
     // ft_enemy(cube, &cube->enemy, cube->texture4);
     // ft_enemy(cube, &cube->enemy2, cube->texture5);
     // ft_enemy(cube, &cube->enemy3, cube->texture6);
-    // ft_upscaling(cube, cube->image);
+    // ft_ups(cube, cube->image);
     // draw_crosshair(cube);
     cube->final_t = tv.tv_sec;
     // printf("before mouvement pitch : %lf\n", cube->pitch);
@@ -2607,95 +2608,95 @@ int g_map_template[MAP_Y][MAP_X] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1}
 };
 
-void ft_map_init(t_cube *cube, t_nc *nu)
-{
+// void ft_map_init(t_cube *cube, t_nc *nu)
+// {
 
-    printf("im here\n");
-    cube->map = ts_calloc(nu->y + 1, sizeof(char *));
-    cube->floor_map = ts_calloc(nu->y + 1, sizeof(char *));
-    if (cube->map == NULL)
-    {
-        mlx_terminate(cube->mlx);
-        perror("Alloc error : ");
-        exit(EXIT_FAILURE);
-    }
-    if (cube->floor_map == NULL)
-    {
-        mlx_terminate(cube->mlx);
-        perror("Alloc error : ");
-        exit(EXIT_FAILURE);
-    }
+//     int i = 0;
+//     printf("im here\n");
+//     cube->map = ts_calloc(nu->y + 1, sizeof(char *));
+//     cube->floor_map = ts_calloc(nu->y + 1, sizeof(char *));
+//     if (cube->map == NULL)
+//     {
+//         mlx_terminate(cube->mlx);
+//         perror("Alloc error : ");
+//         exit(EXIT_FAILURE);
+//     }
+//     if (cube->floor_map == NULL)
+//     {
+//         mlx_terminate(cube->mlx);
+//         perror("Alloc error : ");
+//         exit(EXIT_FAILURE);
+//     }
 
-    int i = 0;
-    while (i < nu->y)
-    {
-        cube->map[i] = ts_calloc(nu->x + 1, sizeof(char));
-        if (cube->map[i] == NULL)
-        {
-            mlx_terminate(cube->mlx);
-            perror("Alloc error : ");
-            exit(EXIT_FAILURE);
-        }
-        i++;
-    }
+//     while (i < nu->y)
+//     {
+//         cube->map[i] = ts_calloc(nu->x + 1, sizeof(char));
+//         if (cube->map[i] == NULL)
+//         {
+//             mlx_terminate(cube->mlx);
+//             perror("Alloc error : ");
+//             exit(EXIT_FAILURE);
+//         }
+//         i++;
+//     }
 
-    cube->map = nu->map;
+//     cube->map = nu->map;
 
-    // int y = 0;
-    // while (y < MAP_Y)
-    // {
-    //     int x = 0;
-    //     while (x < MAP_X)
-    //     {
-    //         cube->map[y][x] = (char)g_map_template[y][x] + 48;
-    //         x++;
-    //     }
-    //     y++;
-    // }
-}
+//     // int y = 0;
+//     // while (y < MAP_Y)
+//     // {
+//     //     int x = 0;
+//     //     while (x < MAP_X)
+//     //     {
+//     //         cube->map[y][x] = (char)g_map_template[y][x] + 48;
+//     //         x++;
+//     //     }
+//     //     y++;
+//     // }
+// }
 
-void ft_init_enemies(t_cube *cube){
-    int i = 0;
-    struct timeval tv;
-    unsigned long seed;
+// void ft_init_enemies(t_cube *cube){
+//     int i = 0;
+//     struct timeval tv;
+//     unsigned long seed;
 
-    gettimeofday(&tv, NULL);
-    seed = (unsigned long)tv.tv_usec / 100;
+//     gettimeofday(&tv, NULL);
+//     seed = (unsigned long)tv.tv_usec / 100;
 
-    mlx_texture_t *health_tex = mlx_load_png("./white_monster_2.png");
-    while(i < ENEMY_NUM){
-        cube->enemy[i].HP = 100;
-        cube->enemy[i].blood_frame_index = 0;
-        cube->enemy[i].dead = false;
-        cube->enemy[i].delay = false;
-        cube->enemy[i].atk_delay = 1;
-        cube->enemy[i].DMG = 20;
-        cube->enemy[i].hitbox_len = 50; // COMEBACK TO THIS ITS VERY IMPORTANT, THE HITBOX NEEDS TO SCALE WITH THE ENEMY DISTANCE FROM PLAYER EACH FRAME
-        int posX = (int)(ft_rand(&seed) % (int)(cube->map_x * GRID_SIZE));
-        int posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
-        // printf("1 : posX : %d, posY : %d\n", posX, posY);
-        while(cube->map[(int)(posY / GRID_SIZE)][(int)(posX / GRID_SIZE)] == '1' || (posX >= (cube->map_x * GRID_SIZE) || posY >= (cube->map_y * GRID_SIZE))){
-            posX = (int)(ft_rand(&seed) % (int)(cube->map_x * GRID_SIZE));
-            posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
-            // printf("2 : posX : %d, posY : %d\n", posX, posY);
-        }
-        if((ft_rand(&seed) % 10) < 9)
-            cube->enemy[i].health_spawn = true;
-        else
-            cube->enemy[i].health_spawn = false;
+//     mlx_texture_t *health_tex = mlx_load_png("./white_monster_2.png");
+//     while(i < ENEMY_NUM){
+//         cube->enemy[i].HP = 100;
+//         cube->enemy[i].blood_frame_index = 0;
+//         cube->enemy[i].dead = false;
+//         cube->enemy[i].delay = false;
+//         cube->enemy[i].atk_delay = 1;
+//         cube->enemy[i].DMG = 20;
+//         cube->enemy[i].hitbox_len = 50; // COMEBACK TO THIS ITS VERY IMPORTANT, THE HITBOX NEEDS TO SCALE WITH THE ENEMY DISTANCE FROM PLAYER EACH FRAME
+//         int posX = (int)(ft_rand(&seed) % (int)(cube->map_x * GRID_SIZE));
+//         int posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
+//         // printf("1 : posX : %d, posY : %d\n", posX, posY);
+//         while(cube->map[(int)(posY / GRID_SIZE)][(int)(posX / GRID_SIZE)] == '1' || (posX >= (cube->map_x * GRID_SIZE) || posY >= (cube->map_y * GRID_SIZE))){
+//             posX = (int)(ft_rand(&seed) % (int)(cube->map_x * GRID_SIZE));
+//             posY = (int)(ft_rand(&seed) % (int)(cube->map_y * GRID_SIZE));
+//             // printf("2 : posX : %d, posY : %d\n", posX, posY);
+//         }
+//         if((ft_rand(&seed) % 10) < 9)
+//             cube->enemy[i].health_spawn = true;
+//         else
+//             cube->enemy[i].health_spawn = false;
 
-        cube->enemy[i].health_offset = 0;
-        cube->enemy[i].health_animation = 0;
-        cube->enemy[i].health = health_tex;
-        cube->enemy[i].x = (posX);
-        cube->enemy[i].y = (posY);
-        // printf("pos[%d] : (%d, %d)\n", i, (posX), (posY));
-        // printf("updated\n");
-        cube->enemy[i].player_dst = sqrt((cube->player.x - cube->enemy[i].x) * (cube->player.x - cube->enemy[i].x) + (cube->player.y - cube->enemy[i].y) * (cube->player.y - cube->enemy[i].y));
-        cube->enemy[i].max_hit_angle = atan2((cube->enemy[i].hitbox_len / 2.0), cube->enemy[i].player_dst);
-        i++;
-    }
-}
+//         cube->enemy[i].health_offset = 0;
+//         cube->enemy[i].health_animation = 0;
+//         cube->enemy[i].health = health_tex;
+//         cube->enemy[i].x = (posX);
+//         cube->enemy[i].y = (posY);
+//         // printf("pos[%d] : (%d, %d)\n", i, (posX), (posY));
+//         // printf("updated\n");
+//         cube->enemy[i].player_dst = sqrt((cube->player.x - cube->enemy[i].x) * (cube->player.x - cube->enemy[i].x) + (cube->player.y - cube->enemy[i].y) * (cube->player.y - cube->enemy[i].y));
+//         cube->enemy[i].max_hit_angle = atan2((cube->enemy[i].hitbox_len / 2.0), cube->enemy[i].player_dst);
+//         i++;
+//     }
+// }
 
 // void ft_init_audio(t_cube *cube){
 //     ma_uint64 length;
@@ -2717,77 +2718,77 @@ void ft_init_enemies(t_cube *cube){
 //     ma_sound_start(&cube->audio->bg_loop);
 // }
 
-void ft_updated_res_init(t_cube *cube){
-    cube->res = cube->screen_width;
-    cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
-    cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
-    cube->move_increase = 0.05 * cube->screen_height;
-    cube->pitch_max = cube->screen_height + 100;
-    free(cube->prev_buffer);
-    free(cube->new_buffer);
-    free(cube->lerp_buffer);
-    free(cube->z_buffer);
-    free(cube->rays);
-    cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->new_buffer = ts_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
-    cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
-    cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
-    cube->z_buffer = ts_calloc(cube->screen_width + 1, sizeof(double));
-    cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
-    cube->line_girth = (int)(cube->screen_width / cube->res);
-    cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
-    clear_image(cube);
-}
+// void ft_updated_res_init(t_cube *cube){
+//     cube->res = cube->screen_width;
+//     cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+//     cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+//     cube->move_increase = 0.05 * cube->screen_height;
+//     cube->pitch_max = cube->screen_height + 100;
+//     free(cube->prev_buffer);
+//     free(cube->new_buffer);
+//     free(cube->lerp_buffer);
+//     free(cube->z_buffer);
+//     free(cube->rays);
+//     cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+//     cube->new_buffer = ts_calloc((cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width), 4);
+//     cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
+//     cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
+//     cube->z_buffer = ts_calloc(cube->screen_width + 1, sizeof(double));
+//     cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0) * RADIANT_RATE);
+//     cube->line_girth = (int)(cube->screen_width / cube->res);
+//     cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
+//     clear_image(cube);
+// }
 
-void ft_updated_buff_init(t_cube *cube){
-    mlx_resize_image(cube->image, cube->screen_width_buff, cube->screen_height_buff);
-    mlx_resize_image(cube->image_death, cube->screen_width_buff, cube->screen_height_buff);
-    mlx_set_window_size(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
-    // mlx_image_to_window(cube->mlx, cube->image, 0, 0);
-    cube->mini_map_size = 0.2 * cube->screen_width_buff;
-    cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
-    cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
-    cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
-    cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
-    cube->menu.settings.upscaling.end_y5678 = 0.9 * cube->screen_height_buff;    
-    cube->menu.settings.fov.slider_start_y = 0.20 * cube->screen_height_buff;
-    cube->menu.settings.fov.slider_end_y = 0.24 * cube->screen_height_buff;
-    cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
-    cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
-    cube->menu.settings.resolution.start_y_1080_900 = 0.48 * cube->screen_height_buff;
-    cube->menu.settings.resolution.end_y_1080_900 = 0.51 * cube->screen_height_buff;
-    cube->menu.settings.resolution.start_y_720_480 = 0.59 * cube->screen_height_buff;
-    cube->menu.settings.resolution.end_y_720_480 = 0.62 * cube->screen_height_buff;
-    cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
-    cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
-    cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
-    cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
-    cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
-    cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
-    cube->menu.settings.upscaling.start_x15 = 0.089 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x15 = 0.11 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_x26 = 0.162 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x26 = 0.183 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_x37 = 0.235 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x37 = 0.256 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.start_x48 = 0.310 * cube->screen_width_buff;
-    cube->menu.settings.upscaling.end_x48 = 0.331 * cube->screen_width_buff;
-    cube->menu.settings.fov.slider_start_x = 0.065 * cube->screen_width_buff;
-    cube->menu.settings.fov.slider_end_x = 0.354 * cube->screen_width_buff;
-    cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
-    cube->menu.settings.mouse_sens.slider_end_x = 0.895 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_1080 = 0.055 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_1080 = 0.175 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_900 = 0.245 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_900 = 0.358 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_720 = 0.057 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_720 = 0.173 * cube->screen_width_buff;
-    cube->menu.settings.resolution.start_x_480 = 0.265 * cube->screen_width_buff;
-    cube->menu.settings.resolution.end_x_480 = 0.365 * cube->screen_width_buff;
-    cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
-    cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
-    ft_updated_res_init(cube);
-}
+// void ft_updated_buff_init(t_cube *cube){
+//     mlx_resize_image(cube->image, cube->screen_width_buff, cube->screen_height_buff);
+//     mlx_resize_image(cube->image_death, cube->screen_width_buff, cube->screen_height_buff);
+//     mlx_set_window_size(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
+//     // mlx_image_to_window(cube->mlx, cube->image, 0, 0);
+//     cube->mini_map_size = 0.2 * cube->screen_width_buff;
+//     cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
+//     cube->menu.settings.ups.start_y1234 = 0.78 * cube->screen_height_buff;
+//     cube->menu.settings.ups.end_y1234 = 0.807 * cube->screen_height_buff;
+//     cube->menu.settings.ups.start_y5678 = 0.873 * cube->screen_height_buff;
+//     cube->menu.settings.ups.end_y5678 = 0.9 * cube->screen_height_buff;    
+//     cube->menu.settings.fov.slider_start_y = 0.20 * cube->screen_height_buff;
+//     cube->menu.settings.fov.slider_end_y = 0.24 * cube->screen_height_buff;
+//     cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
+//     cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
+//     cube->menu.settings.res.start_y_1080_900 = 0.48 * cube->screen_height_buff;
+//     cube->menu.settings.res.end_y_1080_900 = 0.51 * cube->screen_height_buff;
+//     cube->menu.settings.res.start_y_480 = 0.59 * cube->screen_height_buff;
+//     cube->menu.settings.res.end_y_480 = 0.62 * cube->screen_height_buff;
+//     cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
+//     cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
+//     cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0, 0};
+//     cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0, 0};
+//     cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2) - CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0, 0};
+//     cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2) + CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0, 0};
+//     cube->menu.settings.ups.start_x15 = 0.089 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x15 = 0.11 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_x26 = 0.162 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x26 = 0.183 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_x37 = 0.235 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x37 = 0.256 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_x48 = 0.310 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x48 = 0.331 * cube->screen_width_buff;
+//     cube->menu.settings.fov.slider_start_x = 0.065 * cube->screen_width_buff;
+//     cube->menu.settings.fov.slider_end_x = 0.354 * cube->screen_width_buff;
+//     cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
+//     cube->menu.settings.mouse_sens.slider_end_x = 0.895 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_1080 = 0.055 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_1080 = 0.175 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_900 = 0.245 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_900 = 0.358 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_720 = 0.057 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_720 = 0.173 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_480 = 0.265 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_480 = 0.365 * cube->screen_width_buff;
+//     cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
+//     cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
+//     ft_updated_res_init(cube);
+// }
 
 void ft_init(t_cube *cube, t_nc *nu){
     ft_init_0(cube, nu);
@@ -2815,11 +2816,11 @@ void ft_init(t_cube *cube, t_nc *nu){
 //     cube->map_x = nu->x;
 //     cube->map_y = nu->y;
 //     cube->is_sliding = false;
-//     cube->upscaling = UPSCALING_RATE;
+//     cube->ups = UPS_RATE;
 //     cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
 //     cube->screen_width_buff = SCREEN_WIDTH_BUFF;
-//     cube->screen_height = (double)cube->screen_height_buff / (double)cube->upscaling;
-//     cube->screen_width = (double)cube->screen_width_buff / (double)cube->upscaling;
+//     cube->screen_height = (double)cube->screen_height_buff / (double)cube->ups;
+//     cube->screen_width = (double)cube->screen_width_buff / (double)cube->ups;
 //     cube->mini_map_size = 0.2 * cube->screen_width_buff;
 //     cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
 //     cube->res = cube->screen_width;
@@ -2862,48 +2863,48 @@ void ft_init(t_cube *cube, t_nc *nu){
 //     cube->prev_state = MENU;
 
 //     cube->menu.title = mlx_load_png("./menu_screen_1.png");
-//     cube->menu.settings.background = mlx_load_png("./settings_assets/settings_background.png");
-//     cube->menu.settings.fov.bar_1 = mlx_load_png("./settings_assets/bar_1.png");
-//     cube->menu.settings.bar_2 = mlx_load_png("./settings_assets/bar_2.png");
-//     cube->menu.settings.fov.slider_1 = mlx_load_png("./settings_assets/slider_1.png");
-//     cube->menu.settings.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
+//     cube->menu.settings.background = mlx_load_png("./sa/s_bg.png");
+//     cube->menu.settings.fov.bar_1 = mlx_load_png("./sa/bar_1.png");
+//     cube->menu.settings.bar_2 = mlx_load_png("./sa/bar_2.png");
+//     cube->menu.settings.fov.slider_1 = mlx_load_png("./sa/slider_1.png");
+//     cube->menu.settings.slider_2 = mlx_load_png("./sa/slider_2.png");
 
-//     cube->menu.settings.upscaling.x1_glow = mlx_load_png("./settings_assets/x1_glow.png");
-//     cube->menu.settings.upscaling.x2_glow = mlx_load_png("./settings_assets/x2_glow.png");
-//     cube->menu.settings.upscaling.x3_glow = mlx_load_png("./settings_assets/x3_glow.png");
-//     cube->menu.settings.upscaling.x4_glow = mlx_load_png("./settings_assets/x4_glow.png");
-//     cube->menu.settings.upscaling.x5_glow = mlx_load_png("./settings_assets/x5_glow.png");
-//     cube->menu.settings.upscaling.x6_glow = mlx_load_png("./settings_assets/x6_glow.png");
-//     cube->menu.settings.upscaling.x7_glow = mlx_load_png("./settings_assets/x7_glow.png");
-//     cube->menu.settings.upscaling.x8_glow = mlx_load_png("./settings_assets/x8_glow.png");
-//     cube->menu.settings.upscaling.start_x15 = 0.089 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.end_x15 = 0.11 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.start_x26 = 0.162 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.end_x26 = 0.183 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.start_x37 = 0.235 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.end_x37 = 0.256 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.start_x48 = 0.310 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.end_x48 = 0.331 * cube->screen_width_buff;
-//     cube->menu.settings.upscaling.start_y1234 = 0.78 * cube->screen_height_buff;
-//     cube->menu.settings.upscaling.end_y1234 = 0.807 * cube->screen_height_buff;
-//     cube->menu.settings.upscaling.start_y5678 = 0.873 * cube->screen_height_buff;
-//     cube->menu.settings.upscaling.end_y5678 = 0.9 * cube->screen_height_buff;
-//     if(cube->upscaling == 1)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x1_glow;
-//     else if(cube->upscaling == 2)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x2_glow;
-//     else if(cube->upscaling == 3)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x3_glow;
-//     else if(cube->upscaling == 4)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x4_glow;
-//     else if(cube->upscaling == 5)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x5_glow;
-//     else if(cube->upscaling == 6)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x6_glow;
-//     else if(cube->upscaling == 7)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x7_glow;
-//     else if(cube->upscaling == 8)
-//         cube->menu.settings.upscaling.texture = cube->menu.settings.upscaling.x8_glow;
+//     cube->menu.settings.ups.x1_glow = mlx_load_png("./sa/x1_glow.png");
+//     cube->menu.settings.ups.x2_glow = mlx_load_png("./sa/x2_glow.png");
+//     cube->menu.settings.ups.x3_glow = mlx_load_png("./sa/x3_glow.png");
+//     cube->menu.settings.ups.x4_glow = mlx_load_png("./sa/x4_glow.png");
+//     cube->menu.settings.ups.x5_glow = mlx_load_png("./sa/x5_glow.png");
+//     cube->menu.settings.ups.x6_glow = mlx_load_png("./sa/x6_glow.png");
+//     cube->menu.settings.ups.x7_glow = mlx_load_png("./sa/x7_glow.png");
+//     cube->menu.settings.ups.x8_glow = mlx_load_png("./sa/x8_glow.png");
+//     cube->menu.settings.ups.start_x15 = 0.089 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x15 = 0.11 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_x26 = 0.162 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x26 = 0.183 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_x37 = 0.235 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x37 = 0.256 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_x48 = 0.310 * cube->screen_width_buff;
+//     cube->menu.settings.ups.end_x48 = 0.331 * cube->screen_width_buff;
+//     cube->menu.settings.ups.start_y1234 = 0.78 * cube->screen_height_buff;
+//     cube->menu.settings.ups.end_y1234 = 0.807 * cube->screen_height_buff;
+//     cube->menu.settings.ups.start_y5678 = 0.873 * cube->screen_height_buff;
+//     cube->menu.settings.ups.end_y5678 = 0.9 * cube->screen_height_buff;
+//     if(cube->ups == 1)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x1_glow;
+//     else if(cube->ups == 2)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x2_glow;
+//     else if(cube->ups == 3)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x3_glow;
+//     else if(cube->ups == 4)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x4_glow;
+//     else if(cube->ups == 5)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x5_glow;
+//     else if(cube->ups == 6)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x6_glow;
+//     else if(cube->ups == 7)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x7_glow;
+//     else if(cube->ups == 8)
+//         cube->menu.settings.ups.texture = cube->menu.settings.ups.x8_glow;
 
 //     cube->menu.settings.mouse_held = 0;
 
@@ -2914,7 +2915,7 @@ void ft_init(t_cube *cube, t_nc *nu){
 //     cube->menu.settings.fov.min_fov = 30;
 //     cube->menu.settings.fov.max_fov = 150;
 
-//     cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./settings_assets/slider_2.png");
+//     cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./sa/slider_2.png");
 //     cube->menu.settings.mouse_sens.slider_start_y = 0.78 * cube->screen_height_buff;
 //     cube->menu.settings.mouse_sens.slider_end_y = 0.81 * cube->screen_height_buff;
 //     cube->menu.settings.mouse_sens.slider_start_x = 0.605 * cube->screen_width_buff;
@@ -2922,32 +2923,32 @@ void ft_init(t_cube *cube, t_nc *nu){
 //     cube->menu.settings.mouse_sens.min_sens = 0.0002;
 //     cube->menu.settings.mouse_sens.max_sens = 0.0040;
 
-//     cube->menu.settings.resolution.res_480_glow = mlx_load_png("./settings_assets/720_480_glow.png");
-//     cube->menu.settings.resolution.res_720_glow = mlx_load_png("./settings_assets/1280_720_glow.png");
-//     cube->menu.settings.resolution.res_900_glow = mlx_load_png("./settings_assets/1600_900_glow.png");
-//     cube->menu.settings.resolution.res_1080_glow = mlx_load_png("./settings_assets/1920_1080_glow.png");
+//     cube->menu.settings.res._480 = mlx_load_png("./sa/480_glow.png");
+//     cube->menu.settings.res._720 = mlx_load_png("./sa/720_glow.png");
+//     cube->menu.settings.res._900 = mlx_load_png("./sa/900_glow.png");
+//     cube->menu.settings.res._1080 = mlx_load_png("./sa/1080_glow.png");
 //     if(cube->screen_height_buff == 1080)
-//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_1080_glow; 
+//         cube->menu.settings.res.texture = cube->menu.settings.res._1080; 
 //     if(cube->screen_height_buff == 900)
-//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_900_glow; 
+//         cube->menu.settings.res.texture = cube->menu.settings.res._900; 
 //     if(cube->screen_height_buff == 720)
-//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_720_glow; 
+//         cube->menu.settings.res.texture = cube->menu.settings.res._720; 
 //     if(cube->screen_height_buff == 480)
-//         cube->menu.settings.resolution.texture = cube->menu.settings.resolution.res_480_glow; 
-//     cube->menu.settings.resolution.start_x_1080 = 0.055 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.end_x_1080 = 0.175 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.start_x_900 = 0.245 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.end_x_900 = 0.358 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.start_x_720 = 0.057 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.end_x_720 = 0.173 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.start_x_480 = 0.265 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.end_x_480 = 0.365 * cube->screen_width_buff;
-//     cube->menu.settings.resolution.start_y_1080_900 = 0.48 * cube->screen_height_buff;
-//     cube->menu.settings.resolution.end_y_1080_900 = 0.51 * cube->screen_height_buff;
-//     cube->menu.settings.resolution.start_y_720_480 = 0.59 * cube->screen_height_buff;
-//     cube->menu.settings.resolution.end_y_720_480 = 0.62 * cube->screen_height_buff;
+//         cube->menu.settings.res.texture = cube->menu.settings.res._480; 
+//     cube->menu.settings.res.start_x_1080 = 0.055 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_1080 = 0.175 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_900 = 0.245 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_900 = 0.358 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_720 = 0.057 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_720 = 0.173 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_x_480 = 0.265 * cube->screen_width_buff;
+//     cube->menu.settings.res.end_x_480 = 0.365 * cube->screen_width_buff;
+//     cube->menu.settings.res.start_y_1080_900 = 0.48 * cube->screen_height_buff;
+//     cube->menu.settings.res.end_y_1080_900 = 0.51 * cube->screen_height_buff;
+//     cube->menu.settings.res.start_y_480 = 0.59 * cube->screen_height_buff;
+//     cube->menu.settings.res.end_y_480 = 0.62 * cube->screen_height_buff;
 
-//     cube->menu.settings.crosshair.border = mlx_load_png("./settings_assets/border.png");
+//     cube->menu.settings.crosshair.border = mlx_load_png("./sa/border.png");
 //     cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
 //     cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
 //     cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
@@ -2989,18 +2990,18 @@ void ft_init(t_cube *cube, t_nc *nu){
 //     cube->heart.blur_lerp = BLUR_LERP;
 //     cube->heart.blood_op = 0.0;
 
-//     cube->blood_explosion.frame[0] = mlx_load_png("./blood_explosion/1_0.png");
-//     cube->blood_explosion.frame[1] = mlx_load_png("./blood_explosion/1_1.png");
-//     cube->blood_explosion.frame[2] = mlx_load_png("./blood_explosion/1_2.png");
-//     cube->blood_explosion.frame[3] = mlx_load_png("./blood_explosion/1_3.png");
-//     cube->blood_explosion.frame[4] = mlx_load_png("./blood_explosion/1_4.png");
-//     cube->blood_explosion.frame[5] = mlx_load_png("./blood_explosion/1_5.png");
-//     cube->blood_explosion.frame[6] = mlx_load_png("./blood_explosion/1_6.png");
-//     cube->blood_explosion.frame[7] = mlx_load_png("./blood_explosion/1_7.png");
-//     cube->blood_explosion.frame[8] = mlx_load_png("./blood_explosion/1_8.png");
-//     cube->blood_explosion.frame[9] = mlx_load_png("./blood_explosion/1_9.png");
-//     cube->blood_explosion.frame[10] = mlx_load_png("./blood_explosion/1_10.png");
-//     cube->blood_explosion.frame[11] = mlx_load_png("./blood_explosion/1_11.png");
+//     cube->blood.frame[0] = mlx_load_png("./blood/1_0.png");
+//     cube->blood.frame[1] = mlx_load_png("./blood/1_1.png");
+//     cube->blood.frame[2] = mlx_load_png("./blood/1_2.png");
+//     cube->blood.frame[3] = mlx_load_png("./blood/1_3.png");
+//     cube->blood.frame[4] = mlx_load_png("./blood/1_4.png");
+//     cube->blood.frame[5] = mlx_load_png("./blood/1_5.png");
+//     cube->blood.frame[6] = mlx_load_png("./blood/1_6.png");
+//     cube->blood.frame[7] = mlx_load_png("./blood/1_7.png");
+//     cube->blood.frame[8] = mlx_load_png("./blood/1_8.png");
+//     cube->blood.frame[9] = mlx_load_png("./blood/1_9.png");
+//     cube->blood.frame[10] = mlx_load_png("./blood/1_10.png");
+//     cube->blood.frame[11] = mlx_load_png("./blood/1_11.png");
 
 //     cube->flash.r = 1.0;
 //     cube->flash.g = 1.0;

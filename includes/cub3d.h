@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/06 02:44:06 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/07 02:13:07 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,11 @@ void ts_cln_pngs(t_nc *nu);
 
 //-----------------------------------------------------------------
 
-# define UPSCALING_RATE 4
+# define UPS_RATE 4
 # define SCREEN_WIDTH_BUFF 1600
 # define SCREEN_HEIGHT_BUFF 900
-# define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPSCALING_RATE)
-# define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPSCALING_RATE)
+# define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPS_RATE)
+# define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPS_RATE)
 # define RES SCREEN_WIDTH
 # define FOV 70
 # define PI 3.14159265359
@@ -221,6 +221,14 @@ typedef struct s_vect2
 	int				grid_y;
 }					t_vect2;
 
+typedef struct s_vars
+{
+	int			x;
+	int			y;
+	double				i;
+	double				j;
+}					t_vars;
+
 typedef struct s_ray
 {
 	t_vect2			start;
@@ -274,11 +282,11 @@ typedef struct s_player
 	bool			hit;
 }					t_player;
 
-typedef struct s_blood_explosion
+typedef struct s_blood
 {
 	mlx_texture_t *frame[12];
 
-} t_blood_explosion;
+} t_blood;
 
 typedef struct s_enemy
 {
@@ -335,13 +343,13 @@ typedef struct s_fov{
 	int				max_fov;
 }					t_fov;
 
-typedef struct s_resolution{
+typedef struct s_res{
 
 	mlx_texture_t	*texture;
-	mlx_texture_t	*res_480_glow;
-	mlx_texture_t	*res_720_glow;
-	mlx_texture_t	*res_900_glow;
-	mlx_texture_t	*res_1080_glow;
+	mlx_texture_t	*_480;
+	mlx_texture_t	*_720;
+	mlx_texture_t	*_900;
+	mlx_texture_t	*_1080;
 	int start_x_1080;
     int end_x_1080;
 	int start_x_900;
@@ -352,12 +360,12 @@ typedef struct s_resolution{
     int end_x_720;
 	int start_x_480;
     int end_x_480;
-    int start_y_720_480;
-    int end_y_720_480;
+    int start_y_480;
+    int end_y_480;
 
-}					t_resolution;
+}					t_res;
 
-typedef struct s_upscaling{
+typedef struct s_ups{
 
 	mlx_texture_t	*texture;
 	mlx_texture_t	*x1_glow;
@@ -380,7 +388,7 @@ typedef struct s_upscaling{
 	int				start_y5678;
 	int				end_y1234;
 	int				end_y5678;
-}					t_upscaling;
+}					t_ups;
 
 typedef struct s_crosshair{
 
@@ -410,7 +418,7 @@ typedef enum s_held
 	NOTHING,
 	FOV_SLIDER,
 	RESOLUTION,
-	UPSCALING,
+	UPS,
 	CROSSHAIR,
 	MOUSE_SENS_SLIDER
 }	t_held;
@@ -422,10 +430,10 @@ typedef struct s_settings{
 	mlx_texture_t	*slider_2;
 	t_held			mouse_held;
 	t_fov			fov;
-	t_resolution	resolution;
+	t_res	res;
 	t_crosshair		crosshair;
 	t_mouse_sens	mouse_sens;
-	t_upscaling		upscaling;
+	t_ups		ups;
 
 }	t_settings;
 
@@ -485,7 +493,7 @@ typedef struct s_cube
 	double			mod_rate;
 	int				line_girth;
 	double			mouse_sens;
-	int				upscaling;
+	int				ups;
 	mlx_texture_t	*texture;
 	mlx_texture_t	*texture2;
 	mlx_texture_t	*texture3;
@@ -526,7 +534,7 @@ typedef struct s_cube
 
 	t_flash			flash;
 
-	t_blood_explosion	blood_explosion;
+	t_blood	blood;
 	// t_audio			*audio;
 }					t_cube;
 
@@ -553,4 +561,44 @@ void				ft_init_9(t_cube *cube, t_nc *nu);
 void				ft_init_10(t_cube *cube, t_nc *nu);
 void				ft_init_11(t_cube *cube, t_nc *nu);
 
+void				ft_updated_buff_init(t_cube *cube);
+void				ft_updated_res_init(t_cube *cube);
+void				clear_image(t_cube *cube);
+
+
 void 				ft_init_enemies(t_cube *cube);
+unsigned long		ft_rand(unsigned long *seed);
+void				ft_map_init(t_cube *cube, t_nc *nu);
+void				state_machine(t_cube *cube);
+void				state_transition(t_cube *cube, t_state dest);
+void 				ft_game(t_cube *cube);
+void			    ft_mouvement(t_cube *cube);
+void    			ft_draw_rays(t_cube *cube);
+void    			ft_floor_ceiling(t_cube *cube);
+void    			ft_draw_world(t_cube *cube);
+void    			ft_draw_enemies(t_cube *cube);
+void    			ft_draw_proj(t_cube *cube);
+void    			ft_weapon(t_cube *cube);
+void    			ft_heart(t_cube *cube);
+void    			ft_fov_mod(t_cube *cube);
+uint8_t 			ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate);
+double 				ft_lerp_speed(double dst, double current);
+double 				ft_lerp_tilt(double dst, double current);
+double				ft_lerp_fov(double dst, double current, double lerp_rate);
+double 				ft_lerp_move(double dst, double current, double lerp_rate);
+void				ft_died(t_cube *cube, double i, double j);
+void				ft_menu(t_cube *cube);
+void				ft_tilt(t_cube *cube);
+void 				ft_mouvement(t_cube *cube);
+void    			ft_draw_rays(t_cube *cube);
+void    			ft_floor_ceiling(t_cube *cube);
+void    			ft_draw_world(t_cube *cube);
+void    			ft_draw_enemies(t_cube *cube);
+void    			ft_draw_proj(t_cube *cube);
+void			    ft_weapon(t_cube *cube);
+void			    ft_heart(t_cube *cube);
+void			    ft_fov_mod(t_cube *cube);
+void 				ft_ups(t_cube *cube, mlx_image_t *image);
+void				draw_crosshair(t_cube *cube);
+void				draw_grid(t_cube *cube);
+void				draw_player(t_cube *cube);
