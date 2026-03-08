@@ -6,7 +6,7 @@
 /*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:13:08 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/07 23:23:35 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/08 20:31:58 by oel-mado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,9 @@ int	rec(char **map, int x, int y, int *m_s)
 		return (1);
 	if (map[x][y] == ' ' || map[x][y] == '\0')
 		return (1);
-	if (map[x][y] == '8' || map[x][y] == '1')
+	if (map[x][y] == '8' || map[x][y] == '1' || map[x][y] == 'D')
 		return (0);
-	if (map[x][y] == '0' || map[x][y] == 'N' || map[x][y] == 'S'
-			|| map[x][y] == 'E' || map[x][y] == 'W')
+	if (map[x][y] == '0')
 		map[x][y] = '8';
 	else
 		return (0);
@@ -36,7 +35,7 @@ int	rec(char **map, int x, int y, int *m_s)
 	return (0);
 }
 
-int	chk_plyr(char **map)
+int	chk_elv(char **map)
 {
 	int (i), (j), (s);
 	i = 0;
@@ -46,13 +45,14 @@ int	chk_plyr(char **map)
 		j = 0;
 		while (map[i][j])
 		{
-			if (map[i][j] == 'N' || map[i][j] == 'S'
-				|| map[i][j] == 'E' || map[i][j] == 'W')
+			if (map[i][j] == 'D')
 				s++;
 			else if (map[i][j] != '0' && map[i][j] != '1'
-				&& map[i][j] != ' ' && !(map[i][j] >= 9 && map[i][j] <= 13))
+				&& map[i][j] != 'S' && map[i][j] != 'E'
+				&& map[i][j] != ' ' && !(map[i][j] >= 9
+				&& map[i][j] <= 13))
 				return (1);
-			if (s > 1)
+			if (s > 3)
 				return (1);
 			j++;
 		}
@@ -63,76 +63,76 @@ int	chk_plyr(char **map)
 	return (0);
 }
 
-t_plyr	*get_plyr(char **map)
+int	get_door(char **map, t_elv *hi)
 {
-	t_plyr	*hi;
-
-	if (chk_plyr(map))
-		return (NULL);
-	hi = ts_calloc(1, sizeof(t_plyr));
-	if (!hi)
-		return (NULL);
-	hi->y = 0;
-	while (map[hi->y])
+	if (map[hi->y][hi->x - 1] == 'D')
 	{
-		hi->x = 0;
-		while (map[hi->y][hi->x])
-		{
-			if (map[hi->y][hi->x] == 'N' || map[hi->y][hi->x] == 'S'
-				|| map[hi->y][hi->x] == 'E' || map[hi->y][hi->x] == 'W')
-			{
-				hi->who = map[hi->y][hi->x];
-				return (hi);
-			}
-			hi->x++;
-		}
-		hi->y++;
+		hi->door = 'W';
+		return (ts_check_door(map, hi->x - 1, hi->y));
 	}
-	free(hi);
-	return (NULL);
+	if (map[hi->y][hi->x + 1] == 'D')
+	{
+		hi->door = 'E';
+		return (ts_check_door(map, hi->x + 1, hi->y));
+	}
+	if (map[hi->y + 1][hi->x] == 'D')
+	{
+		hi->door = 'S';
+		return (ts_check_door(map, hi->x, hi->y + 1));
+	}
+	if (map[hi->y - 1][hi->x] == 'D')
+	{
+		hi->door = 'N';
+		return (ts_check_door(map, hi->x, hi->y - 1));
+	}
+	return (1);
 }
 
-void	map_cln(char **map, int x, int y, t_plyr *hi)
+int	*go_rec(char **map, int x, int y, t_elv *start)
 {
-	int	i;
-	int	j;
+	int		*m_s;
+	int		ret;
 
-	i = 0;
-	while (map[i])
-	{
-		j = 0;
-		while (map[i][j])
-		{
-			if (map[i][j] == '8' || map[i][j] == ' ')
-				map[i][j] = '0';
-			j++;
-		}
-		i++;
-	}
-	map[x][y] = hi->who;
+	m_s = ts_calloc(2, sizeof(int));
+	if (!m_s)
+		return (NULL);
+	m_s[0] = 0;
+	while (map[m_s[0]])
+		m_s[0]++;
+	m_s[1] = ts_strlen(map[0]);
+	if (m_s[0] < 3 || m_s[1] < 3)
+		return (NULL);
+	if (start->door == 'N')
+		ret = rec(map, x, y + 2, m_s);
+	if (start->door == 'S')
+		ret = rec(map, x, y - 2, m_s);
+	if (start->door == 'E')
+		ret = rec(map, x + 2, y, m_s);
+	if (start->door == 'W')
+		ret = rec(map, x - 2, y, m_s);
+	if (ret)
+		return (NULL);
+	return (m_s);
 }
 
 int	rec_map(char **map, t_nc *nu)
 {
-	int		m_x;
-	int		m_y;
-	int		m_s[2];
-	t_plyr	*hi;
-	int		ret;
+	int		*m_s;
 
-	m_x = 0;
-	while (map[m_x])
-		m_x++;
-	m_y = ts_strlen(map[0]);
-	if (m_x < 3 || m_y < 3)
+	if (ts_check_elv(map))
 		return (1);
-	hi = get_plyr(map);
-	if (!hi)
+	nu->start = get_elv(map, 'S');
+	if (!nu->start)
 		return (1);
-	nu->hi = hi;
-	m_s[0] = m_x;
-	m_s[1] = m_y;
-	ret = rec(map, hi->y, hi->x, m_s);
-	map_cln(map, hi->y, hi->x, hi);
-	return (ret);
+	nu->end = get_elv(map, 'E');
+	if (!nu->end)
+		return (free(nu->start), 1);
+	m_s = go_rec(map, nu->start->y, nu->start->x, nu->start);
+	if (!m_s)
+		return (free(nu->start), free(nu->end), 1);
+	map_cln(map, nu->start->y, nu->start->x, nu->start);
+	if (get_path(map, nu->start, m_s))
+		return (free(m_s), free(nu->start), free(nu->end), 1);
+	free(m_s);
+	return (0);
 }

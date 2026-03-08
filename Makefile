@@ -7,15 +7,16 @@ SRC = ./render_ing/cub3d.c \
 	./pars_ing/ts_data/ts_teto.c \
 	./pars_ing/ts_check/rec_map.c\
 	./pars_ing/ts_check/dot_chk.c \
+	./pars_ing/ts_check/map_cln.c \
 	./pars_ing/ts_check/ts_check_data.c \
+	./pars_ing/ts_check/ts_check_elv.c \
+	./pars_ing/ts_data/free_nu_map.c \
 	./pars_ing/ts_data/ts_key.c \
 	./pars_ing/ts_data/ts_opn.c \
 	./pars_ing/ts_data/ts_put.c \
-	./pars_ing/ts_data/ts_rgb.c \
 	./pars_ing/ts_data/ts_val.c \
 	./pars_ing/ts_data/ts_read.c \
 	./pars_ing/ts_data/ts_read_map.c \
-	./pars_ing/ts_data/free_nu_map.c \
 	./pars_ing/ts_pars.c \
 	./render_ing/ft_init/ft_init_0.c \
 	./render_ing/ft_init/ft_init_1.c \

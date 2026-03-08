@@ -6,7 +6,7 @@
 /*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:26:54 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 00:24:01 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/08 20:32:47 by oel-mado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,33 +33,14 @@ t_nc	*ts_make_mt_nu(void)
 	nu = ts_calloc(1, sizeof(t_nc));
 	if (!nu)
 		return (NULL);
-	nu->imgs[NO] = NULL;
-	nu->imgs[SO] = NULL;
-	nu->imgs[WE] = NULL;
-	nu->imgs[EA] = NULL;
+	nu->imgs[WA] = NULL;
+	nu->imgs[FL] = NULL;
+	nu->imgs[CI] = NULL;
+	nu->imgs[PR] = NULL;
+	nu->imgs[EN] = NULL;
 	nu->next = NULL;
 	nu->map = NULL;
 	return (nu);
-}
-
-int	ts_put_rgb(t_nc *nu, t_teto *teto)
-{
-	char	*f;
-	char	*c;
-
-	f = ts_get_img(teto, F);
-	if (!f)
-		return (ts_free_one_nomap(nu), 1);
-	if (ts_rgb(f, &nu->flor_r, &nu->flor_g, &nu->flor_b))
-		return (free(f), ts_free_one_nomap(nu), 1);
-	free(f);
-	c = ts_get_img(teto, C);
-	if (!c)
-		return (ts_free_one_nomap(nu), 1);
-	if (ts_rgb(c, &nu->ceil_r, &nu->ceil_g, &nu->ceil_b))
-		return (free(c), ts_free_one_nomap(nu), 1);
-	free(c);
-	return (0);
 }
 
 t_nc	*ts_put(t_teto *teto)
@@ -69,19 +50,20 @@ t_nc	*ts_put(t_teto *teto)
 	nu = ts_make_mt_nu();
 	if (!nu)
 		return (NULL);
-	nu->imgs[NO] = ts_get_img(teto, NO);
-	if (!nu->imgs[NO])
+	nu->imgs[WA] = ts_get_img(teto, WA);
+	if (!nu->imgs[WA])
 		return (ts_free_one_nomap(nu), NULL);
-	nu->imgs[SO] = ts_get_img(teto, SO);
-	if (!nu->imgs[SO])
+	nu->imgs[FL] = ts_get_img(teto, FL);
+	if (!nu->imgs[FL])
 		return (ts_free_one_nomap(nu), NULL);
-	nu->imgs[WE] = ts_get_img(teto, WE);
-	if (!nu->imgs[WE])
+	nu->imgs[CI] = ts_get_img(teto, CI);
+	if (!nu->imgs[CI])
 		return (ts_free_one_nomap(nu), NULL);
-	nu->imgs[EA] = ts_get_img(teto, EA);
-	if (!nu->imgs[EA])
+	nu->imgs[PR] = ts_get_img(teto, PR);
+	if (!nu->imgs[PR])
 		return (ts_free_one_nomap(nu), NULL);
-	if (ts_put_rgb(nu, teto))
-		return (NULL);
+	nu->imgs[EN] = ts_get_img(teto, EN);
+	if (!nu->imgs[EN])
+		return (ts_free_one_nomap(nu), NULL);
 	return (nu);
 }
