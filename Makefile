@@ -17,6 +17,7 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_init/ft_init_0.c \
 	./render_ing/ft_init/ft_init_1.c \
 	./render_ing/ft_init/ft_init_2.c \
+	./render_ing/ft_init/ft_init_3.c \
 	./render_ing/ft_init/ft_update_buff_init.c \
 	./render_ing/ft_init/ft_update_res_init.c \
 	./render_ing/ft_init/ft_map_init.c \

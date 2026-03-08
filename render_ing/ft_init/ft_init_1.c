@@ -27,6 +27,22 @@ void	ft_init_5(t_cube *cube, t_nc *nu)
 		cube->menu.settings.res.texture = cube->menu.settings.res._480;
 }
 
+void ft_init_61(t_cube *cube, t_nc *nu)
+{
+	cube->menu.settings.crosshair.border = mlx_load_png("./sa/border.png");
+	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
+	cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
+	cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
+	cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
+	cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
+	cube->menu.state = 0;
+	cube->tilt_angle = 0.0;
+	cube->target_angle = 0.0;
+	cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+	cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+	cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+}
+
 void	ft_init_6(t_cube *cube, t_nc *nu)
 {
 	cube->menu.settings.res.start_x_1080 = 0.055
@@ -49,18 +65,7 @@ void	ft_init_6(t_cube *cube, t_nc *nu)
 		* cube->screen_height_buff;
 	cube->menu.settings.res.end_y_480 = 0.62
 		* cube->screen_height_buff;
-	cube->menu.settings.crosshair.border = mlx_load_png("./sa/border.png");
-	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
-	cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
-	cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
-	cube->menu.settings.crosshair.start_y = 0.178 * cube->screen_height_buff;
-	cube->menu.settings.crosshair.end_y = 0.58 * cube->screen_height_buff;
-	cube->menu.state = 0;
-	cube->tilt_angle = 0.0;
-	cube->target_angle = 0.0;
-	cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
-	cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
-	cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+	ft_init_61(cube, nu);
 }
 
 void	ft_init_7(t_cube *cube, t_nc *nu)
@@ -115,43 +120,4 @@ void	ft_init_8(t_cube *cube, t_nc *nu)
 	cube->flash.dst_g = 1.0;
 	cube->flash.dst_b = 1.0;
 	cube->flash.flashed = false;
-}
-
-void	ft_init_9(t_cube *cube, t_nc *nu)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	cube->crosshair_hori_start = (t_vect2){(cube->screen_width_buff / 2)
-		- CROSSHAIR_LEN, (cube->screen_height_buff / 2) - CROSSHAIR_GIRTH, 0,
-		0};
-	cube->crosshair_hori_end = (t_vect2){(cube->screen_width_buff / 2)
-		+ CROSSHAIR_LEN, (cube->screen_height_buff / 2) + CROSSHAIR_GIRTH, 0,
-		0};
-	cube->crosshair_vert_start = (t_vect2){(cube->screen_width_buff / 2)
-		- CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) - CROSSHAIR_LEN, 0,
-		0};
-	cube->crosshair_vert_end = (t_vect2){(cube->screen_width_buff / 2)
-		+ CROSSHAIR_GIRTH, (cube->screen_height_buff / 2) + CROSSHAIR_LEN, 0,
-		0};
-	cube->projectiles = ts_calloc(MAX_PROJECTILES + 1, sizeof(t_projectile));
-	cube->prev_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
-	cube->new_buffer = ts_calloc((cube->screen_height
-				- cube->tilt_addition_height) * (cube->screen_width
-				- cube->tilt_addition_width), 4);
-	cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
-	cube->mod_rate = (cube->fov * RADIANT_RATE) / cube->res;
-	cube->fps = 0;
-	cube->grain = true;
-	cube->pitch = 0.0;
-	cube->z_buffer = ts_calloc(cube->screen_width, sizeof(double));
-	cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
-	cube->init_t = tv.tv_sec;
-	cube->final_t = tv.tv_sec;
-	cube->moving = false;
-	cube->enemy = ts_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
-	ft_init_enemies(cube);
-	cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
-	cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-	cube->texture = nu->txtrs[NO];
 }

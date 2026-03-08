@@ -83,8 +83,6 @@ void	ft_crosshair_color(t_cube *cube)
 {
 	t_vars6	vars;
 
-	vars.mouse_x;
-	vars.mouse_y;
 	vars.prev = (uint32_t *)cube->image->pixels;
 	mlx_get_mouse_pos(cube->mlx, &vars.mouse_x, &vars.mouse_y);
 	if (vars.mouse_x > cube->menu.settings.crosshair.start_x
