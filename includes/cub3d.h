@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/07 23:34:15 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/08 03:43:29 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,6 +404,34 @@ typedef struct s_vars10
 
 }					t_vars10;
 
+typedef struct s_vars11
+{
+
+	t_vect2	ratio;
+	t_vect2	cords;
+	t_vect2	start;
+	t_vect2	end;
+	double	len;
+	double	tmp;
+	int		k;
+
+}					t_vars11;
+
+typedef struct s_vars12
+{
+
+	double DirX;
+	double DirY;
+	double PlaneX;
+	double PlaneY;
+	double cameraX;
+	double rayDirX;
+	double rayDirY;
+	double rayAngle;
+	int i;	
+
+}					t_vars12;
+
 typedef struct s_ray
 {
 	t_vect2			start;
@@ -722,6 +750,7 @@ t_vect2				vert_first_point(t_cube *cube, t_ray *ray);
 void 				ft_updated_res_init(t_cube *cube);
 void 				ft_updated_buff_init(t_cube *cube);
 void 				ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color);
+void				set_screen_buff_limits(t_cube *cube, t_vect2 *len);
 
 void				ft_init_0(t_cube *cube, t_nc *nu);
 void				ft_init_1(t_cube *cube, t_nc *nu);
@@ -747,7 +776,7 @@ void				ft_map_init(t_cube *cube, t_nc *nu);
 void				state_machine(t_cube *cube);
 void				state_transition(t_cube *cube, t_state dest);
 void 				ft_game(t_cube *cube);
-void			    ft_mouvement(t_cube *cube);
+void				ft_mouvement(t_cube *cube, double max_cos_speed, double	max_sin_speed, struct timeval tv);
 void    			ft_draw_rays(t_cube *cube);
 void    			ft_floor_ceiling(t_cube *cube);
 void    			ft_draw_world(t_cube *cube);
@@ -764,7 +793,6 @@ double 				ft_lerp_move(double dst, double current, double lerp_rate);
 void				ft_died(t_cube *cube, double i, double j);
 void				ft_menu(t_cube *cube);
 void				ft_tilt(t_cube *cube);
-void 				ft_mouvement(t_cube *cube);
 void    			ft_draw_rays(t_cube *cube);
 void    			ft_floor_ceiling(t_cube *cube);
 void    			ft_draw_world(t_cube *cube);
@@ -803,3 +831,17 @@ void				ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10
 void				ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
 bool				ft_health2(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
 void				ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
+bool				ft_projectile2(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
+bool				ft_projectile3(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
+bool				ft_projectile4(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
+void				ft_projectile6(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
+void				ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end);
+void 				ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int color);
+void 				set_screen_limits(t_cube *cube, t_vect2 *len);
+t_vect2 			calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray);
+void				ft_ray_init(t_cube *cube, t_ray *ray, double angle);
+void				ft_mouvement1(t_cube *cube);
+void				ft_mouvement2(t_cube *cube);
+void				ft_turn(t_cube *cube);
+void 				ft_angle_limit(double *angle);
+void 				ft_mouvement_limits(t_cube *cube, double new_x, double new_y);

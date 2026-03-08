@@ -59,7 +59,8 @@ void	ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
 
 void	ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir)
 {
-	t_projectile proj;
+	t_projectile	proj;
+	int				i;
 
 	proj.x = enemy->x;
 	proj.y = enemy->y;
@@ -69,8 +70,7 @@ void	ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir)
 	proj.texture = cube->texture6;
 	proj.dst_traveled = 0;
 	proj.speed = 7;
-
-	int i = 0;
+	i = 0;
 	while (i < MAX_PROJECTILES)
 	{
 		if (cube->projectiles[i].in_use == 0)
@@ -80,4 +80,20 @@ void	ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir)
 		}
 		i++;
 	}
+}
+
+void	ft_projectile(t_cube *cube, t_projectile *projectile)
+{
+	t_vars10	vars;
+
+	if (!ft_projectile2(cube, projectile, &vars) || !ft_projectile3(cube,
+			projectile, &vars) || !ft_projectile4(cube, projectile, &vars))
+		return ;
+	if (vars.start_y >= cube->screen_height)
+		return ;
+	if (vars.end_x > cube->screen_width)
+		vars.end_x = cube->screen_width;
+	if (vars.end_y > cube->screen_height)
+		vars.end_y = cube->screen_height;
+	ft_projectile6(cube, projectile, &vars);
 }

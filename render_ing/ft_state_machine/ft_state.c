@@ -2,7 +2,9 @@
 
 void	ft_game(t_cube *cube)
 {
-	ft_mouvement(cube);
+	struct timeval tv;
+
+	ft_mouvement(cube, 0.0f, 0.0f, tv);
 	ft_draw_rays(cube);
 	ft_floor_ceiling(cube);
 	ft_draw_world(cube);

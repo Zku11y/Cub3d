@@ -24,16 +24,21 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_state_machine/ft_state_2.c \
 	./render_ing/ft_utils/ft_lerp.c \
 	./render_ing/ft_utils/ft_utils.c \
+	./render_ing/ft_utils/ft_utils2.c \
 	./render_ing/ft_weapon/ft_weapon.c \
 	./render_ing/ft_player/ft_heart.c \
 	./render_ing/ft_player/ft_health.c \
+	./render_ing/ft_player/ft_mouvement.c \
+	./render_ing/ft_player/ft_mouvement2.c \
 	./render_ing/ft_render/ft_tilt.c \
 	./render_ing/ft_render/ft_render.c \
 	./render_ing/ft_render/ft_render2.c \
+	./render_ing/ft_render/ft_render3.c \
 	./render_ing/ft_render/ft_floor_ceiling.c \
 	./render_ing/ft_enemy/ft_enemy.c \
 	./render_ing/ft_enemy/ft_enemy2.c \
 	./render_ing/ft_enemy/ft_enemy3.c \
+	./render_ing/ft_enemy/ft_projectile.c \
 	./render_ing/ft_menu/ft_menu.c \
 	./render_ing/ft_menu/ft_menu2.c \
 	./render_ing/ft_menu/ft_menu3.c \

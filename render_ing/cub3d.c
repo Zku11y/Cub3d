@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/07 22:12:13 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/08 03:51:12 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ void ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int colo
     }
 }
 
-void ft_angle_limit(double *angle)
-{
-    if(*angle < 0)
-        *angle = (2 * PI) + *angle;
-    else if(*angle > (PI * 2))
-        *angle = *angle - (2 * PI);
-}
+// void ft_angle_limit(double *angle)
+// {
+//     if(*angle < 0)
+//         *angle = (2 * PI) + *angle;
+//     else if(*angle > (PI * 2))
+//         *angle = *angle - (2 * PI);
+// }
 
 // uint8_t ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate){
 //     return (new * lerp_rate) + (old * (1.0 - lerp_rate));
@@ -303,280 +303,280 @@ void ft_mouvement_limits(t_cube *cube, double new_x, double new_y)
     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);    
 }
 
-void ft_turn(t_cube *cube)
-{
-    int mouse_x;
-    int mouse_y;
-    static int frames = 5;
+// void ft_turn(t_cube *cube)
+// {
+//     int mouse_x;
+//     int mouse_y;
+//     static int frames = 5;
 
-    mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
-    mouse_x = mouse_x - (cube->screen_width / 2);
-    mouse_y = mouse_y - (cube->screen_height / 2);
-    cube->player.angle += mouse_x * (cube->mouse_sens * 100) / (((double)cube->screen_height / 100) * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
-    // cube->player.angle += mouse_x * (cube->mouse_sens);
-    if (frames > 0)
-        frames--;
-    else
-        cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens * 100));
-    if(cube->pitch > cube->pitch_max)
-        cube->pitch = cube->pitch_max;
-    if(cube->pitch < -cube->pitch_max)
-        cube->pitch = -cube->pitch_max;
-    mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
-}
+//     mlx_get_mouse_pos(cube->mlx, &mouse_x, &mouse_y);
+//     mouse_x = mouse_x - (cube->screen_width / 2);
+//     mouse_y = mouse_y - (cube->screen_height / 2);
+//     cube->player.angle += mouse_x * (cube->mouse_sens * 100) / (((double)cube->screen_height / 100) * (cube->menu.settings.fov.max_fov - cube->fov + cube->menu.settings.fov.min_fov));
+//     // cube->player.angle += mouse_x * (cube->mouse_sens);
+//     if (frames > 0)
+//         frames--;
+//     else
+//         cube->pitch += (-1 * mouse_y) * ((cube->mouse_sens * 100));
+//     if(cube->pitch > cube->pitch_max)
+//         cube->pitch = cube->pitch_max;
+//     if(cube->pitch < -cube->pitch_max)
+//         cube->pitch = -cube->pitch_max;
+//     mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height / 2);
+// }
 
-void ft_mouvement(t_cube *cube)
-{
-    ft_turn(cube);
-    ft_angle_limit(&cube->player.angle);
+// void ft_mouvement(t_cube *cube)
+// {
+//     ft_turn(cube);
+//     ft_angle_limit(&cube->player.angle);
 
-    cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.85);
+//     cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.85);
 
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT) && cube->player.move_state == WALK && (mlx_is_key_down(cube->mlx, MLX_KEY_A)
-        || mlx_is_key_down(cube->mlx, MLX_KEY_D) || mlx_is_key_down(cube->mlx, MLX_KEY_W) || mlx_is_key_down(cube->mlx, MLX_KEY_S))){
-        cube->player.dst_speed_mult = 1.5 * PLAYER_SPEED;
-        cube->player.move_state = SPRINT;
-    }
+//     if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT) && cube->player.move_state == WALK && (mlx_is_key_down(cube->mlx, MLX_KEY_A)
+//         || mlx_is_key_down(cube->mlx, MLX_KEY_D) || mlx_is_key_down(cube->mlx, MLX_KEY_W) || mlx_is_key_down(cube->mlx, MLX_KEY_S))){
+//         cube->player.dst_speed_mult = 1.5 * PLAYER_SPEED;
+//         cube->player.move_state = SPRINT;
+//     }
 
-    cube->player.speed_mult = ft_lerp_move(cube->player.dst_speed_mult, cube->player.speed_mult, 0.9);
+//     cube->player.speed_mult = ft_lerp_move(cube->player.dst_speed_mult, cube->player.speed_mult, 0.9);
     
-    if(cube->player.move_state == SPRINT && !mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT)){
-        cube->player.dst_speed_mult = PLAYER_SPEED;
-        cube->player.move_state = WALK;
-    }
+//     if(cube->player.move_state == SPRINT && !mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT)){
+//         cube->player.dst_speed_mult = PLAYER_SPEED;
+//         cube->player.move_state = WALK;
+//     }
     
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL))
-    {
-        if(cube->player.move_state == WALK || cube->player.move_state == SPRINT)
-        {
-            if((int)(cube->player.current_speed_FB_X * 10.0) != 0 || (int)(cube->player.current_speed_LR_X * 10.0) != 0
-                || (int)(cube->player.current_speed_FB_Y * 10.0) != 0 || (int)(cube->player.current_speed_LR_Y * 10.0) != 0)            
-            {
-                cube->player.current_speed_FB_X *= 1.5;
-                cube->player.current_speed_FB_Y *= 1.5;
-                cube->player.current_speed_LR_X *= 1.5;
-                cube->player.current_speed_LR_Y *= 1.5;
-                cube->player.move_state = SLIDE;
-                cube->dst_camera_h = CAM_H / 2.0;                
-            }
-        }
+//     if(mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL))
+//     {
+//         if(cube->player.move_state == WALK || cube->player.move_state == SPRINT)
+//         {
+//             if((int)(cube->player.current_speed_FB_X * 10.0) != 0 || (int)(cube->player.current_speed_LR_X * 10.0) != 0
+//                 || (int)(cube->player.current_speed_FB_Y * 10.0) != 0 || (int)(cube->player.current_speed_LR_Y * 10.0) != 0)            
+//             {
+//                 cube->player.current_speed_FB_X *= 1.5;
+//                 cube->player.current_speed_FB_Y *= 1.5;
+//                 cube->player.current_speed_LR_X *= 1.5;
+//                 cube->player.current_speed_LR_Y *= 1.5;
+//                 cube->player.move_state = SLIDE;
+//                 cube->dst_camera_h = CAM_H / 2.0;                
+//             }
+//         }
 
-        if(cube->player.move_state == SLIDE){
-            // printf("IM SLIDDINNN BOOOOOI\n");
-            cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
-            cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
-            cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
-            cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
-            cube->player.current_speed_FB_X = ft_lerp_move(0.0, cube->player.current_speed_FB_X, 0.998);
-            cube->player.current_speed_FB_Y = ft_lerp_move(0.0, cube->player.current_speed_FB_Y, 0.998);
-            cube->player.current_speed_LR_X = ft_lerp_move(0.0, cube->player.current_speed_LR_X, 0.998);
-            cube->player.current_speed_LR_Y = ft_lerp_move(0.0, cube->player.current_speed_LR_Y, 0.998);
+//         if(cube->player.move_state == SLIDE){
+//             // printf("IM SLIDDINNN BOOOOOI\n");
+//             cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
+//             cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+//             cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+//             cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+//             cube->player.current_speed_FB_X = ft_lerp_move(0.0, cube->player.current_speed_FB_X, 0.998);
+//             cube->player.current_speed_FB_Y = ft_lerp_move(0.0, cube->player.current_speed_FB_Y, 0.998);
+//             cube->player.current_speed_LR_X = ft_lerp_move(0.0, cube->player.current_speed_LR_X, 0.998);
+//             cube->player.current_speed_LR_Y = ft_lerp_move(0.0, cube->player.current_speed_LR_Y, 0.998);
 
-            ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
-            cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
-            cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-            if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
-                struct timeval tv;
-                gettimeofday(&tv, NULL);
-                printf("left mouse click pressed!\n");
-                cube->player.delay = true;
-                cube->player.attacked = true;
-                cube->player.atk_time = tv.tv_sec;
-            }
-            return;
-        }
-        // printf("crouch with speed == 0\n");
-    }
+//             ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
+//             cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
+//             cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
+//             if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
+//                 struct timeval tv;
+//                 gettimeofday(&tv, NULL);
+//                 printf("left mouse click pressed!\n");
+//                 cube->player.delay = true;
+//                 cube->player.attacked = true;
+//                 cube->player.atk_time = tv.tv_sec;
+//             }
+//             return;
+//         }
+//         // printf("crouch with speed == 0\n");
+//     }
 
-    if(!mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL) && cube->player.move_state != SPRINT){
-        cube->player.move_state = WALK;            
-        cube->player.dst_speed_mult = PLAYER_SPEED;
-        cube->dst_camera_h = CAM_H;        
-    }
+//     if(!mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_CONTROL) && cube->player.move_state != SPRINT){
+//         cube->player.move_state = WALK;            
+//         cube->player.dst_speed_mult = PLAYER_SPEED;
+//         cube->dst_camera_h = CAM_H;        
+//     }
 
-    double max_cos_speed = cos(cube->player.angle) * cube->player.speed_mult * cube->mlx->delta_time;
-    double max_sin_speed = sin(cube->player.angle) * cube->player.speed_mult * cube->mlx->delta_time;
-    cube->player.dst_speed_LR_X = 0.0;
-    cube->player.dst_speed_LR_Y = 0.0;
-    cube->player.dst_speed_FB_X = 0.0;
-    cube->player.dst_speed_FB_Y = 0.0;
-    cube->target_angle = 0.0;
+//     double max_cos_speed = cos(cube->player.angle) * cube->player.speed_mult * cube->mlx->delta_time;
+//     double max_sin_speed = sin(cube->player.angle) * cube->player.speed_mult * cube->mlx->delta_time;
+//     cube->player.dst_speed_LR_X = 0.0;
+//     cube->player.dst_speed_LR_Y = 0.0;
+//     cube->player.dst_speed_FB_X = 0.0;
+//     cube->player.dst_speed_FB_Y = 0.0;
+//     cube->target_angle = 0.0;
 
-    if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    printf("left mouse click pressed!\n");
-    cube->player.delay = true;
-    cube->player.attacked = true;
-    cube->player.atk_time = tv.tv_sec;
-}
+//     if(mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT) && cube->player.delay == false){
+//     struct timeval tv;
+//     gettimeofday(&tv, NULL);
+//     printf("left mouse click pressed!\n");
+//     cube->player.delay = true;
+//     cube->player.attacked = true;
+//     cube->player.atk_time = tv.tv_sec;
+// }
 
-    // printf("attacked : %d, delay : %d\n", cube->player.attacked, cube->player.delay);
+//     // printf("attacked : %d, delay : %d\n", cube->player.attacked, cube->player.delay);
 
      
-    // printf("speed : (%lf), multi : (%d)\n", cube->player.current_speed_FB_X, (int)(cube->player.current_speed_FB_X * 10.0));
+//     // printf("speed : (%lf), multi : (%d)\n", cube->player.current_speed_FB_X, (int)(cube->player.current_speed_FB_X * 10.0));
 
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
-    {
-        cube->player.dst_speed_LR_X = -1 * max_sin_speed;
-        cube->player.dst_speed_LR_Y = max_cos_speed;
-        cube->target_angle = TILT_ANGLE;
-    }
-    else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
-    {
-        cube->player.dst_speed_LR_X = max_sin_speed;
-        cube->player.dst_speed_LR_Y = -1 * max_cos_speed;
-        cube->target_angle = -TILT_ANGLE;
-    }
-    if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
-    {
-        cube->player.weapon.move_lerp = ft_lerp_move(-cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
-        cube->player.dst_speed_FB_X = max_cos_speed;
-        cube->player.dst_speed_FB_Y = max_sin_speed;
-    }
-    else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
-    {
-        cube->player.weapon.move_lerp = ft_lerp_move(cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
-        cube->player.dst_speed_FB_X = -1 * max_cos_speed;
-        cube->player.dst_speed_FB_Y = -1 * max_sin_speed;
-    }
-    else{
-        cube->player.weapon.move_lerp = ft_lerp_move(0, cube->player.weapon.move_lerp, RECOIL_LERP);
-    }
+//     if(mlx_is_key_down(cube->mlx, MLX_KEY_D))
+//     {
+//         cube->player.dst_speed_LR_X = -1 * max_sin_speed;
+//         cube->player.dst_speed_LR_Y = max_cos_speed;
+//         cube->target_angle = TILT_ANGLE;
+//     }
+//     else if(mlx_is_key_down(cube->mlx, MLX_KEY_A))
+//     {
+//         cube->player.dst_speed_LR_X = max_sin_speed;
+//         cube->player.dst_speed_LR_Y = -1 * max_cos_speed;
+//         cube->target_angle = -TILT_ANGLE;
+//     }
+//     if(mlx_is_key_down(cube->mlx, MLX_KEY_W))
+//     {
+//         cube->player.weapon.move_lerp = ft_lerp_move(-cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
+//         cube->player.dst_speed_FB_X = max_cos_speed;
+//         cube->player.dst_speed_FB_Y = max_sin_speed;
+//     }
+//     else if(mlx_is_key_down(cube->mlx, MLX_KEY_S))
+//     {
+//         cube->player.weapon.move_lerp = ft_lerp_move(cube->move_increase, cube->player.weapon.move_lerp, RECOIL_LERP);
+//         cube->player.dst_speed_FB_X = -1 * max_cos_speed;
+//         cube->player.dst_speed_FB_Y = -1 * max_sin_speed;
+//     }
+//     else{
+//         cube->player.weapon.move_lerp = ft_lerp_move(0, cube->player.weapon.move_lerp, RECOIL_LERP);
+//     }
 
-    cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
-    cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
-    cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
-    cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
-    cube->player.current_speed_FB_X = ft_lerp_speed(cube->player.dst_speed_FB_X, cube->player.current_speed_FB_X);
-    cube->player.current_speed_FB_Y = ft_lerp_speed(cube->player.dst_speed_FB_Y, cube->player.current_speed_FB_Y);
-    cube->player.current_speed_LR_X = ft_lerp_speed(cube->player.dst_speed_LR_X, cube->player.current_speed_LR_X);
-    cube->player.current_speed_LR_Y = ft_lerp_speed(cube->player.dst_speed_LR_Y, cube->player.current_speed_LR_Y);
+//     cube->tilt_angle = ft_lerp_tilt(cube->target_angle, cube->tilt_angle);
+//     cube->shear_factor = tan(cube->tilt_angle * RADIANT_RATE);
+//     cube->tilt_addition_height = fabs(cube->shear_factor) * cube->screen_height;
+//     cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
+//     cube->player.current_speed_FB_X = ft_lerp_speed(cube->player.dst_speed_FB_X, cube->player.current_speed_FB_X);
+//     cube->player.current_speed_FB_Y = ft_lerp_speed(cube->player.dst_speed_FB_Y, cube->player.current_speed_FB_Y);
+//     cube->player.current_speed_LR_X = ft_lerp_speed(cube->player.dst_speed_LR_X, cube->player.current_speed_LR_X);
+//     cube->player.current_speed_LR_Y = ft_lerp_speed(cube->player.dst_speed_LR_Y, cube->player.current_speed_LR_Y);
 
-    ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
-    cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
-    cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-}
+//     ft_mouvement_limits(cube, cube->player.x + cube->player.current_speed_FB_X + cube->player.current_speed_LR_X, cube->player.y + cube->player.current_speed_FB_Y + cube->player.current_speed_LR_Y);
+//     cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
+//     cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
+// }
 
-void set_screen_buff_limits(t_cube *cube, t_vect2 *len)
-{
-    if(len->x > cube->screen_width_buff)
-        len->x = cube->screen_width_buff - 1;
-    else if(len->x < 0)
-        len->x = 0;
-    if(len->y > cube->screen_height_buff)
-        len->y = cube->screen_height_buff - 1;
-    else if(len->y < 0)
-        len->y = 0;
-}
+// void set_screen_buff_limits(t_cube *cube, t_vect2 *len)
+// {
+//     if(len->x > cube->screen_width_buff)
+//         len->x = cube->screen_width_buff - 1;
+//     else if(len->x < 0)
+//         len->x = 0;
+//     if(len->y > cube->screen_height_buff)
+//         len->y = cube->screen_height_buff - 1;
+//     else if(len->y < 0)
+//         len->y = 0;
+// }
 
-void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
-{
-    t_vect2 add;
-    t_vect2 mod;
+// void ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
+// {
+//     t_vect2 add;
+//     t_vect2 mod;
 
-    set_screen_buff_limits(cube, &start);
-    set_screen_buff_limits(cube, &finish);
-    mod.x = finish.x - start.x; // -GRID_SIZE
-    mod.y = finish.y - start.y; // -100
-    if(fabs(mod.x) >= fabs(mod.y))
-    {
-        add.x = mod.x / fabs(mod.x);
-        add.y = mod.y / fabs(mod.x);
-    }
-    else
-    {
-        add.x = mod.x / fabs(mod.y); // -0.5
-        add.y = mod.y / fabs(mod.y); // -1
-    }
-    while (fabs(start.x - finish.x) > 0.5 || fabs(start.y - finish.y) > 0.5)
-    {
-        mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), color);
-        start.x += add.x;
-        start.y += add.y;
-    }
-}
+//     set_screen_buff_limits(cube, &start);
+//     set_screen_buff_limits(cube, &finish);
+//     mod.x = finish.x - start.x; // -GRID_SIZE
+//     mod.y = finish.y - start.y; // -100
+//     if(fabs(mod.x) >= fabs(mod.y))
+//     {
+//         add.x = mod.x / fabs(mod.x);
+//         add.y = mod.y / fabs(mod.x);
+//     }
+//     else
+//     {
+//         add.x = mod.x / fabs(mod.y); // -0.5
+//         add.y = mod.y / fabs(mod.y); // -1
+//     }
+//     while (fabs(start.x - finish.x) > 0.5 || fabs(start.y - finish.y) > 0.5)
+//     {
+//         mlx_put_pixel(cube->image, (int)round(start.x), (int)round(start.y), color);
+//         start.x += add.x;
+//         start.y += add.y;
+//     }
+// }
 
-t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
-{
-    double len_hori;
-    double len_vert;
+// t_vect2 calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
+// {
+//     double len_hori;
+//     double len_vert;
 
-    // len_hori = (fabs(hori.x - cube->player.x) / cos(ray->angle));
-    // len_vert = (fabs(vert.y - cube->player.y) / sin(ray->angle));
-    len_hori = (fabs(hori.y - cube->player.y) / sin(ray->angle));
-    len_vert = (fabs(vert.x - cube->player.x) / cos(ray->angle));
-    // printf("len_hori (%lf, %lf) == %lf, len_vert (%lf, %lf) == %lf\n", hori.x, hori.y, len_hori, vert.x, vert.y, len_vert);
-    if(len_hori < len_vert)
-    {
-        ray->length = len_hori;
-        if(ray->y_dir == UP)
-            // ray->normal_dst = (hori.x / GRID_SIZE) - hori.grid_x;
-            ray->normal_dst = fmod(hori.x, GRID_SIZE) / GRID_SIZE;
-        else
-            // ray->normal_dst = 1 - ((hori.x / GRID_SIZE) - hori.grid_x);
-            ray->normal_dst = 1 - (fmod(hori.x, GRID_SIZE) / GRID_SIZE);
-        return (hori);
-    }
-    ray->length = len_vert;
-    if(ray->x_dir == RIGHT)
-        // ray->normal_dst = (vert.y / GRID_SIZE) - vert.grid_y;
-        ray->normal_dst = fmod(vert.y, GRID_SIZE) / GRID_SIZE;
-    else
-        // ray->normal_dst = 1 - ((vert.y / GRID_SIZE) - vert.grid_y);
-        ray->normal_dst = 1 - (fmod(vert.y, GRID_SIZE) / GRID_SIZE);
-    return (vert);
-}
+//     // len_hori = (fabs(hori.x - cube->player.x) / cos(ray->angle));
+//     // len_vert = (fabs(vert.y - cube->player.y) / sin(ray->angle));
+//     len_hori = (fabs(hori.y - cube->player.y) / sin(ray->angle));
+//     len_vert = (fabs(vert.x - cube->player.x) / cos(ray->angle));
+//     // printf("len_hori (%lf, %lf) == %lf, len_vert (%lf, %lf) == %lf\n", hori.x, hori.y, len_hori, vert.x, vert.y, len_vert);
+//     if(len_hori < len_vert)
+//     {
+//         ray->length = len_hori;
+//         if(ray->y_dir == UP)
+//             // ray->normal_dst = (hori.x / GRID_SIZE) - hori.grid_x;
+//             ray->normal_dst = fmod(hori.x, GRID_SIZE) / GRID_SIZE;
+//         else
+//             // ray->normal_dst = 1 - ((hori.x / GRID_SIZE) - hori.grid_x);
+//             ray->normal_dst = 1 - (fmod(hori.x, GRID_SIZE) / GRID_SIZE);
+//         return (hori);
+//     }
+//     ray->length = len_vert;
+//     if(ray->x_dir == RIGHT)
+//         // ray->normal_dst = (vert.y / GRID_SIZE) - vert.grid_y;
+//         ray->normal_dst = fmod(vert.y, GRID_SIZE) / GRID_SIZE;
+//     else
+//         // ray->normal_dst = 1 - ((vert.y / GRID_SIZE) - vert.grid_y);
+//         ray->normal_dst = 1 - (fmod(vert.y, GRID_SIZE) / GRID_SIZE);
+//     return (vert);
+// }
 
-void ft_ray_init(t_cube *cube, t_ray *ray, double angle)
-{
-    ray->start.x = cube->player.x;
-    ray->start.y = cube->player.y;
-    ray->angle = angle;
-    if(ray->angle >= PI && ray->angle <= 2 * PI)
-        ray->y_dir = UP;
-    else
-        ray->y_dir = DOWN;
-    if((ray->angle >= 0.5 * PI) && (ray->angle <= 1.5 * PI))
-        ray->x_dir = LEFT;
-    else
-        ray->x_dir = RIGHT;
-    if(ray->y_dir == UP && ray->x_dir == RIGHT)
-        ray->angle = (2 * PI) - angle;
-    else if(ray->y_dir == UP && ray->x_dir == LEFT)
-        ray->angle = angle - PI;
-    else if(ray->y_dir == DOWN && ray->x_dir == LEFT)
-        ray->angle = PI - angle;
-    t_vect2 hori = hori_first_point(cube, ray);
-    t_vect2 vert = vert_first_point(cube, ray);
-    ray->end = calc_length(cube, hori, vert, ray);
-}
+// void ft_ray_init(t_cube *cube, t_ray *ray, double angle)
+// {
+//     ray->start.x = cube->player.x;
+//     ray->start.y = cube->player.y;
+//     ray->angle = angle;
+//     if(ray->angle >= PI && ray->angle <= 2 * PI)
+//         ray->y_dir = UP;
+//     else
+//         ray->y_dir = DOWN;
+//     if((ray->angle >= 0.5 * PI) && (ray->angle <= 1.5 * PI))
+//         ray->x_dir = LEFT;
+//     else
+//         ray->x_dir = RIGHT;
+//     if(ray->y_dir == UP && ray->x_dir == RIGHT)
+//         ray->angle = (2 * PI) - angle;
+//     else if(ray->y_dir == UP && ray->x_dir == LEFT)
+//         ray->angle = angle - PI;
+//     else if(ray->y_dir == DOWN && ray->x_dir == LEFT)
+//         ray->angle = PI - angle;
+//     t_vect2 hori = hori_first_point(cube, ray);
+//     t_vect2 vert = vert_first_point(cube, ray);
+//     ray->end = calc_length(cube, hori, vert, ray);
+// }
 
-void ft_draw_rays(t_cube *cube)
-{
-    double DirX = cos(cube->player.angle);
-    double DirY = sin(cube->player.angle);
-    double PlaneX = -DirY * cube->half_fov_rad;
-    double PlaneY =  DirX * cube->half_fov_rad;
+// void ft_draw_rays(t_cube *cube)
+// {
+//     double DirX = cos(cube->player.angle);
+//     double DirY = sin(cube->player.angle);
+//     double PlaneX = -DirY * cube->half_fov_rad;
+//     double PlaneY =  DirX * cube->half_fov_rad;
 
-    for (int i = 0; i < cube->res; i++)
-    {
-        double cameraX = 2.0 * i / (double)cube->res - 1.0;
+//     for (int i = 0; i < cube->res; i++)
+//     {
+//         double cameraX = 2.0 * i / (double)cube->res - 1.0;
 
-        double rayDirX = DirX + PlaneX * cameraX;
-        double rayDirY = DirY + PlaneY * cameraX;
+//         double rayDirX = DirX + PlaneX * cameraX;
+//         double rayDirY = DirY + PlaneY * cameraX;
 
-        double rayAngle = atan2(rayDirY, rayDirX);
+//         double rayAngle = atan2(rayDirY, rayDirX);
 
-        if (rayAngle < 0)
-            rayAngle += 2 * PI;
-        else if (rayAngle > 2 * PI)
-            rayAngle -= 2 * PI;
+//         if (rayAngle < 0)
+//             rayAngle += 2 * PI;
+//         else if (rayAngle > 2 * PI)
+//             rayAngle -= 2 * PI;
 
-        cube->rays[i].real_angle = rayAngle;
-        ft_ray_init(cube, &(cube->rays[i]), rayAngle);
-    }
-}
+//         cube->rays[i].real_angle = rayAngle;
+//         ft_ray_init(cube, &(cube->rays[i]), rayAngle);
+//     }
+// }
 
 // void ft_draw_rays(t_cube *cube)
 // {
@@ -602,49 +602,49 @@ void ft_draw_rays(t_cube *cube)
 //     }
 // }
 
-bool check_screen_limits(t_cube *cube, t_vect2 len)
-{
-    if(len.x >= cube->screen_width)
-        return true;
-    else if(len.x < 0)
-        return true;
-    if(len.y >= cube->screen_height)
-        return true;
-    else if(len.y < 0)
-        return true;
-    return false;
-}
+// bool check_screen_limits(t_cube *cube, t_vect2 len)
+// {
+//     if(len.x >= cube->screen_width)
+//         return true;
+//     else if(len.x < 0)
+//         return true;
+//     if(len.y >= cube->screen_height)
+//         return true;
+//     else if(len.y < 0)
+//         return true;
+//     return false;
+// }
 
-void set_screen_limits(t_cube *cube, t_vect2 *len)
-{
-    if(len->x > cube->screen_width)
-        len->x = cube->screen_width;
-    else if(len->x < 0)
-        len->x = 0;
-    if(len->y > cube->screen_height)
-        len->y = cube->screen_height;
-    else if(len->y < 0)
-        len->y = 0;
-}
+// void set_screen_limits(t_cube *cube, t_vect2 *len)
+// {
+//     if(len->x > cube->screen_width)
+//         len->x = cube->screen_width;
+//     else if(len->x < 0)
+//         len->x = 0;
+//     if(len->y > cube->screen_height)
+//         len->y = cube->screen_height;
+//     else if(len->y < 0)
+//         len->y = 0;
+// }
 
-uint32_t shade_color(uint32_t base, double distance)
-{
-    // Extract RGBA
-    uint8_t r = (base >> 24) & 0xFF;
-    uint8_t g = (base >> 16) & 0xFF;
-    uint8_t b = (base >> 8) & 0xFF;
-    uint8_t a = base & 0xFF;
+// uint32_t shade_color(uint32_t base, double distance)
+// {
+//     // Extract RGBA
+//     uint8_t r = (base >> 24) & 0xFF;
+//     uint8_t g = (base >> 16) & 0xFF;
+//     uint8_t b = (base >> 8) & 0xFF;
+//     uint8_t a = base & 0xFF;
 
-    // Fade factor: closer = brighter, farther = darker
-    double factor = 1.0 / (1.0 + distance * 0.03); // tweak 0.01
-    // if(factor < 0.2) factor = 0.2; // keep minimum brightness
+//     // Fade factor: closer = brighter, farther = darker
+//     double factor = 1.0 / (1.0 + distance * 0.03); // tweak 0.01
+//     // if(factor < 0.2) factor = 0.2; // keep minimum brightness
 
-    r = (uint8_t)(r * factor);
-    g = (uint8_t)(g * factor);
-    b = (uint8_t)(b * factor);
+//     r = (uint8_t)(r * factor);
+//     g = (uint8_t)(g * factor);
+//     b = (uint8_t)(b * factor);
 
-    return (r << 24 | g << 16 | b << 8 | a);
-}
+//     return (r << 24 | g << 16 | b << 8 | a);
+// }
 
 // void ft_mini_map(t_cube *cube){
 //     int x;
@@ -666,107 +666,107 @@ uint32_t shade_color(uint32_t base, double distance)
 //     }
 // }
 
-void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, double len)
-{
-    t_vect2 ratio;
-    t_vect2 cords;
+// void ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end, double len)
+// {
+//     t_vect2 ratio;
+//     t_vect2 cords;
 
-    if(cube->texture == NULL)
-    {
-        printf("textuh aint loadin twin :)\n");
-        exit(1);
-    }
-    cords.y = 0;
-    ratio.y = cube->texture->height / len;
-    if(check_screen_limits(cube, start) && start.y <= 0)
-    {
-        cords.y = ratio.y * ((-1) * start.y);
-        start.y = 0;
-    }
-    cords.x = cube->texture->width * ray->normal_dst;
-    if(cords.x < 0)
-        cords.x = 0;
-    if(cords.x >= cube->texture->width)
-        cords.x = cube->texture->width - 1;
-    double tmp = 1.0 - (ray->length / MAX_DST);
-    if(tmp > 1.0)
-        tmp = 1.0;
-    else if(tmp < 0.0)
-        tmp = 0.0;
-    while(start.y < cube->screen_height && start.y < end.y && cords.y < cube->texture->height)
-    {
+//     if(cube->texture == NULL)
+//     {
+//         printf("textuh aint loadin twin :)\n");
+//         exit(1);
+//     }
+//     cords.y = 0;
+//     ratio.y = cube->texture->height / len;
+//     if(check_screen_limits(cube, start) && start.y <= 0)
+//     {
+//         cords.y = ratio.y * ((-1) * start.y);
+//         start.y = 0;
+//     }
+//     cords.x = cube->texture->width * ray->normal_dst;
+//     if(cords.x < 0)
+//         cords.x = 0;
+//     if(cords.x >= cube->texture->width)
+//         cords.x = cube->texture->width - 1;
+//     double tmp = 1.0 - (ray->length / MAX_DST);
+//     if(tmp > 1.0)
+//         tmp = 1.0;
+//     else if(tmp < 0.0)
+//         tmp = 0.0;
+//     while(start.y < cube->screen_height && start.y < end.y && cords.y < cube->texture->height)
+//     {
 
-        // if ((((int)start.x + (int)start.y) % 2) != cube->grain)
-        // {
-        //     // We skip drawing, BUT we must keep the texture aligned!
-        //     cords.y += ratio.y;
-        //     start.y++;
-        //     continue; 
-        // }
+//         // if ((((int)start.x + (int)start.y) % 2) != cube->grain)
+//         // {
+//         //     // We skip drawing, BUT we must keep the texture aligned!
+//         //     cords.y += ratio.y;
+//         //     start.y++;
+//         //     continue; 
+//         // }
 
-        // uint8_t r = cube->texture->pixels[k + 0] * (tmp);
-        // uint8_t g = cube->texture->pixels[k + 1] * (tmp);
-        // uint8_t b = cube->texture->pixels[k + 2] * (tmp);
-        // uint8_t a = cube->texture->pixels[k + 3];
+//         // uint8_t r = cube->texture->pixels[k + 0] * (tmp);
+//         // uint8_t g = cube->texture->pixels[k + 1] * (tmp);
+//         // uint8_t b = cube->texture->pixels[k + 2] * (tmp);
+//         // uint8_t a = cube->texture->pixels[k + 3];
 
-        // uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
-        if(!check_screen_limits(cube, start)){
-            int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
-            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 0] = cube->texture->pixels[k + 0] * (tmp);
-            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 1] = cube->texture->pixels[k + 1] * (tmp);
-            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 2] = cube->texture->pixels[k + 2] * (tmp);
-            cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 3] = cube->texture->pixels[k + 3];
-            // mlx_put_pixel(cube->image, start.x, start.y, color);
-        }
-        cords.y += ratio.y;
-        start.y++;
-    }
-}
+//         // uint32_t color = (r << 24) | (g << 16) | (b << 8) | a;
+//         if(!check_screen_limits(cube, start)){
+//             int k = ((int)cords.x * cube->texture->bytes_per_pixel) + (cube->texture->width * cube->texture->bytes_per_pixel * (int)cords.y);
+//             cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 0] = cube->texture->pixels[k + 0] * (tmp);
+//             cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 1] = cube->texture->pixels[k + 1] * (tmp);
+//             cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 2] = cube->texture->pixels[k + 2] * (tmp);
+//             cube->prev_buffer[(cube->screen_width * (int)start.y * 4) + ((int)start.x * 4) + 3] = cube->texture->pixels[k + 3];
+//             // mlx_put_pixel(cube->image, start.x, start.y, color);
+//         }
+//         cords.y += ratio.y;
+//         start.y++;
+//     }
+// }
 
-    void ft_draw_world(t_cube *cube)
-    {
-        t_vect2 start;
-        t_vect2 end;
-        double len;
-        int j;
-        int i;
+    // void ft_draw_world(t_cube *cube)
+    // {
+    //     t_vect2 start;
+    //     t_vect2 end;
+    //     double len;
+    //     int j;
+    //     int i;
 
-        start.x = (cube->screen_width - (cube->line_girth * cube->res)) / 2;
-        ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, cube->screen_height, 0, 0}, 0x000000ff);
-        ft_rectangle(cube, (t_vect2){cube->screen_width - start.x, 0, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x000000ff);
-        i = 0;
-        while(i <= cube->res)
-        {
-            j = 0;
-            double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
-            len = ((GRID_SIZE) / length) * cube->proj_dst;
-            double proj_z_offset = (((GRID_SIZE / 2.0) - (cube->camera_h)) / length) * cube->proj_dst;
-            start.y = ((cube->screen_height - len) / 2) + cube->pitch - proj_z_offset;
-            end.x = start.x;
-            end.y = start.y + len;
-            while(j < cube->line_girth)
-            {
-                if((int)start.x < cube->screen_width)
-                    cube->z_buffer[(int)start.x] = length;
-                ft_draw_texture(cube, &cube->rays[i], start, end, len);
-                start.x++;
-                end.x++;
-                j++;
-            }
-            i++;
-        }
-    }
+    //     start.x = (cube->screen_width - (cube->line_girth * cube->res)) / 2;
+    //     ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x, cube->screen_height, 0, 0}, 0x000000ff);
+    //     ft_rectangle(cube, (t_vect2){cube->screen_width - start.x, 0, 0, 0}, (t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x000000ff);
+    //     i = 0;
+    //     while(i <= cube->res)
+    //     {
+    //         j = 0;
+    //         double length = cube->rays[i].length * cos(cube->rays[i].real_angle - cube->player.angle);
+    //         len = ((GRID_SIZE) / length) * cube->proj_dst;
+    //         double proj_z_offset = (((GRID_SIZE / 2.0) - (cube->camera_h)) / length) * cube->proj_dst;
+    //         start.y = ((cube->screen_height - len) / 2) + cube->pitch - proj_z_offset;
+    //         end.x = start.x;
+    //         end.y = start.y + len;
+    //         while(j < cube->line_girth)
+    //         {
+    //             if((int)start.x < cube->screen_width)
+    //                 cube->z_buffer[(int)start.x] = length;
+    //             ft_draw_texture(cube, &cube->rays[i], start, end, len);
+    //             start.x++;
+    //             end.x++;
+    //             j++;
+    //         }
+    //         i++;
+    //     }
+    // }
     // double DirX = cos(cube->player.angle);
     // double DirY = sin(cube->player.angle);
 
-bool is_looking(t_cube *cube, t_enemy *enemy){
-    if(enemy->dead == true)
-        return false;
-    if((enemy->start_x < cube->screen_width / 2) && (enemy->end_x > cube->screen_width / 2) &&
-     (enemy->start_y < cube->screen_height / 2) && (enemy->end_y > cube->screen_height / 2))
-     return true;
-    return false;
-}
+// bool is_looking(t_cube *cube, t_enemy *enemy){
+//     if(enemy->dead == true)
+//         return false;
+//     if((enemy->start_x < cube->screen_width / 2) && (enemy->end_x > cube->screen_width / 2) &&
+//      (enemy->start_y < cube->screen_height / 2) && (enemy->end_y > cube->screen_height / 2))
+//      return true;
+//     return false;
+// }
 
 
 // bool is_looking(t_cube *cube, t_enemy *enemy){
@@ -818,111 +818,111 @@ bool is_looking(t_cube *cube, t_enemy *enemy){
 //     return false;
 // }
 
-void ft_projectile(t_cube *cube, t_projectile *projectile){
+// void ft_projectile(t_cube *cube, t_projectile *projectile){
 
-    if(projectile->in_use == 0)
-        return;
+//     if(projectile->in_use == 0)
+//         return;
 
-    double player_dst = sqrt((cube->player.x - projectile->x) * (cube->player.x - projectile->x) + (cube->player.y - projectile->y) * (cube->player.y - projectile->y));
+//     double player_dst = sqrt((cube->player.x - projectile->x) * (cube->player.x - projectile->x) + (cube->player.y - projectile->y) * (cube->player.y - projectile->y));
 
-    if(player_dst < HITBOX_DST){
-        printf("player shot!\n");
-        cube->player.HP -= projectile->DMG;
-        cube->player.hit = true;
-        projectile->in_use = 0;
-        return;
-    }
+//     if(player_dst < HITBOX_DST){
+//         printf("player shot!\n");
+//         cube->player.HP -= projectile->DMG;
+//         cube->player.hit = true;
+//         projectile->in_use = 0;
+//         return;
+//     }
 
-    if(cube->map[(int)((projectile->y + (projectile->dir.y * projectile->speed)) / GRID_SIZE)][(int)(projectile->x / GRID_SIZE)] == '1')
-        return((void)(projectile->in_use = 0));
-    if(cube->map[(int)(projectile->y / GRID_SIZE)][(int)((projectile->x + (projectile->dir.x * projectile->speed)) / GRID_SIZE)] == '1')
-        return((void)(projectile->in_use = 0));
+//     if(cube->map[(int)((projectile->y + (projectile->dir.y * projectile->speed)) / GRID_SIZE)][(int)(projectile->x / GRID_SIZE)] == '1')
+//         return((void)(projectile->in_use = 0));
+//     if(cube->map[(int)(projectile->y / GRID_SIZE)][(int)((projectile->x + (projectile->dir.x * projectile->speed)) / GRID_SIZE)] == '1')
+//         return((void)(projectile->in_use = 0));
 
 
-    projectile->y += projectile->dir.y * projectile->speed;
-    projectile->x += projectile->dir.x * projectile->speed;
+//     projectile->y += projectile->dir.y * projectile->speed;
+//     projectile->x += projectile->dir.x * projectile->speed;
 
-    double angle_diff = atan2(projectile->y - cube->player.y, projectile->x - cube->player.x);
-    double tetha_delta = angle_diff - cube->player.angle;
-    while(tetha_delta > PI)
-        tetha_delta -= 2 * PI;
-    while(tetha_delta < -PI)
-        tetha_delta += 2 * PI;
+//     double angle_diff = atan2(projectile->y - cube->player.y, projectile->x - cube->player.x);
+//     double tetha_delta = angle_diff - cube->player.angle;
+//     while(tetha_delta > PI)
+//         tetha_delta -= 2 * PI;
+//     while(tetha_delta < -PI)
+//         tetha_delta += 2 * PI;
     
-    int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
-    double dst = sqrt((projectile->x - cube->player.x) * (projectile->x - cube->player.x) + (projectile->y - cube->player.y) * (projectile->y - cube->player.y)) * cos(tetha_delta);
+//     int midX = ((0.5 * cube->screen_width)) + (tan(tetha_delta) * cube->proj_dst);
+//     double dst = sqrt((projectile->x - cube->player.x) * (projectile->x - cube->player.x) + (projectile->y - cube->player.y) * (projectile->y - cube->player.y)) * cos(tetha_delta);
 
-    if(dst < 0.1) 
-    return;
+//     if(dst < 0.1) 
+//     return;
 
-    double tmp = 1.0 - (dst / MAX_DST);
-    if(tmp > 1.0)
-        tmp = 1.0;
-    else if(tmp < 0.0)
-        tmp = 0.0;
+//     double tmp = 1.0 - (dst / MAX_DST);
+//     if(tmp > 1.0)
+//         tmp = 1.0;
+//     else if(tmp < 0.0)
+//         tmp = 0.0;
 
-    double height = (GRID_SIZE / dst) * cube->proj_dst;
+//     double height = (GRID_SIZE / dst) * cube->proj_dst;
 
-    double scale_ratio = projectile->texture->height / height;
+//     double scale_ratio = projectile->texture->height / height;
 
-    double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
-    int start_x = midX - (projectile->texture->width / scale_ratio) / 2;
-    int start_y = ((cube->screen_height / 2.0) + cube->pitch - proj_z_offset) - (projectile->texture->height / scale_ratio) / 2;
-    int const_y = start_y;
-    int end_x = start_x + (projectile->texture->width / scale_ratio);
-    int end_y = start_y + (projectile->texture->height / scale_ratio);
+//     double proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / dst) * cube->proj_dst;
+//     int start_x = midX - (projectile->texture->width / scale_ratio) / 2;
+//     int start_y = ((cube->screen_height / 2.0) + cube->pitch - proj_z_offset) - (projectile->texture->height / scale_ratio) / 2;
+//     int const_y = start_y;
+//     int end_x = start_x + (projectile->texture->width / scale_ratio);
+//     int end_y = start_y + (projectile->texture->height / scale_ratio);
     
-    double tex_x = 0;
-    double tex_y = 0;
+//     double tex_x = 0;
+//     double tex_y = 0;
 
-    if (start_x < 0) {
-        tex_x += (-start_x) * scale_ratio;
-        start_x = 0;
-    }
+//     if (start_x < 0) {
+//         tex_x += (-start_x) * scale_ratio;
+//         start_x = 0;
+//     }
 
-    if (start_x >= cube->screen_width) return;
-    if (end_x > cube->screen_width) end_x = cube->screen_width;
+//     if (start_x >= cube->screen_width) return;
+//     if (end_x > cube->screen_width) end_x = cube->screen_width;
 
-    if (start_y < 0) {
-        tex_y = (-start_y) * scale_ratio;
-        start_y = 0;
-    }
-    if (start_y >= cube->screen_height) return;
+//     if (start_y < 0) {
+//         tex_y = (-start_y) * scale_ratio;
+//         start_y = 0;
+//     }
+//     if (start_y >= cube->screen_height) return;
 
-    if (end_x > cube->screen_width) end_x = cube->screen_width;
-    if (end_y > cube->screen_height) end_y = cube->screen_height;
+//     if (end_x > cube->screen_width) end_x = cube->screen_width;
+//     if (end_y > cube->screen_height) end_y = cube->screen_height;
 
-    while(start_x < end_x){
-        start_y = const_y;
-        int x = (int)tex_x;
-        if (x >= (int)projectile->texture->width) x = projectile->texture->width - 1;
-        if (x < 0) x = 0;
-        tex_y = 0;
-        if(cube->z_buffer[start_x] > dst){
-            cube->z_buffer[start_x] = dst;
-            while(start_y < end_y){
-                int y = (int)tex_y;
-                if (y >= (int)projectile->texture->height) y = projectile->texture->height - 1;
-                if (y < 0) y = 0;
+//     while(start_x < end_x){
+//         start_y = const_y;
+//         int x = (int)tex_x;
+//         if (x >= (int)projectile->texture->width) x = projectile->texture->width - 1;
+//         if (x < 0) x = 0;
+//         tex_y = 0;
+//         if(cube->z_buffer[start_x] > dst){
+//             cube->z_buffer[start_x] = dst;
+//             while(start_y < end_y){
+//                 int y = (int)tex_y;
+//                 if (y >= (int)projectile->texture->height) y = projectile->texture->height - 1;
+//                 if (y < 0) y = 0;
     
-                if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
-                    int k = (x * projectile->texture->bytes_per_pixel) + (projectile->texture->width * projectile->texture->bytes_per_pixel * y);
-                    if(projectile->texture->pixels[k + 3] > 128){
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = projectile->texture->pixels[k + 0] * tmp;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = projectile->texture->pixels[k + 1] * tmp;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = projectile->texture->pixels[k + 2] * tmp;
-                        cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = projectile->texture->pixels[k + 3];
-                    }
-                }
-                start_y++;
-                tex_y += scale_ratio;
-            }
-        }
+//                 if(!check_screen_limits(cube, (t_vect2){start_x, start_y, 0, 0})){
+//                     int k = (x * projectile->texture->bytes_per_pixel) + (projectile->texture->width * projectile->texture->bytes_per_pixel * y);
+//                     if(projectile->texture->pixels[k + 3] > 128){
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 0] = projectile->texture->pixels[k + 0] * tmp;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 1] = projectile->texture->pixels[k + 1] * tmp;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 2] = projectile->texture->pixels[k + 2] * tmp;
+//                         cube->prev_buffer[(cube->screen_width * (int)start_y * 4) + ((int)start_x * 4) + 3] = projectile->texture->pixels[k + 3];
+//                     }
+//                 }
+//                 start_y++;
+//                 tex_y += scale_ratio;
+//             }
+//         }
 
-        tex_x += scale_ratio;
-        start_x++;
-    }
-}
+//         tex_x += scale_ratio;
+//         start_x++;
+//     }
+// }
 
 // void ft_health(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, double pos_x, double pos_y){
 

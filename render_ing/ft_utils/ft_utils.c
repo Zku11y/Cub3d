@@ -64,3 +64,27 @@ void	draw_crosshair(t_cube *cube)
 		vars.y++;
 	}
 }
+
+bool	is_looking(t_cube *cube, t_enemy *enemy)
+{
+	if (enemy->dead == true)
+		return (false);
+	if ((enemy->start_x < cube->screen_width / 2)
+		&& (enemy->end_x > cube->screen_width / 2)
+		&& (enemy->start_y < cube->screen_height / 2)
+		&& (enemy->end_y > cube->screen_height / 2))
+		return (true);
+	return (false);
+}
+
+void	set_screen_limits(t_cube *cube, t_vect2 *len)
+{
+	if (len->x > cube->screen_width)
+		len->x = cube->screen_width;
+	else if (len->x < 0)
+		len->x = 0;
+	if (len->y > cube->screen_height)
+		len->y = cube->screen_height;
+	else if (len->y < 0)
+		len->y = 0;
+}
