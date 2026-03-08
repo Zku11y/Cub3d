@@ -6,13 +6,13 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:17 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:19 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:14:43 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_draw_texture2(t_cube *cube, t_ray *ray, t_vars11 *vars)
+void	ft_draw_texture2(t_cube *cube, t_vars11 *vars)
 {
 	while (vars->start.y < cube->screen_height && vars->start.y < vars->end.y
 		&& vars->cords.y < cube->texture->height)
@@ -72,7 +72,7 @@ void	ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end)
 		vars.start.y = 0;
 	}
 	ft_draw_texture1(cube, ray, &vars);
-	ft_draw_texture2(cube, ray, &vars);
+	ft_draw_texture2(cube, &vars);
 }
 
 void	ft_ray_init(t_cube *cube, t_ray *ray, double angle)

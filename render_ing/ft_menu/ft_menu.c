@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:21 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:13:23 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:17:43 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_menu_2(t_cube *cube, t_vars5 vars, int *x)
 	vars.pixel_cords = (vars.y * 4 * cube->screen_width_buff) + (vars.x * 4);
 	vars.title_cords = (vars.tex_y * 4 * vars.texture->width) + (vars.tex_x
 			* 4);
-	if (vars.tex_x >= vars.texture->width || vars.tex_y >= vars.texture->height
+	if (vars.tex_x >= (int)vars.texture->width || vars.tex_y >= (int)vars.texture->height
 		|| vars.texture->pixels[vars.tex_y * 4 * vars.texture->width
 			+ vars.tex_x * 4 + 3] < 127)
 		return ((void)(*x)++);

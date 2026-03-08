@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/08 20:51:34 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:25:00 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -521,7 +521,7 @@ typedef struct s_player
 
 typedef struct s_blood
 {
-	mlx_texture_t *frame[12];
+	mlx_texture_t **frame;
 
 } t_blood;
 
@@ -790,15 +790,15 @@ void				set_screen_buff_limits(t_cube *cube, t_vect2 *len);
 void				ft_init_0(t_cube *cube, t_nc *nu);
 void				ft_init_1(t_cube *cube, t_nc *nu);
 void				ft_init_2(t_cube *cube, t_nc *nu);
-void				ft_init_3(t_cube *cube, t_nc *nu);
-void				ft_init_4(t_cube *cube, t_nc *nu);
-void				ft_init_5(t_cube *cube, t_nc *nu);
-void				ft_init_6(t_cube *cube, t_nc *nu);
-void				ft_init_7(t_cube *cube, t_nc *nu);
-void				ft_init_8(t_cube *cube, t_nc *nu);
+void				ft_init_3(t_cube *cube);
+void				ft_init_4(t_cube *cube);
+void				ft_init_5(t_cube *cube);
+void				ft_init_6(t_cube *cube);
+void				ft_init_7(t_cube *cube);
+void				ft_init_8(t_cube *cube);
 void				ft_init_9(t_cube *cube, t_nc *nu);
 void				ft_init_10(t_cube *cube, t_nc *nu);
-void				ft_init_11(t_cube *cube, t_nc *nu);
+void				ft_init_11(t_cube *cube);
 
 void				ft_updated_buff_init(t_cube *cube);
 void				ft_updated_res_init(t_cube *cube);
@@ -862,9 +862,9 @@ void				ft_floor_ceiling(t_cube *cube);
 bool 				check_screen_limits(t_cube *cube, t_vect2 len);
 void 				ft_health(t_cube *cube, t_enemy *enemy);
 void 				ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir);
-void				ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
-void				ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture, t_vars10 *vars);
-bool				ft_health2(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
+void				ft_enemy6(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars);
+void				ft_enemy7(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars);
+bool				ft_health2(t_cube *cube, t_enemy *enemy, t_vars10 *vars);
 void				ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
 bool				ft_projectile2(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
 bool				ft_projectile3(t_cube *cube, t_projectile *projectile, t_vars10 *vars);

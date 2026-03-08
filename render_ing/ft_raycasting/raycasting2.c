@@ -6,13 +6,13 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:55:47 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:55:49 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:03:59 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	check_collision1(t_cube *cube, t_vect2 *cords, t_ray *ray,
+void	check_collision1(t_vect2 *cords, t_ray *ray,
 		t_vect2 *grid_cords)
 {
 	if (ray->y_dir == DOWN)
@@ -29,7 +29,7 @@ void	check_collision1(t_cube *cube, t_vect2 *cords, t_ray *ray,
 	}
 }
 
-void	check_collision2(t_cube *cube, t_vect2 *cords, t_ray *ray,
+void	check_collision2(t_vect2 *cords, t_ray *ray,
 		t_vect2 *grid_cords)
 {
 	if (ray->x_dir == RIGHT)
@@ -54,9 +54,9 @@ bool	check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert,
 	grid_cords.x = 0;
 	grid_cords.y = 0;
 	if (hori_vert == HORI)
-		check_collision1(cube, cords, ray, &grid_cords);
+		check_collision1(cords, ray, &grid_cords);
 	else
-		check_collision2(cube, cords, ray, &grid_cords);
+		check_collision2(cords, ray, &grid_cords);
 	if ((int)grid_cords.x >= cube->map_x)
 		grid_cords.x = cube->map_x - 1;
 	if ((int)grid_cords.y >= cube->map_y)

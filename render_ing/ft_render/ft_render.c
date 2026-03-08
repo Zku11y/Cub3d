@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:13 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:13:58 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	ft_renderer2(t_cube *cube, t_vars7 *vars, int start_x, int start_y)
 			+ ((vars->x + start_x) * 4);
 		vars->title_cords = (vars->tex_y * 4 * vars->texture->width)
 			+ (vars->tex_x * 4);
-		if (vars->tex_x >= vars->texture->width
-			|| vars->tex_y >= vars->texture->height
+		if (vars->tex_x >= (int)vars->texture->width
+			|| vars->tex_y >= (int)vars->texture->height
 			|| vars->texture->pixels[vars->tex_y * 4 * vars->texture->width
 				+ vars->tex_x * 4 + 3] < 127)
 			continue ;
@@ -66,8 +66,8 @@ void	ft_prev_renderer2(t_cube *cube, t_vars7 *vars, int start_x, int start_y)
 			+ ((vars->x + start_x) * 4);
 		vars->title_cords = (vars->tex_y * 4 * vars->texture->width)
 			+ (vars->tex_x * 4);
-		if (vars->tex_x >= vars->texture->width
-			|| vars->tex_y >= vars->texture->height
+		if (vars->tex_x >= (int)vars->texture->width
+			|| vars->tex_y >= (int)vars->texture->height
 			|| vars->texture->pixels[vars->tex_y * 4 * vars->texture->width
 				+ vars->tex_x * 4 + 3] < 50)
 			continue ;

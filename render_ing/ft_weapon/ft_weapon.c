@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:15:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:15:11 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:10:55 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void	ft_weapon_3(t_cube *cube, t_vars3 *vars)
 			* 4);
 	vars->weapon_cords = vars->tex_y * 4 * cube->player.weapon.texture->width
 		+ vars->tex_x * 4;
-	if (vars->tex_x >= cube->player.weapon.texture->width
-		|| vars->tex_y >= cube->player.weapon.texture->height
+	if (vars->tex_x >= (int)cube->player.weapon.texture->width
+		|| vars->tex_y >= (int)cube->player.weapon.texture->height
 		|| cube->player.weapon.texture->pixels[vars->weapon_cords + 3] == 0)
 		return ((void)vars->x++);
 	cube->prev_buffer[vars->prev_cords

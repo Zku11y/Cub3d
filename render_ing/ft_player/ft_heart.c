@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:13:57 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:12:10 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_heart(t_cube *cube)
 	}
 }
 
-bool	ft_health2(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
+bool	ft_health2(t_cube *cube, t_enemy *enemy,
 		t_vars10 *vars)
 {
 	if (vars->player_dst < HITBOX_DST)

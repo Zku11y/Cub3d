@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:33 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 17:36:20 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:10:19 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 
 void	ft_game(t_cube *cube)
 {
-	struct timeval	tv;
-
-	ft_mouvement(cube, 0.0f, 0.0f, tv);
+	ft_mouvement(cube, 0.0f, 0.0f, (struct timeval){0, 0});
 	ft_draw_rays(cube);
 	ft_floor_ceiling(cube);
 	ft_draw_world(cube);

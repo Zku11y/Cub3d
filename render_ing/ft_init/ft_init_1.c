@@ -6,13 +6,13 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 21:12:33 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:25:04 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_init_5(t_cube *cube, t_nc *nu)
+void	ft_init_5(t_cube *cube)
 {
 	ft_load_png(cube, &(cube->menu.settings.mouse_sens.slider_2), "./sa/slider_2.png");
 	cube->menu.settings.mouse_sens.slider_start_y = 0.78
@@ -39,7 +39,7 @@ void	ft_init_5(t_cube *cube, t_nc *nu)
 		cube->menu.settings.res.texture = cube->menu.settings.res._480;
 }
 
-void	ft_init_61(t_cube *cube, t_nc *nu)
+void	ft_init_61(t_cube *cube)
 {
 	ft_load_png(cube, &(cube->menu.settings.crosshair.border), "./sa/border.png");
 	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
@@ -55,7 +55,7 @@ void	ft_init_61(t_cube *cube, t_nc *nu)
 	cube->tilt_addition_width = fabs(cube->shear_factor) * cube->screen_width;
 }
 
-void	ft_init_6(t_cube *cube, t_nc *nu)
+void	ft_init_6(t_cube *cube)
 {
 	cube->menu.settings.res.start_x_1080 = 0.055 * cube->screen_width_buff;
 	cube->menu.settings.res.end_x_1080 = 0.175 * cube->screen_width_buff;
@@ -69,10 +69,10 @@ void	ft_init_6(t_cube *cube, t_nc *nu)
 	cube->menu.settings.res.end_y_1080_900 = 0.51 * cube->screen_height_buff;
 	cube->menu.settings.res.start_y_480 = 0.59 * cube->screen_height_buff;
 	cube->menu.settings.res.end_y_480 = 0.62 * cube->screen_height_buff;
-	ft_init_61(cube, nu);
+	ft_init_61(cube);
 }
 
-void	ft_init_7(t_cube *cube, t_nc *nu)
+void	ft_init_7(t_cube *cube)
 {
 	struct timeval	tv;
 
@@ -100,11 +100,14 @@ void	ft_init_7(t_cube *cube, t_nc *nu)
 	cube->heart.added_angle = 0;
 }
 
-void	ft_init_8(t_cube *cube, t_nc *nu)
+void	ft_init_8(t_cube *cube)
 {
 	cube->heart.added_pitch = 0;
 	cube->heart.blur_lerp = BLUR_LERP;
 	cube->heart.blood_op = 0.0;
+	cube->blood.frame = ts_calloc(sizeof(mlx_texture_t *), 13);
+	if(!cube->blood.frame)
+		return(ft_clean(cube, cube->nu, 1));
 	ft_load_png(cube, &(cube->blood.frame[0]), "./blood/1_0.png");
 	ft_load_png(cube, &(cube->blood.frame[1]), "./blood/1_1.png");
 	ft_load_png(cube, &(cube->blood.frame[2]), "./blood/1_2.png");

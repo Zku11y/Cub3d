@@ -54,6 +54,7 @@ void ft_clean(t_cube *cube, t_nc *nu, int flag)
 		ft_free_tex(cube->blood.frame[9]);
 		ft_free_tex(cube->blood.frame[10]);
 		ft_free_tex(cube->blood.frame[11]);
+		free(cube->blood.frame);
 	}
 	ft_free_tex(cube->texture5);
 	ft_free_tex(cube->texture6);

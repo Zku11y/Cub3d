@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 21:32:53 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:08:20 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	}
 }
 
-void	ft_init_11(t_cube *cube, t_nc *nu)
+void	ft_init_11(t_cube *cube)
 {
 	cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff,
 			cube->screen_height_buff);

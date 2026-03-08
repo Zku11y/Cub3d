@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:55 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:12:56 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:15:05 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ void	ft_draw_enemies(t_cube *cube)
 {
 	struct timeval	tv;
 	int				i;
-	int				j;
-	t_enemy			tmp;
 
 	gettimeofday(&tv, NULL);
 	sk_order_enemies(cube);

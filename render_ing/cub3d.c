@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 21:57:15 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:46:37 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,15 @@ void ft_init(t_cube *cube, t_nc *nu){
 	ft_init_0(cube, nu);
 	ft_init_1(cube, nu);
 	ft_init_2(cube, nu);
-	ft_init_3(cube, nu);
-	ft_init_4(cube, nu);
-	ft_init_5(cube, nu);
-	ft_init_6(cube, nu);
-	ft_init_7(cube, nu);
-	ft_init_8(cube, nu);
+	ft_init_3(cube);
+	ft_init_4(cube);
+	ft_init_5(cube);
+	ft_init_6(cube);
+	ft_init_7(cube);
+	ft_init_8(cube);
 	ft_init_9(cube, nu);
 	ft_init_10(cube, nu);
-	ft_init_11(cube, nu);
+	ft_init_11(cube);
 }
 
 
@@ -154,7 +154,8 @@ int main(int ac, char **av)
 	cube->nu = nu;
 	printf("after\n");
 	ts_print_nu(nu); // -- ts just prnt REMOVE IT
-	ft_map_init(cube, nu);
+	// ft_map_init(cube, nu);
+	cube->map = nu->map;
 
 	int y = 0;
 	int x = 0;
@@ -173,7 +174,7 @@ int main(int ac, char **av)
 	}
 
 	ft_init(cube, nu);
-	// printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->hi->x, nu->hi->y);
+	printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->hi->x, nu->hi->y);
 	mlx_loop_hook(cube->mlx, ft_update, cube);
 	mlx_loop(cube->mlx);
 	ft_clean(cube, nu, 0);

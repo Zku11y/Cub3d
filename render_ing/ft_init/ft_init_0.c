@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 21:34:11 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:04:41 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	ft_init_2(t_cube *cube, t_nc *nu)
 	ft_load_png(cube, &(cube->menu.settings.ups.x4_glow), "./sa/x4_glow.png");
 }
 
-void	ft_init_3(t_cube *cube, t_nc *nu)
+void	ft_init_3(t_cube *cube)
 {
 	ft_load_png(cube, &(cube->menu.settings.ups.x5_glow), "./sa/x5_glow.png");
 	ft_load_png(cube, &(cube->menu.settings.ups.x6_glow), "./sa/x6_glow.png");
@@ -108,7 +108,7 @@ void	ft_init_3(t_cube *cube, t_nc *nu)
 	cube->menu.settings.ups.end_y5678 = 0.9 * cube->screen_height_buff;
 }
 
-void	ft_init_4(t_cube *cube, t_nc *nu)
+void	ft_init_4(t_cube *cube)
 {
 	if (cube->ups == 1)
 		cube->menu.settings.ups.texture = cube->menu.settings.ups.x1_glow;

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:46 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:47 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:10:46 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	draw_crosshair2(t_cube *cube, t_vars7 *vars)
 			+ ((vars->x) * 4);
 		vars->title_cords = (vars->tex_y * 4 * cube->crosshair->width)
 			+ (vars->tex_x * 4);
-		if (vars->tex_x >= cube->crosshair->width
-			|| vars->tex_y >= cube->crosshair->height
+		if (vars->tex_x >= (int)cube->crosshair->width
+			|| vars->tex_y >= (int)cube->crosshair->height
 			|| cube->crosshair->pixels[vars->tex_y * 4 * cube->crosshair->width
 				+ vars->tex_x * 4 + 3] < 127)
 			continue ;
