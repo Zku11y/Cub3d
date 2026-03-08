@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libts.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:12:07 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/02 23:37:36 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/07 23:09:52 by oel-mado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 # include <unistd.h>
 # include <limits.h>
 # include <stdint.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10
+# endif
 
 typedef struct s_list
 {
@@ -79,21 +83,17 @@ t_list		*ts_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 // GNL
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
-# endif
+char		*gnl(int fd);
 
-char	*gnl(int fd);
+char		*rdd(char *buff, int fd);
+char		*one_line(const char *buff);
+char		*updtt(char *buff);
 
-char	*rdd(char *buff, int fd);
-char	*one_line(const char *buff);
-char	*updtt(char *buff);
+char		*gnl_strdup(const char *s1);
+char		*gnl_strchr(const char *str, int c);
+void		*gnl_calloc(size_t count, size_t size);
+char		*gnl_strjoin(char const *s1, char const *s2);
+size_t		gnl_strlen(const char *who);
+size_t		gnl_strlcpy(char *dst, const char *src, size_t n);
 
-char	*gnl_strdup(const char *s1);
-char	*gnl_strchr(const char *str, int c);
-void	*gnl_calloc(size_t count, size_t size);
-char	*gnl_strjoin(char const *s1, char const *s2);
-size_t	gnl_strlen(const char *who);
-size_t	gnl_strlcpy(char *dst, const char *src, size_t n);
-
-#endif		//LIBTS_H
+#endif // LIBTS_H

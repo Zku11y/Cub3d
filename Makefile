@@ -12,6 +12,7 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./pars_ing/ts_data/ts_val.c \
 	./pars_ing/ts_data/ts_read.c \
 	./pars_ing/ts_data/ts_read_map.c \
+	./pars_ing/ts_data/free_nu_map.c \
 	./pars_ing/ts_pars.c \
 	./render_ing/ft_init/ft_init_0.c \
 	./render_ing/ft_init/ft_init_1.c \

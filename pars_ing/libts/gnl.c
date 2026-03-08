@@ -6,7 +6,7 @@
 /*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 11:04:15 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/01/15 17:43:44 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/07 23:08:03 by oel-mado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char	*gnl(int fd)
 	if (!lain)
 		return (free(buff[i]), buff[i] = NULL, NULL);
 	buff[i] = updtt(buff[i]);
-	return (lain); 
+	return (lain);
 }
 
 char	*gnl_strdup(const char *s1)

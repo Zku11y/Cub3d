@@ -1,26 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dot_chk.c                                          :+:      :+:    :+:   */
+/*   free_nu_map.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/07 23:12:28 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/07 23:17:19 by oel-mado         ###   ########.fr       */
+/*   Created: 2026/03/07 23:32:42 by oel-mado          #+#    #+#             */
+/*   Updated: 2026/03/08 00:19:57 by oel-mado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-int	dot_chk(char *path)
+void	free_mp(t_mp *mp)
 {
-	int	l;
+	t_mp	*ts;
 
-	l = ts_strlen(path);
-	if (l < 5)
-		return (1);
-	if (path[l - 4] == '.' && path[l - 3] == 'c'
-		&& path[l - 2] == 'u' && path[l - 1] == 'b')
-		return (0);
-	return (1);
+	while (mp)
+	{
+		if (mp->val)
+			free(mp->val);
+		ts = mp;
+		mp = mp->next;
+		free(ts);
+	}
+}
+
+void	free_nu_map(char **nu)
+{
+	int	i;
+
+	i = 0;
+	while (nu[i])
+	{
+		free(nu[i]);
+		i++;
+	}
+	free(nu);
 }
