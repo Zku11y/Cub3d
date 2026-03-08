@@ -18,7 +18,6 @@ void	ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords,
 		int color)
 {
 	uint32_t	*prev;
-	int			start_temp;
 	int			start_x;
 	int			start_y;
 	int			end_x;
@@ -29,10 +28,9 @@ void	ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords,
 	start_y = (int)(start_cords.y);
 	end_x = (int)(end_cords.x);
 	end_y = (int)(end_cords.y);
-	start_temp = start_x;
 	while (start_y < end_y)
 	{
-		start_x = start_temp;
+		start_x = (int)(start_cords.x);
 		while (start_x < end_x)
 		{
 			prev[(start_y * cube->screen_width_buff) + (start_x)] = color;

@@ -62,6 +62,7 @@ void	ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end)
 	ft_draw_texture1(cube, ray, &vars);
 	ft_draw_texture2(cube, ray, &vars);
 }
+
 void	ft_ray_init(t_cube *cube, t_ray *ray, double angle)
 {
 	t_vect2	hori;

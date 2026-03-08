@@ -50,6 +50,7 @@ void	ft_update_buff_init_2(t_cube *cube)
 	cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
 	ft_updated_res_init(cube);
 }
+
 void	ft_updated_buff_init(t_cube *cube)
 {
 	mlx_resize_image(cube->image, cube->screen_width_buff,

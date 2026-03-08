@@ -55,7 +55,7 @@ void	ft_mouvement_limits(t_cube *cube, double new_x, double new_y)
 	double	check_x;
 	double	check_y;
 
-	int(grid_x), (grid_y);
+	int (grid_x), (grid_y);
 	ft_mouvement_limits2(cube, &check_x, &new_x, &grid_x);
 	check_y = new_y;
 	if (new_y > cube->player.y)

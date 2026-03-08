@@ -16,7 +16,7 @@ void	ft_init_91(t_cube *cube, t_nc *nu, struct timeval tv)
 	ft_init_enemies(cube);
 	cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
 	cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-	cube->texture = nu->txtrs[NO];	
+	cube->texture = nu->txtrs[NO];
 }
 
 void	ft_init_9(t_cube *cube, t_nc *nu)

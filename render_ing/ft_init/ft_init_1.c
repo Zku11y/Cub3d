@@ -27,7 +27,7 @@ void	ft_init_5(t_cube *cube, t_nc *nu)
 		cube->menu.settings.res.texture = cube->menu.settings.res._480;
 }
 
-void ft_init_61(t_cube *cube, t_nc *nu)
+void	ft_init_61(t_cube *cube, t_nc *nu)
 {
 	cube->menu.settings.crosshair.border = mlx_load_png("./sa/border.png");
 	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
@@ -45,26 +45,18 @@ void ft_init_61(t_cube *cube, t_nc *nu)
 
 void	ft_init_6(t_cube *cube, t_nc *nu)
 {
-	cube->menu.settings.res.start_x_1080 = 0.055
-		* cube->screen_width_buff;
+	cube->menu.settings.res.start_x_1080 = 0.055 * cube->screen_width_buff;
 	cube->menu.settings.res.end_x_1080 = 0.175 * cube->screen_width_buff;
-	cube->menu.settings.res.start_x_900 = 0.245
-		* cube->screen_width_buff;
+	cube->menu.settings.res.start_x_900 = 0.245 * cube->screen_width_buff;
 	cube->menu.settings.res.end_x_900 = 0.358 * cube->screen_width_buff;
-	cube->menu.settings.res.start_x_720 = 0.057
-		* cube->screen_width_buff;
+	cube->menu.settings.res.start_x_720 = 0.057 * cube->screen_width_buff;
 	cube->menu.settings.res.end_x_720 = 0.173 * cube->screen_width_buff;
-	cube->menu.settings.res.start_x_480 = 0.265
-		* cube->screen_width_buff;
+	cube->menu.settings.res.start_x_480 = 0.265 * cube->screen_width_buff;
 	cube->menu.settings.res.end_x_480 = 0.365 * cube->screen_width_buff;
-	cube->menu.settings.res.start_y_1080_900 = 0.48
-		* cube->screen_height_buff;
-	cube->menu.settings.res.end_y_1080_900 = 0.51
-		* cube->screen_height_buff;
-	cube->menu.settings.res.start_y_480 = 0.59
-		* cube->screen_height_buff;
-	cube->menu.settings.res.end_y_480 = 0.62
-		* cube->screen_height_buff;
+	cube->menu.settings.res.start_y_1080_900 = 0.48 * cube->screen_height_buff;
+	cube->menu.settings.res.end_y_1080_900 = 0.51 * cube->screen_height_buff;
+	cube->menu.settings.res.start_y_480 = 0.59 * cube->screen_height_buff;
+	cube->menu.settings.res.end_y_480 = 0.62 * cube->screen_height_buff;
 	ft_init_61(cube, nu);
 }
 

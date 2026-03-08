@@ -76,10 +76,11 @@ void	ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color)
 		start.y += add.y;
 	}
 }
-void ft_angle_limit(double *angle)
+
+void	ft_angle_limit(double *angle)
 {
-    if(*angle < 0)
-        *angle = (2 * PI) + *angle;
-    else if(*angle > (PI * 2))
-        *angle = *angle - (2 * PI);
+	if (*angle < 0)
+		*angle = (2 * PI) + *angle;
+	else if (*angle > (PI * 2))
+		*angle = *angle - (2 * PI);
 }
