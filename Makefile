@@ -1,6 +1,6 @@
 NAME = cub3d
 
-SRC = render_ing/cub3d.c render_ing/raycasting.c \
+SRC = render_ing/cub3d.c render_ing/ft_raycasting/raycasting.c \
 	./pars_ing/ts_data/ts_teto.c \
 	./pars_ing/ts_check/rec_map.c\
 	./pars_ing/ts_check/dot_chk.c \

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/15 12:21:29 by skully            #+#    #+#             */
-/*   Updated: 2026/03/06 02:48:55 by skully           ###   ########.fr       */
+/*   Created: 2025/08/15 12:21:29 by mdakni            #+#    #+#             */
+/*   Updated: 2026/03/08 14:18:25 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cub3d.h"
+#include "../../includes/cub3d.h"
 
 double ft_safe_tan(double angle){
     double result;
