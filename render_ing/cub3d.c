@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:21:43 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 17:36:02 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,27 +127,30 @@ void ts_print_nu(t_nc *nu)
 	ts_putstr_fd("ts END.\n", 1);
 }
 
-// void feet()
-// {
-//     system("leaks cub-tst");
-// }
+void feet()
+{
+    system("leaks cub3d");
+}
 
 int main(int ac, char **av)
 {
 	t_nc *nu;
 
 	nu = NULL;
-//     atexit(feet);
+    atexit(feet);
 	if (ac < 2)
 	return 1;
-	t_cube cube;
+	t_cube *cube;
+	cube = ts_calloc(sizeof(t_cube), 1);
+	if(!cube)
+		return 1;
 	printf("before\n");
 	nu = ts_pars(&av[1]);
 	if (!nu)
 	return 1;
 	printf("after\n");
 	ts_print_nu(nu); // -- ts just prnt REMOVE IT
-	ft_map_init(&cube, nu);
+	ft_map_init(cube, nu);
 
 	int y = 0;
 	int x = 0;
@@ -165,12 +168,13 @@ int main(int ac, char **av)
 		y++;
 	}
 
-	ft_init(&cube, nu);
-	printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube.player.x, cube.player.y, nu->hi->x, nu->hi->y);
-	mlx_loop_hook(cube.mlx, ft_update, &cube);
-	mlx_loop(cube.mlx);
-	mlx_terminate(cube.mlx);
+	ft_init(cube, nu);
+	printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->hi->x, nu->hi->y);
+	mlx_loop_hook(cube->mlx, ft_update, cube);
+	mlx_loop(cube->mlx);
+	mlx_terminate(cube->mlx);
 	free_nu(nu);
+	free(cube);
 	return 0;
 }
 
