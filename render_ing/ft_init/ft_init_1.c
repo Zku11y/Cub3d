@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 15:07:44 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 21:12:33 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_init_5(t_cube *cube, t_nc *nu)
 {
-	cube->menu.settings.mouse_sens.slider_2 = mlx_load_png("./sa/slider_2.png");
+	ft_load_png(cube, &(cube->menu.settings.mouse_sens.slider_2), "./sa/slider_2.png");
 	cube->menu.settings.mouse_sens.slider_start_y = 0.78
 		* cube->screen_height_buff;
 	cube->menu.settings.mouse_sens.slider_end_y = 0.81
@@ -25,10 +25,10 @@ void	ft_init_5(t_cube *cube, t_nc *nu)
 		* cube->screen_width_buff;
 	cube->menu.settings.mouse_sens.min_sens = 0.0002;
 	cube->menu.settings.mouse_sens.max_sens = 0.0040;
-	cube->menu.settings.res._480 = mlx_load_png("./sa/480_glow.png");
-	cube->menu.settings.res._720 = mlx_load_png("./sa/720_glow.png");
-	cube->menu.settings.res._900 = mlx_load_png("./sa/900_glow.png");
-	cube->menu.settings.res._1080 = mlx_load_png("./sa/1080_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.res._480), "./sa/480_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.res._720), "./sa/720_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.res._900), "./sa/900_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.res._1080), "./sa/1080_glow.png");
 	if (cube->screen_height_buff == 1080)
 		cube->menu.settings.res.texture = cube->menu.settings.res._1080;
 	if (cube->screen_height_buff == 900)
@@ -41,7 +41,7 @@ void	ft_init_5(t_cube *cube, t_nc *nu)
 
 void	ft_init_61(t_cube *cube, t_nc *nu)
 {
-	cube->menu.settings.crosshair.border = mlx_load_png("./sa/border.png");
+	ft_load_png(cube, &(cube->menu.settings.crosshair.border), "./sa/border.png");
 	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
 	cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
 	cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
@@ -79,9 +79,9 @@ void	ft_init_7(t_cube *cube, t_nc *nu)
 	gettimeofday(&tv, NULL);
 	cube->player.weapon.DMG = 50;
 	cube->player.weapon.fire_rate = 2;
-	cube->player.weapon.idle_texture = mlx_load_png("./shotgun_idle.png");
-	cube->player.weapon.shoot_texture = mlx_load_png("./shoot_shotgun.png");
-	cube->player.weapon.pump_texture = mlx_load_png("./pump_shotgun.png");
+	ft_load_png(cube, &(cube->player.weapon.idle_texture), "./shotgun_idle.png");
+	ft_load_png(cube, &(cube->player.weapon.shoot_texture), "./shoot_shotgun.png");
+	ft_load_png(cube, &(cube->player.weapon.pump_texture), "./pump_shotgun.png");
 	cube->player.weapon.texture = cube->player.weapon.idle_texture;
 	cube->player.weapon.pitch_increase = 1;
 	cube->player.weapon.pitch_increased = 0;
@@ -89,10 +89,10 @@ void	ft_init_7(t_cube *cube, t_nc *nu)
 	cube->player.weapon.idle_frame = 0;
 	cube->player.weapon.move_lerp = 0;
 	cube->player.weapon.pitch_changed = false;
-	cube->heart.frame_1 = mlx_load_png("./blood_lvl_1.png");
-	cube->heart.frame_2 = mlx_load_png("./blood_lvl_2.png");
-	cube->heart.frame_3 = mlx_load_png("./blood_lvl_3.png");
-	cube->heart.frame_4 = mlx_load_png("./blood_lvl_4.png");
+	ft_load_png(cube, &(cube->heart.frame_1), "./blood_lvl_1.png");
+	ft_load_png(cube, &(cube->heart.frame_2), "./blood_lvl_2.png");
+	ft_load_png(cube, &(cube->heart.frame_3), "./blood_lvl_3.png");
+	ft_load_png(cube, &(cube->heart.frame_4), "./blood_lvl_4.png");
 	cube->heart.prev_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	cube->heart.frame = 0;
 	cube->heart.last_angle = 0;
@@ -105,18 +105,18 @@ void	ft_init_8(t_cube *cube, t_nc *nu)
 	cube->heart.added_pitch = 0;
 	cube->heart.blur_lerp = BLUR_LERP;
 	cube->heart.blood_op = 0.0;
-	cube->blood.frame[0] = mlx_load_png("./blood/1_0.png");
-	cube->blood.frame[1] = mlx_load_png("./blood/1_1.png");
-	cube->blood.frame[2] = mlx_load_png("./blood/1_2.png");
-	cube->blood.frame[3] = mlx_load_png("./blood/1_3.png");
-	cube->blood.frame[4] = mlx_load_png("./blood/1_4.png");
-	cube->blood.frame[5] = mlx_load_png("./blood/1_5.png");
-	cube->blood.frame[6] = mlx_load_png("./blood/1_6.png");
-	cube->blood.frame[7] = mlx_load_png("./blood/1_7.png");
-	cube->blood.frame[8] = mlx_load_png("./blood/1_8.png");
-	cube->blood.frame[9] = mlx_load_png("./blood/1_9.png");
-	cube->blood.frame[10] = mlx_load_png("./blood/1_10.png");
-	cube->blood.frame[11] = mlx_load_png("./blood/1_11.png");
+	ft_load_png(cube, &(cube->blood.frame[0]), "./blood/1_0.png");
+	ft_load_png(cube, &(cube->blood.frame[1]), "./blood/1_1.png");
+	ft_load_png(cube, &(cube->blood.frame[2]), "./blood/1_2.png");
+	ft_load_png(cube, &(cube->blood.frame[3]), "./blood/1_3.png");
+	ft_load_png(cube, &(cube->blood.frame[4]), "./blood/1_4.png");
+	ft_load_png(cube, &(cube->blood.frame[5]), "./blood/1_5.png");
+	ft_load_png(cube, &(cube->blood.frame[6]), "./blood/1_6.png");
+	ft_load_png(cube, &(cube->blood.frame[7]), "./blood/1_7.png");
+	ft_load_png(cube, &(cube->blood.frame[8]), "./blood/1_8.png");
+	ft_load_png(cube, &(cube->blood.frame[9]), "./blood/1_9.png");
+	ft_load_png(cube, &(cube->blood.frame[10]), "./blood/1_10.png");
+	ft_load_png(cube, &(cube->blood.frame[11]), "./blood/1_11.png");
 	cube->flash.r = 1.0;
 	cube->flash.g = 1.0;
 	cube->flash.b = 1.0;

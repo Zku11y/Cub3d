@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/08 14:47:28 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/08 20:51:34 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -698,6 +698,7 @@ typedef struct s_cube
 {
 	mlx_t			*mlx;
 
+	t_nc			*nu;
 	int				screen_width;
 	int				screen_height;
 	int				screen_width_buff;
@@ -885,3 +886,5 @@ bool 				check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert, t_ray *ra
 double				ft_safe_tan(double angle);
 void				vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);
 void				hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);
+void 				ft_clean(t_cube *cube, t_nc *nu, int flag);
+void 				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path);

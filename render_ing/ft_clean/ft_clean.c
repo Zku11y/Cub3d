@@ -1,54 +1,66 @@
 #include "../../includes/cub3d.h"
 
-void ft_clean(t_cube *cube, t_nc *nu)
+void ft_free_tex(mlx_texture_t *texture){
+	if(texture)
+		mlx_delete_texture(texture);
+}
+
+// void ft_free_img(t_cube *cube, mlx_image_t *image){
+// 	if(image)
+// 		mlx_delete_image(cube->mlx, image);
+// }
+
+void ft_clean(t_cube *cube, t_nc *nu, int flag)
 {
-	cube->mlx = mlx_init(cube->screen_width_buff, cube->screen_height_buff, "cub3d", true);
-	cube->image = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
-	cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff, cube->screen_height_buff);
-	mlx_delete_texture(cube->menu.title);
-	mlx_delete_texture(cube->menu.settings.background);
-	mlx_delete_texture(cube->menu.settings.fov.bar_1);
-	mlx_delete_texture(cube->menu.settings.bar_2);
-	mlx_delete_texture(cube->menu.settings.fov.slider_1);
-	mlx_delete_texture(cube->menu.settings.slider_2);
-	mlx_delete_texture(cube->menu.settings.ups.x1_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x2_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x3_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x4_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x5_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x6_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x7_glow);
-	mlx_delete_texture(cube->menu.settings.ups.x8_glow);
-	mlx_delete_texture(cube->menu.settings.mouse_sens.slider_2);
-	mlx_delete_texture(cube->menu.settings.res._480);
-	mlx_delete_texture(cube->menu.settings.res._720);
-	mlx_delete_texture(cube->menu.settings.res._900);
-	mlx_delete_texture(cube->menu.settings.res._1080);
-	mlx_delete_texture(cube->menu.settings.crosshair.border);
-	mlx_delete_texture(cube->player.weapon.idle_texture);
-	mlx_delete_texture(cube->player.weapon.shoot_texture);
-	mlx_delete_texture(cube->player.weapon.pump_texture);
-	mlx_delete_texture(cube->heart.frame_1);
-	mlx_delete_texture(cube->heart.frame_2);
-	mlx_delete_texture(cube->heart.frame_3);
-	mlx_delete_texture(cube->heart.frame_4);
-	mlx_delete_texture(cube->blood.frame[0]);
-	mlx_delete_texture(cube->blood.frame[1]);
-	mlx_delete_texture(cube->blood.frame[2]);
-	mlx_delete_texture(cube->blood.frame[3]);
-	mlx_delete_texture(cube->blood.frame[4]);
-	mlx_delete_texture(cube->blood.frame[5]);
-	mlx_delete_texture(cube->blood.frame[6]);
-	mlx_delete_texture(cube->blood.frame[7]);
-	mlx_delete_texture(cube->blood.frame[8]);
-	mlx_delete_texture(cube->blood.frame[9]);
-	mlx_delete_texture(cube->blood.frame[10]);
-	mlx_delete_texture(cube->blood.frame[11]);
-	mlx_delete_texture(cube->texture5);
-	mlx_delete_texture(cube->texture6);
-	mlx_delete_texture(cube->texture_died);
-	mlx_delete_texture(cube->crosshair);
-	mlx_delete_texture(cube->enemy[0].health);
+	if(cube->mlx)
+		mlx_close_window(cube->mlx);
+	ft_free_tex(cube->menu.title);
+	ft_free_tex(cube->menu.settings.background);
+	ft_free_tex(cube->menu.settings.fov.bar_1);
+	ft_free_tex(cube->menu.settings.bar_2);
+	ft_free_tex(cube->menu.settings.fov.slider_1);
+	ft_free_tex(cube->menu.settings.slider_2);
+	ft_free_tex(cube->menu.settings.ups.x1_glow);
+	ft_free_tex(cube->menu.settings.ups.x2_glow);
+	ft_free_tex(cube->menu.settings.ups.x3_glow);
+	ft_free_tex(cube->menu.settings.ups.x4_glow);
+	ft_free_tex(cube->menu.settings.ups.x5_glow);
+	ft_free_tex(cube->menu.settings.ups.x6_glow);
+	ft_free_tex(cube->menu.settings.ups.x7_glow);
+	ft_free_tex(cube->menu.settings.ups.x8_glow);
+	ft_free_tex(cube->menu.settings.mouse_sens.slider_2);
+	ft_free_tex(cube->menu.settings.res._480);
+	ft_free_tex(cube->menu.settings.res._720);
+	ft_free_tex(cube->menu.settings.res._900);
+	ft_free_tex(cube->menu.settings.res._1080);
+	ft_free_tex(cube->menu.settings.crosshair.border);
+	ft_free_tex(cube->player.weapon.idle_texture);
+	ft_free_tex(cube->player.weapon.shoot_texture);
+	ft_free_tex(cube->player.weapon.pump_texture);
+	ft_free_tex(cube->heart.frame_1);
+	ft_free_tex(cube->heart.frame_2);
+	ft_free_tex(cube->heart.frame_3);
+	ft_free_tex(cube->heart.frame_4);
+	if(cube->blood.frame){
+		ft_free_tex(cube->blood.frame[0]);
+		ft_free_tex(cube->blood.frame[1]);
+		ft_free_tex(cube->blood.frame[2]);
+		ft_free_tex(cube->blood.frame[3]);
+		ft_free_tex(cube->blood.frame[4]);
+		ft_free_tex(cube->blood.frame[5]);
+		ft_free_tex(cube->blood.frame[6]);
+		ft_free_tex(cube->blood.frame[7]);
+		ft_free_tex(cube->blood.frame[8]);
+		ft_free_tex(cube->blood.frame[9]);
+		ft_free_tex(cube->blood.frame[10]);
+		ft_free_tex(cube->blood.frame[11]);
+	}
+	ft_free_tex(cube->texture5);
+	ft_free_tex(cube->texture6);
+	ft_free_tex(cube->texture_died);
+	ft_free_tex(cube->crosshair);
+	if(cube->enemy)
+		ft_free_tex(cube->enemy[0].health);
 	if(cube->lerp_buffer)
 		free(cube->lerp_buffer);
 	if(cube->z_buffer)
@@ -64,12 +76,21 @@ void ft_clean(t_cube *cube, t_nc *nu)
 	if(cube->new_buffer)
 		free(cube->new_buffer);
 
-	if(cube->map){
-		int i = 0;
-		while(cube->map[i]){
-			free(cube->map[i]);
-			i++;
-		}
-		free(cube->map);
-	}
+	// if(cube->map){
+	// 	int i = 0;
+	// 	while(cube->map[i]){
+	// 		free(cube->map[i]);
+	// 		i++;
+	// 	}
+	// 	free(cube->map);
+	// }
+	if(cube->image)
+		mlx_delete_image(cube->mlx, cube->image);
+	if(cube->image_death)
+		mlx_delete_image(cube->mlx, cube->image_death);
+	if(cube->mlx)
+		mlx_terminate(cube->mlx);
+	free_nu(nu);
+	free(cube);
+	exit(flag);
 }

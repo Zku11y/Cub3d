@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 17:36:02 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 21:57:15 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ void ft_update(void *param)
 		cube->init_t = cube->final_t;
 		cube->fps = 0;
 	}
+
+	if(mlx_is_key_down(cube->mlx, MLX_KEY_ESCAPE))
+		ft_clean(cube, cube->nu, 0);
 }
 
 void ft_init(t_cube *cube, t_nc *nu){
@@ -148,6 +151,7 @@ int main(int ac, char **av)
 	nu = ts_pars(&av[1]);
 	if (!nu)
 	return 1;
+	cube->nu = nu;
 	printf("after\n");
 	ts_print_nu(nu); // -- ts just prnt REMOVE IT
 	ft_map_init(cube, nu);
@@ -169,12 +173,13 @@ int main(int ac, char **av)
 	}
 
 	ft_init(cube, nu);
-	printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->hi->x, nu->hi->y);
+	// printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->hi->x, nu->hi->y);
 	mlx_loop_hook(cube->mlx, ft_update, cube);
 	mlx_loop(cube->mlx);
-	mlx_terminate(cube->mlx);
-	free_nu(nu);
-	free(cube);
+	ft_clean(cube, nu, 0);
+	// mlx_terminate(cube->mlx);
+	// free_nu(nu);
+	// free(cube);
 	return 0;
 }
 

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:49 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:54 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 21:57:19 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,9 @@ void	ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords,
 		}
 		start_y++;
 	}
+}
+void ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path){
+	if(!path || !tex_buff)
+		ft_clean(cube, cube->nu, 1);
+	*tex_buff = mlx_load_png(path);
 }

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:45 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 19:13:28 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 21:27:36 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool ft_updated_res_realloc(t_cube *cube){
 	cube->rays = ts_calloc(cube->res + 1, sizeof(t_ray));
 	cube->z_buffer = ts_calloc(cube->screen_width + 1, sizeof(double));
 	if(!(cube->prev_buffer) || !(cube->new_buffer) || !(cube->lerp_buffer) || !(cube->rays) || !(cube->z_buffer))
-		return (ft_clean(cube), false);	
+		return (ft_clean(cube, cube->nu, 1), false);	
 	return true;
 }
 
@@ -43,7 +43,7 @@ void	ft_updated_res_init(t_cube *cube)
 	cube->move_increase = 0.05 * cube->screen_height;
 	cube->pitch_max = cube->screen_height + 100;
 	if(!ft_updated_res_realloc(cube))
-		return (ft_clean(cube));
+		return (ft_clean(cube, cube->nu, 1));
 	cube->proj_dst = (cube->screen_width / 2.0) / tan((cube->fov / 2.0)
 			* RADIANT_RATE);
 	cube->line_girth = (int)(cube->screen_width / cube->res);

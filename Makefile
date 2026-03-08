@@ -50,6 +50,7 @@ SRC = ./render_ing/cub3d.c \
 	./render_ing/ft_menu/ft_menu4.c \
 	./render_ing/ft_minimap/ft_minimap.c \
 	./render_ing/ft_minimap/ft_minimap2.c \
+	./render_ing/ft_clean/ft_clean.c \
 
 
 OBJ = $(SRC:.c=.o)
