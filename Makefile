@@ -25,6 +25,7 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_utils/ft_lerp.c \
 	./render_ing/ft_utils/ft_utils.c \
 	./render_ing/ft_utils/ft_utils2.c \
+	./render_ing/ft_utils/ft_utils3.c \
 	./render_ing/ft_weapon/ft_weapon.c \
 	./render_ing/ft_player/ft_heart.c \
 	./render_ing/ft_player/ft_health.c \
@@ -43,6 +44,8 @@ SRC = render_ing/cub3d.c render_ing/raycasting.c \
 	./render_ing/ft_menu/ft_menu2.c \
 	./render_ing/ft_menu/ft_menu3.c \
 	./render_ing/ft_menu/ft_menu4.c \
+	./render_ing/ft_minimap/ft_minimap.c \
+	./render_ing/ft_minimap/ft_minimap2.c \
 
 
 OBJ = $(SRC:.c=.o)

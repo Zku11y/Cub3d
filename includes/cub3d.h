@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/08 03:43:29 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/08 12:22:04 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -432,6 +432,40 @@ typedef struct s_vars12
 
 }					t_vars12;
 
+
+typedef struct s_vars13
+{
+
+	int				 start_x;
+	int				 start_y;
+	int				 end_x;
+	int				 end_y;
+	int				 x;
+	int				 y;
+	int				 i;
+	int				 j;
+	double		 	 dst;
+
+}					t_vars13;
+
+typedef struct s_vars14
+{
+
+	int		y;
+	int		x;
+	int		offset;
+	double	dst;
+	int		arrow_start_x;
+	int		arrow_start_y;
+	double	arrow_angle;
+	int		left_x;
+	int		left_y;
+	int		right_x;
+	int		right_y;
+
+	
+}					t_vars14;
+
 typedef struct s_ray
 {
 	t_vect2			start;
@@ -845,3 +879,5 @@ void				ft_mouvement2(t_cube *cube);
 void				ft_turn(t_cube *cube);
 void 				ft_angle_limit(double *angle);
 void 				ft_mouvement_limits(t_cube *cube, double new_x, double new_y);
+void				draw_bg(t_cube *cube, int x, int y, uint32_t color);
+void				draw_map_entity(t_cube *cube, double pos_x, double pos_y, double angle);
