@@ -1,8 +1,10 @@
 
-WA ./path_to_the_north_texture
-FL ./path_to_the_south_texture
-CI ./path_to_the_west_texture
-PR ./path_to_the_east_texture
+WA ./miku.png
+FL ./miku.png
+CI ./miku.png
+PR ./miku.png
+EN ./miku.png
+ED ./lain_2.png
 
 
 111111111111111111111111111111

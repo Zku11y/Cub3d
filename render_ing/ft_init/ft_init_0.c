@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 14:22:33 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 21:56:05 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,14 @@ void	ft_init_1(t_cube *cube, t_nc *nu)
 
 void	ft_init_2(t_cube *cube, t_nc *nu)
 {
-	if (cube->map[nu->start->y][nu->start->x] == 'E')
+	printf("who: %c\n", cube->nu->start->door);
+	if (cube->nu->start->door == 'E')
 		cube->player.angle = 0;
-	else if (cube->map[nu->start->y][nu->start->x] == 'W')
+	else if (cube->nu->start->door == 'W')
 		cube->player.angle = PI;
-	else if (cube->map[nu->start->y][nu->start->x] == 'S')
+	else if (cube->nu->start->door == 'S')
 		cube->player.angle = PI / 2.0;
-	else if (cube->map[nu->start->y][nu->start->x] == 'N')
+	else if (cube->nu->start->door == 'N')
 		cube->player.angle = (PI / 2.0) + PI;
 	cube->state = MENU;
 	cube->prev_state = MENU;

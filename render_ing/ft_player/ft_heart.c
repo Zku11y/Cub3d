@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 20:55:29 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 22:22:30 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,9 @@ void ft_doors(t_cube *cube){
     dy = cube->player.y - ((cube->nu->end->d_y * GRID_SIZE) + (GRID_SIZE / 2.0));
     player_dst_2 = sqrt((dx * dx) + (dy * dy));
 
-    printf("player_dst_1 : %lf, door : (%d, %d), player : (%lf, %lf)\n", 
-           player_dst_1, cube->nu->start->d_x, cube->nu->start->d_y, 
-           cube->player.x, cube->player.y);
+    // printf("player_dst_1 : %lf, door : (%d, %d), player : (%lf, %lf)\n", 
+    //        player_dst_1, cube->nu->start->d_x, cube->nu->start->d_y, 
+    //        cube->player.x, cube->player.y);
 
     if (player_dst_1 < 30.0)
         cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = '0';

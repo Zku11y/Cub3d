@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 02:26:28 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 22:04:27 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	ft_died(t_cube *cube, double i, double j)
 	int (x), (y);
 	x = 0;
 	y = 0;
+	printf("\e[31;1mOH HE FACKIN DAYD VRO \e[0m\n");
 	i_iter = (double)cube->texture_died->width / (double)cube->screen_width;
 	j_iter = (double)cube->texture_died->height / (double)cube->screen_height;
 	while (x < cube->screen_width)
