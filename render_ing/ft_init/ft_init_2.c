@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 14:21:41 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:32:55 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 
 void	ft_init_11(t_cube *cube)
 {
+	cube->transition = (cube->screen_width_buff / 2);
+	cube->trans_dst = cube->transition;
 	cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff,
 			cube->screen_height_buff);
 	if (cube->image_death == NULL)

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/09 14:19:16 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:09:01 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -765,6 +765,9 @@ typedef struct s_cube
 	double			shear_factor;
 	double			tilt_addition_height;
 	double			tilt_addition_width;
+
+	int				transition;
+	int				trans_dst;
 
 	bool			is_sliding;
 

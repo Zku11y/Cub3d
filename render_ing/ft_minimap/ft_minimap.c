@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:46 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:13:47 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:41:14 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	draw_grid2(t_cube *cube, t_vars13 *vars)
 					+ ((double)vars->j - (cube->mini_map_size / 2.0))
 					* ((double)vars->j - (cube->mini_map_size / 2.0)));
 			if (vars->dst < 0.08 * cube->screen_width_buff)
-				mlx_put_pixel(cube->image, vars->i, vars->j, 0x000000ff);
+				mlx_put_pixel(cube->image, vars->i, vars->j, 0x010101ff);
 			vars->j++;
 		}
 	}

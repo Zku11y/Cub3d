@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:33 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 14:29:19 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:57:47 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,20 +74,67 @@ void	state_game(t_cube *cube)
 	draw_player(cube);
 }
 
+void draw_transition(t_cube *cube)
+{
+	int x;	
+	int y;	
+	int max_x;
+
+	x = 0;
+	max_x = (cube->screen_width_buff / 2) - cube->transition;
+	if(max_x <= 0)
+		return;
+	while(x < max_x)
+	{
+		y = 0;	
+		while(y < cube->screen_height_buff)
+		{
+			mlx_put_pixel(cube->image, x, y, 0x000000ff);
+			y++;
+		}
+		x++;
+	}
+}
+
+void draw_transition2(t_cube *cube)
+{
+	int x;	
+	int y;	
+	int min_x;
+
+	min_x = (cube->screen_width_buff / 2) + cube->transition;
+	if(min_x >= cube->screen_width_buff)
+		return;
+	x = min_x;
+	while(x < cube->screen_width_buff)
+	{
+		y = 0;	
+		while(y < cube->screen_height_buff)
+		{
+			mlx_put_pixel(cube->image, x, y, 0x000000ff);
+			y++;
+		}
+		x++;
+	}
+}
+
 void	state_machine(t_cube *cube)
 {
 	int	i;
 
 	i = 0;
-	if (cube->state == MENU)
+	cube->transition = ft_lerp_move(cube->trans_dst, cube->transition, 0.9);
+	if (cube->prev_state == MENU)
 	{
 		ft_menu(cube);
 	}
-	else if (cube->state == GAME)
+	else if (cube->prev_state == GAME)
 		state_game(cube);
-	else if (cube->state == DIED)
+	else if (cube->prev_state == DIED)
 	{
 		ft_died(cube, 0, 0);
 		ft_ups(cube, cube->image_death);
 	}
+	draw_transition(cube);
+	draw_transition2(cube);
 }

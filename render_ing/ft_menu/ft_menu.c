@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:21 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:17:43 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:55:39 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ void	ft_menu_3(t_cube *cube, t_vars5 vars)
 		return ;
 	}
 	if (mlx_is_key_down(cube->mlx, MLX_KEY_ENTER))
+	{
 		cube->state = GAME;
+		cube->trans_dst = 0;
+	}
 	if (mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
 		&& ((double)vars.mouse_x > ((double)cube->screen_width_buff * 0.92)
 			&& (double)vars.mouse_x < ((double)cube->screen_width_buff * 0.97))

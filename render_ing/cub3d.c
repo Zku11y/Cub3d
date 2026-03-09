@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 14:29:48 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:38:16 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,13 @@ void ft_update(void *param)
 
 	cube = (t_cube *)param;
 	gettimeofday(&tv, NULL);
- 	if(cube->state != cube->prev_state)
+ 	if(cube->state != cube->prev_state && cube->transition == 0){
 		state_transition(cube, cube->state);
-	state_machine(cube);
+		cube->trans_dst = (cube->screen_width_buff / 2);
+	}
+
+	// if(cube->state == cube->prev_state)
+		state_machine(cube);
 
 	cube->final_t = tv.tv_sec;
 	cube->fps++;
