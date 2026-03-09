@@ -3,22 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:55:47 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:03:59 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 01:38:00 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	check_collision1(t_vect2 *cords, t_ray *ray,
+void	check_collision1(t_cube *cube, t_vect2 *cords, t_ray *ray,
 		t_vect2 *grid_cords)
 {
 	if (ray->y_dir == DOWN)
 	{
 		grid_cords->y = cords->y / GRID_SIZE;
 		grid_cords->x = cords->x / GRID_SIZE;
+		ray->texture = cube->nu->txtrs[1];
 	}
 	else if (ray->y_dir == UP)
 	{
@@ -26,16 +27,18 @@ void	check_collision1(t_vect2 *cords, t_ray *ray,
 		grid_cords->x = cords->x / GRID_SIZE;
 		if (grid_cords->y > 0)
 			grid_cords->y -= 1;
+		ray->texture = cube->nu->txtrs[0];
 	}
 }
 
-void	check_collision2(t_vect2 *cords, t_ray *ray,
+void	check_collision2(t_cube *cube, t_vect2 *cords, t_ray *ray,
 		t_vect2 *grid_cords)
 {
 	if (ray->x_dir == RIGHT)
 	{
 		grid_cords->y = cords->y / GRID_SIZE;
 		grid_cords->x = cords->x / GRID_SIZE;
+		ray->texture = cube->nu->txtrs[3];
 	}
 	else
 	{
@@ -43,6 +46,7 @@ void	check_collision2(t_vect2 *cords, t_ray *ray,
 		grid_cords->x = cords->x / GRID_SIZE;
 		if (grid_cords->x > 0)
 			grid_cords->x -= 1;
+		ray->texture = cube->nu->txtrs[2];
 	}
 }
 
@@ -54,16 +58,25 @@ bool	check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert,
 	grid_cords.x = 0;
 	grid_cords.y = 0;
 	if (hori_vert == HORI)
-		check_collision1(cords, ray, &grid_cords);
+		check_collision1(cube, cords, ray, &grid_cords);
 	else
-		check_collision2(cords, ray, &grid_cords);
+		check_collision2(cube, cords, ray, &grid_cords);
 	if ((int)grid_cords.x >= cube->map_x)
 		grid_cords.x = cube->map_x - 1;
 	if ((int)grid_cords.y >= cube->map_y)
 		grid_cords.y = cube->map_y - 1;
-	if (cube->map[(int)grid_cords.y][(int)grid_cords.x] == '1')
+	if (cube->map[(int)grid_cords.y][(int)grid_cords.x] == '1'){
+		if(hori_vert == HORI && ray->y_dir == DOWN)
+			ray->texture = cube->nu->txtrs[0];
+		else if(hori_vert == HORI && ray->y_dir == UP)
+			ray->texture = cube->nu->txtrs[1];
+		else if(hori_vert == VERT && ray->x_dir == LEFT)
+			ray->texture = cube->nu->txtrs[2];
+		else if(hori_vert == VERT && ray->x_dir == RIGHT)
+			ray->texture = cube->nu->txtrs[3];
 		return (cords->grid_x = grid_cords.x, cords->grid_y = grid_cords.y,
 			true);
+	}
 	return (false);
 }
 

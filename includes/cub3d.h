@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/08 23:25:00 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 01:19:49 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,6 +407,7 @@ typedef struct s_vars10
 typedef struct s_vars11
 {
 
+	mlx_texture_t *texture;
 	t_vect2	ratio;
 	t_vect2	cords;
 	t_vect2	start;
@@ -477,6 +478,7 @@ typedef struct s_ray
 	double			real_angle;
 	double			normal_dst;
 	bool			collision;
+	mlx_texture_t	*texture;
 }					t_ray;
 
 typedef enum s_move_state{

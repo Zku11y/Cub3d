@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_render2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:15 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:14:18 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 02:33:10 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,14 @@ void	ft_draw_rays(t_cube *cube)
 			vars.rayAngle -= 2 * PI;
 		cube->rays[vars.i].real_angle = vars.rayAngle;
 		ft_ray_init(cube, &(cube->rays[vars.i]), vars.rayAngle);
+		// if(vars.rayAngle <= (PI / 4.0) && vars.rayAngle > 7.0 * (PI / 4.0))
+		// 	cube->rays[vars.i].texture = cube->nu->txtrs[2];
+		// if(vars.rayAngle <= 7.0 * (PI / 4.0) && vars.rayAngle > 5.0 * (PI / 4.0))
+		// 	cube->rays[vars.i].texture = cube->nu->txtrs[1];
+		// if(vars.rayAngle <= 5.0 * (PI / 4.0) && vars.rayAngle > 3.0 * (PI / 4.0))
+		// 	cube->rays[vars.i].texture = cube->nu->txtrs[3];
+		// else
+		// 	cube->rays[vars.i].texture = cube->nu->txtrs[0];
 		vars.i++;
 	}
 }
