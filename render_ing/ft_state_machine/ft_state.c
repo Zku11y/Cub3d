@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_state.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:33 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 02:12:46 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 14:29:19 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	ft_game(t_cube *cube)
 	ft_draw_rays(cube);
 	ft_floor_ceiling(cube);
 	ft_draw_world(cube);
-	ft_draw_enemies(cube);
-	ft_draw_proj(cube);
+	// ft_draw_enemies(cube);
+	// ft_draw_proj(cube);
 	ft_weapon(cube);
 	ft_heart(cube);
 	ft_fov_mod(cube);

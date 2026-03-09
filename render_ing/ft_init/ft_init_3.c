@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:37 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 21:29:35 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 14:22:57 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_init_91(t_cube *cube, t_nc *nu, struct timeval tv)
 	ft_init_enemies(cube);
 	cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
 	cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
-	cube->texture = nu->txtrs[NO];
+	cube->texture = nu->txtrs[PR];
 }
 
 void	ft_init_9(t_cube *cube, t_nc *nu)

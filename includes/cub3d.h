@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/09 13:55:18 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 14:19:16 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_nc
 	int				y;
 }					t_nc;
 
+void		ts_cln_pngs(t_nc *nu);
 int			ts_spaces_skip(char *str);
 char		*ts_get_val(char *str);
 t_teto		*ts_key(char *lain);

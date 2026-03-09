@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:04:41 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 14:22:33 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	ft_init_1(t_cube *cube, t_nc *nu)
 	cube->proj_dst = ((double)cube->screen_width / 2.0) / tan(((double)cube->fov
 				/ 2.0) * RADIANT_RATE);
 	cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
-	cube->player.x = (GRID_SIZE * (double)nu->hi->x) + GRID_SIZE / 2.0;
-	cube->player.y = (GRID_SIZE * (double)nu->hi->y) + GRID_SIZE / 2.0;
+	cube->player.x = (GRID_SIZE * (double)nu->start->x) + GRID_SIZE / 2.0;
+	cube->player.y = (GRID_SIZE * (double)nu->start->y) + GRID_SIZE / 2.0;
 	cube->player.HP = MAX_HP;
 	cube->player.delay = false;
 	cube->player.atk_delay = 1;
@@ -66,13 +66,13 @@ void	ft_init_1(t_cube *cube, t_nc *nu)
 
 void	ft_init_2(t_cube *cube, t_nc *nu)
 {
-	if (cube->map[nu->hi->y][nu->hi->x] == 'E')
+	if (cube->map[nu->start->y][nu->start->x] == 'E')
 		cube->player.angle = 0;
-	else if (cube->map[nu->hi->y][nu->hi->x] == 'W')
+	else if (cube->map[nu->start->y][nu->start->x] == 'W')
 		cube->player.angle = PI;
-	else if (cube->map[nu->hi->y][nu->hi->x] == 'S')
+	else if (cube->map[nu->start->y][nu->start->x] == 'S')
 		cube->player.angle = PI / 2.0;
-	else if (cube->map[nu->hi->y][nu->hi->x] == 'N')
+	else if (cube->map[nu->start->y][nu->start->x] == 'N')
 		cube->player.angle = (PI / 2.0) + PI;
 	cube->state = MENU;
 	cube->prev_state = MENU;

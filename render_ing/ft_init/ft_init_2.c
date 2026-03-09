@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:08:20 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 14:21:41 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	ft_init_10(t_cube *cube, t_nc *nu)
 {
-	cube->texture2 = nu->txtrs[SO];
-	cube->texture3 = nu->txtrs[WE];
-	cube->texture4 = nu->txtrs[EA];
+	cube->texture2 = nu->txtrs[WA];
+	cube->texture3 = nu->txtrs[FL];
+	cube->texture4 = nu->txtrs[CI];
 	ft_load_png(cube, &(cube->texture5), "./Monster_1.png");
 	ft_load_png(cube, &(cube->texture6), "./job_app.png");
 	ft_load_png(cube, &(cube->texture_died), "./you_died.png");
