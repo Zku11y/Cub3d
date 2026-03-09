@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_teto.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:14:15 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:33:05 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 17:26:46 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ t_nc	*ts_make_one(int fd)
 	{
 		free_nu_map(nu->map);
 		ts_free_one_nomap(nu);
-		ts_putstr_fd("ASS MAP\n", 2);
 		return (NULL);
 	}
 	return (nu);

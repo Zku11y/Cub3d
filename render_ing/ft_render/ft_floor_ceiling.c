@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_floor_ceiling.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:11 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:09:43 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,15 @@ void	ft_floor_ceiling2(t_cube *cube, t_vars9 *vars)
 		/ cube->screen_width, (vars->floorR.y - vars->floorL.y)
 		/ cube->screen_width, 0, 0};
 	vars->ft_floor = (t_vect2){vars->floorL.x, vars->floorL.y, 0, 0};
-	vars->tmp = 1.0 - (vars->rowDst / MAX_DST);
+	// vars->tmp = 1.0 - (vars->rowDst / MAX_DST);
 }
 
 void	ft_floor_ceiling3(t_cube *cube, t_vars9 *vars)
 {
+	double dx;
+	double dy;
+	double dist;
+
 	vars->fracX = fmod(vars->ft_floor.x / GRID_SIZE, 1.0);
 	vars->fracY = fmod(vars->ft_floor.y / GRID_SIZE, 1.0);
 	if (vars->fracX < 0)
@@ -68,9 +72,20 @@ void	ft_floor_ceiling3(t_cube *cube, t_vars9 *vars)
 	vars->texY = (int)(vars->fracY * vars->tex->height);
 	vars->k = ((vars->tex->bytes_per_pixel * vars->texY * vars->tex->width)
 			+ (vars->texX * vars->tex->bytes_per_pixel));
-	vars->r = vars->tex->pixels[vars->k + 0] * (vars->tmp);
-	vars->g = vars->tex->pixels[vars->k + 1] * (vars->tmp);
-	vars->b = vars->tex->pixels[vars->k + 2] * (vars->tmp);
+
+	dx = vars->ft_floor.x - cube->player.x;
+    dy = vars->ft_floor.y - cube->player.y;
+    dist = sqrt((dx * dx) + (dy * dy));
+
+    vars->tmp = 1.0 - (dist / MAX_DST);
+    if (vars->tmp > 1.0)
+        vars->tmp = 1.0;
+    else if (vars->tmp < 0.0)
+        vars->tmp = 0.0;			
+
+	vars->r = (vars->tex->pixels[vars->k + 0] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
+	vars->g = (vars->tex->pixels[vars->k + 1] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
+	vars->b = (vars->tex->pixels[vars->k + 2] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
 	vars->a = vars->tex->pixels[vars->k + 3];
 	vars->y_iter = cube->screen_width * vars->i * 4;
 	vars->coords = (t_vect2){vars->j, vars->i, 0, 0};
@@ -103,10 +118,10 @@ void	ft_floor_ceiling(t_cube *cube)
 	while (vars.i < cube->screen_height)
 	{
 		ft_floor_ceiling2(cube, &vars);
-		if (vars.tmp > 1.0)
-			vars.tmp = 1.0;
-		else if (vars.tmp < 0.0)
-			vars.tmp = 0.0;
+		// if (vars.tmp > 1.0)
+		// 	vars.tmp = 1.0;
+		// else if (vars.tmp < 0.0)
+		// 	vars.tmp = 0.0;
 		vars.j = 0;
 		while (vars.j < cube->screen_width)
 		{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heart.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:12:10 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 19:53:46 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,28 @@ void	ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 	}
 }
 
+void ft_doors(t_cube *cube){
+	double player_dst_1;
+	double player_dst_2;
+
+	player_dst_1 = sqrt((cube->player.x - (double)cube->nu->start->d_x * GRID_SIZE) * (cube->player.x - (double)cube->nu->start->d_x * GRID_SIZE) + (cube->player.y - (double)cube->nu->start->d_y * GRID_SIZE) * (cube->player.y - (double)cube->nu->start->d_y * GRID_SIZE));
+	player_dst_2 = sqrt((cube->player.x - (double)cube->nu->end->d_x * GRID_SIZE) * (cube->player.x - (double)cube->nu->end->d_x * GRID_SIZE) + (cube->player.y - (double)cube->nu->end->d_y * GRID_SIZE) * (cube->player.y - (double)cube->nu->end->d_y * GRID_SIZE));
+	if(player_dst_1 > 5.0)
+		cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = '0';
+	else
+		cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = 'D';
+	printf("player_dst_1 : %lf\n", player_dst_1);
+	if(player_dst_2 > 5.0)
+		cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = '0';
+	else
+		cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = 'D';
+}
+
 void	ft_mouvement1(t_cube *cube)
 {
 	ft_turn(cube);
 	ft_angle_limit(&cube->player.angle);
+	ft_doors(cube);
 	cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.85);
 	if (mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT)
 		&& cube->player.move_state == WALK && (mlx_is_key_down(cube->mlx,
@@ -140,4 +158,5 @@ void	ft_mouvement2(t_cube *cube)
 			cube->dst_camera_h = CAM_H / 2.0;
 		}
 	}
+
 }

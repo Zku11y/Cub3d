@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_put.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:26:54 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:32:47 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 17:25:19 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ t_nc	*ts_make_mt_nu(void)
 	nu->imgs[CI] = NULL;
 	nu->imgs[PR] = NULL;
 	nu->imgs[EN] = NULL;
+	nu->imgs[ED] = NULL;
 	nu->next = NULL;
 	nu->map = NULL;
 	return (nu);
@@ -64,6 +65,9 @@ t_nc	*ts_put(t_teto *teto)
 		return (ts_free_one_nomap(nu), NULL);
 	nu->imgs[EN] = ts_get_img(teto, EN);
 	if (!nu->imgs[EN])
+		return (ts_free_one_nomap(nu), NULL);
+	nu->imgs[ED] = ts_get_img(teto, ED);
+	if (!nu->imgs[ED])
 		return (ts_free_one_nomap(nu), NULL);
 	return (nu);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_check_data.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:15:29 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 14:59:55 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 17:23:48 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ts_cln_pngs(t_nc *nu)
 	int	i;
 
 	i = WA;
-	while (i <= EN && nu->txtrs[i])
+	while (i <= ED && nu->txtrs[i])
 	{
 		mlx_delete_texture(nu->txtrs[i]);
 		i++;
@@ -31,10 +31,10 @@ int	ts_check_data(t_nc *nu)
 	i = WA;
 	if (!nu)
 		return (1);
-	if (!nu->imgs[WA] || !nu->imgs[FL]
+	if (!nu->imgs[WA] || !nu->imgs[FL] || !nu->imgs[ED]
 		|| !nu->imgs[CI] || !nu->imgs[PR] || !nu->imgs[EN])
 		return (1);
-	while (i <= EN)
+	while (i <= ED)
 	{
 		nu->txtrs[i] = mlx_load_png(nu->imgs[i]);
 		if (!nu->txtrs[i])

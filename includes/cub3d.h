@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/09 16:09:01 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:12:11 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,22 @@
 
 typedef enum e_key
 {
+
 	WA,
 	FL,
 	CI,
 	PR,
-	EN
+	EN,
+	ED
+
 }	t_key;
 
 typedef struct s_elv
 {
 	int			x;
 	int			y;
+	int			d_x;
+	int			d_y;
 	char		who;
 	char		door;
 }				t_elv;
@@ -62,8 +67,8 @@ typedef struct s_teto
 
 typedef struct s_nc
 {
-	char			*imgs[5];
-	mlx_texture_t	*txtrs[5];
+	char			*imgs[6];
+	mlx_texture_t	*txtrs[6];
 	struct s_nc		*next;
 	char			**map;
 	t_elv			*start;
@@ -478,6 +483,8 @@ typedef struct s_ray
 	double			real_angle;
 	double			normal_dst;
 	bool			collision;
+	char			vert_obstacle;
+	char			hori_obstacle;
 	mlx_texture_t	*texture;
 }					t_ray;
 

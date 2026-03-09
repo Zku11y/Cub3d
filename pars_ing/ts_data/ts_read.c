@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_read.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:34:22 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:32:59 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 17:26:09 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_teto	*ts_read(int fd)
 	if (!head)
 		return (NULL);
 	pear = head;
-	while (yes < 5)
+	while (yes < 6)
 	{
 		lain = get_lain(fd);
 		if (!lain)

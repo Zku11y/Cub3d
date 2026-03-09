@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_key.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:25:44 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:32:36 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 17:24:35 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,7 @@ t_teto	*ts_key(char *lain)
 		return (ts_get(&lain[i + 3], PR));
 	if (ts_strncmp(&lain[i], "EN ", 3) == 0)
 		return (ts_get(&lain[i + 3], EN));
+	if (ts_strncmp(&lain[i], "ED ", 3) == 0)
+		return (ts_get(&lain[i + 3], ED));
 	return (NULL);
 }

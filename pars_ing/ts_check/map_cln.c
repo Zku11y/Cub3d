@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_cln.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:22:47 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:31:52 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:46:21 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,29 @@ void	map_cln(char **map, int x, int y, t_elv *hi)
 void	put_door(char **map, t_elv *hi)
 {
 	if (hi->door == 'N')
+	{
+		hi->d_x = hi->x - 1;
+		hi->d_y = hi->y;
 		map[hi->y][hi->x - 1] = 'D';
+	}
 	if (hi->door == 'S')
+	{
+		hi->d_x = hi->x + 1;
+		hi->d_y = hi->y;
 		map[hi->y][hi->x + 1] = 'D';
+	}
 	if (hi->door == 'E')
+	{
+		hi->d_x = hi->x;
+		hi->d_y = hi->y + 1;
 		map[hi->y + 1][hi->x] = 'D';
+	}
 	if (hi->door == 'W')
+	{
+		hi->d_x = hi->x;
+		hi->d_y = hi->y - 1;
 		map[hi->y - 1][hi->x] = 'D';
+	}
 }
 
 int	rec_path(char **map, int x, int y, int *m_s)

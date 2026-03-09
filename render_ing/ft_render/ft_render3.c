@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:17 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 02:32:58 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:11:00 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ void	ft_draw_texture2(t_cube *cube, t_ray *ray, t_vars11 *vars)
 				+ (ray->texture->width * ray->texture->bytes_per_pixel
 					* (int)vars->cords.y);
 			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 0] = ray->texture->pixels[vars->k
-				+ 0] * (vars->tmp);
+				+ ((int)vars->start.x * 4) + 0] = (ray->texture->pixels[vars->k
+				+ 0] * (vars->tmp)) + (0x33 * (1.0 - vars->tmp));;
 			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 1] = ray->texture->pixels[vars->k
-				+ 1] * (vars->tmp);
+				+ ((int)vars->start.x * 4) + 1] = (ray->texture->pixels[vars->k
+				+ 1] * (vars->tmp)) + (0x33 * (1.0 - vars->tmp));;
 			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 2] = ray->texture->pixels[vars->k
-				+ 2] * (vars->tmp);
+				+ ((int)vars->start.x * 4) + 2] = (ray->texture->pixels[vars->k
+				+ 2] * (vars->tmp)) + (0x33 * (1.0 - vars->tmp));
 			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
 				+ ((int)vars->start.x * 4) + 3] = ray->texture->pixels[vars->k
 				+ 3];
