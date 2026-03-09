@@ -6,7 +6,7 @@
 /*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:05:20 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:33:52 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 13:55:41 by oel-mado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	free_nu(t_nc *nu)
 		free_nu_map(ts->map);
 		ts_cln_pngs(ts);
 		ts_free_one_nomap(ts);
+		free(ts);
 	}
 }
 

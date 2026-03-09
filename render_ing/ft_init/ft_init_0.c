@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 13:51:26 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:04:41 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,24 +76,24 @@ void	ft_init_2(t_cube *cube, t_nc *nu)
 		cube->player.angle = (PI / 2.0) + PI;
 	cube->state = MENU;
 	cube->prev_state = MENU;
-	cube->menu.title = mlx_load_png("./menu_screen_1.png");
-	cube->menu.settings.background = mlx_load_png("./sa/s_bg.png");
-	cube->menu.settings.fov.bar_1 = mlx_load_png("./sa/bar_1.png");
-	cube->menu.settings.bar_2 = mlx_load_png("./sa/bar_2.png");
-	cube->menu.settings.fov.slider_1 = mlx_load_png("./sa/slider_1.png");
-	cube->menu.settings.slider_2 = mlx_load_png("./sa/slider_2.png");
-	cube->menu.settings.ups.x1_glow = mlx_load_png("./sa/x1_glow.png");
-	cube->menu.settings.ups.x2_glow = mlx_load_png("./sa/x2_glow.png");
-	cube->menu.settings.ups.x3_glow = mlx_load_png("./sa/x3_glow.png");
-	cube->menu.settings.ups.x4_glow = mlx_load_png("./sa/x4_glow.png");
+	ft_load_png(cube, &(cube->menu.title), "./menu_screen_1.png");
+	ft_load_png(cube, &(cube->menu.settings.background), "./sa/s_bg.png");
+	ft_load_png(cube, &(cube->menu.settings.fov.bar_1), "./sa/bar_1.png");
+	ft_load_png(cube, &(cube->menu.settings.bar_2), "./sa/bar_2.png");
+	ft_load_png(cube, &(cube->menu.settings.fov.slider_1), "./sa/slider_1.png");
+	ft_load_png(cube, &(cube->menu.settings.slider_2), "./sa/slider_2.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x1_glow), "./sa/x1_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x2_glow), "./sa/x2_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x3_glow), "./sa/x3_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x4_glow), "./sa/x4_glow.png");
 }
 
-void	ft_init_3(t_cube *cube, t_nc *nu)
+void	ft_init_3(t_cube *cube)
 {
-	cube->menu.settings.ups.x5_glow = mlx_load_png("./sa/x5_glow.png");
-	cube->menu.settings.ups.x6_glow = mlx_load_png("./sa/x6_glow.png");
-	cube->menu.settings.ups.x7_glow = mlx_load_png("./sa/x7_glow.png");
-	cube->menu.settings.ups.x8_glow = mlx_load_png("./sa/x8_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x5_glow), "./sa/x5_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x6_glow), "./sa/x6_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x7_glow), "./sa/x7_glow.png");
+	ft_load_png(cube, &(cube->menu.settings.ups.x8_glow), "./sa/x8_glow.png");
 	cube->menu.settings.ups.start_x15 = 0.089 * cube->screen_width_buff;
 	cube->menu.settings.ups.end_x15 = 0.11 * cube->screen_width_buff;
 	cube->menu.settings.ups.start_x26 = 0.162 * cube->screen_width_buff;
@@ -108,7 +108,7 @@ void	ft_init_3(t_cube *cube, t_nc *nu)
 	cube->menu.settings.ups.end_y5678 = 0.9 * cube->screen_height_buff;
 }
 
-void	ft_init_4(t_cube *cube, t_nc *nu)
+void	ft_init_4(t_cube *cube)
 {
 	if (cube->ups == 1)
 		cube->menu.settings.ups.texture = cube->menu.settings.ups.x1_glow;

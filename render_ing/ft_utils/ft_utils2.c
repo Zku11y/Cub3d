@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:48 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:49 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 02:39:30 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,25 @@ t_vect2	calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
 	if (len_hori < len_vert)
 	{
 		ray->length = len_hori;
-		if (ray->y_dir == UP)
+		if (ray->y_dir == UP){
+			ray->texture = cube->nu->txtrs[1];
 			ray->normal_dst = fmod(hori.x, GRID_SIZE) / GRID_SIZE;
-		else
+		}
+		else{
+			ray->texture = cube->nu->txtrs[0];			
 			ray->normal_dst = 1 - (fmod(hori.x, GRID_SIZE) / GRID_SIZE);
+		}
 		return (hori);
 	}
 	ray->length = len_vert;
-	if (ray->x_dir == RIGHT)
+	if (ray->x_dir == RIGHT){
+		ray->texture = cube->nu->txtrs[2];
 		ray->normal_dst = fmod(vert.y, GRID_SIZE) / GRID_SIZE;
-	else
+	}
+	else{
+		ray->texture = cube->nu->txtrs[3];
 		ray->normal_dst = 1 - (fmod(vert.y, GRID_SIZE) / GRID_SIZE);
+	}
 	return (vert);
 }
 

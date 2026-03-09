@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 17:36:02 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 01:26:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,24 @@ void ft_update(void *param)
 		cube->init_t = cube->final_t;
 		cube->fps = 0;
 	}
+
+	if(mlx_is_key_down(cube->mlx, MLX_KEY_ESCAPE))
+		ft_clean(cube, cube->nu, 0);
 }
 
 void ft_init(t_cube *cube, t_nc *nu){
 	ft_init_0(cube, nu);
 	ft_init_1(cube, nu);
 	ft_init_2(cube, nu);
-	ft_init_3(cube, nu);
-	ft_init_4(cube, nu);
-	ft_init_5(cube, nu);
-	ft_init_6(cube, nu);
-	ft_init_7(cube, nu);
-	ft_init_8(cube, nu);
+	ft_init_3(cube);
+	ft_init_4(cube);
+	ft_init_5(cube);
+	ft_init_6(cube);
+	ft_init_7(cube);
+	ft_init_8(cube);
 	ft_init_9(cube, nu);
 	ft_init_10(cube, nu);
-	ft_init_11(cube, nu);
+	ft_init_11(cube);
 }
 
 
@@ -137,7 +140,7 @@ int main(int ac, char **av)
 	t_nc *nu;
 
 	nu = NULL;
-    atexit(feet);
+    // atexit(feet);
 	if (ac < 2)
 	return 1;
 	t_cube *cube;
@@ -148,9 +151,11 @@ int main(int ac, char **av)
 	nu = ts_pars(&av[1]);
 	if (!nu)
 	return 1;
+	cube->nu = nu;
 	printf("after\n");
 	ts_print_nu(nu); // -- ts just prnt REMOVE IT
-	ft_map_init(cube, nu);
+	// ft_map_init(cube, nu);
+	cube->map = nu->map;
 
 	int y = 0;
 	int x = 0;
@@ -172,9 +177,10 @@ int main(int ac, char **av)
 	printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->hi->x, nu->hi->y);
 	mlx_loop_hook(cube->mlx, ft_update, cube);
 	mlx_loop(cube->mlx);
-	mlx_terminate(cube->mlx);
-	free_nu(nu);
-	free(cube);
+	ft_clean(cube, nu, 0);
+	// mlx_terminate(cube->mlx);
+	// free_nu(nu);
+	// free(cube);
 	return 0;
 }
 

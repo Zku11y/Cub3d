@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_state_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:32 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 02:26:28 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	ft_set_values(t_cube *cube, t_vars values)
 	tex_val = (int)(((int)values.j * cube->texture_died->bytes_per_pixel
 				* cube->texture_died->width) + ((int)values.i
 				* cube->texture_died->bytes_per_pixel));
+	// return(printf("why dfk is PREV_BUFFER FREED???????\n") ,ft_clean(cube, cube->nu, 1));
+	// printf("max : %d, val : %d, (%d, %d)\n", cube->screen_height * cube->screen_width * 4, val, values.x, values.y);
 	cube->prev_buffer[val] = cube->texture_died->pixels[tex_val + 0];
 	cube->prev_buffer[val + 1] = cube->texture_died->pixels[tex_val + 1];
 	cube->prev_buffer[val + 2] = cube->texture_died->pixels[tex_val + 2];
@@ -39,7 +41,7 @@ void	ft_died(t_cube *cube, double i, double j)
 	j_iter = (double)cube->texture_died->height / (double)cube->screen_height;
 	while (x < cube->screen_width)
 	{
-		y = -1;
+		y = 0;
 		j = 0;
 		while (y < cube->screen_height)
 		{

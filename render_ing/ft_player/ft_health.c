@@ -6,13 +6,13 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:54 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:13:55 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:13:29 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_health4(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
+void	ft_health4(t_cube *cube, mlx_texture_t *texture,
 		t_vars10 *vars)
 {
 	vars->k = (vars->x * texture->bytes_per_pixel) + (texture->width
@@ -35,7 +35,7 @@ void	ft_health4(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 	}
 }
 
-void	ft_health5(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
+void	ft_health5(t_cube *cube, mlx_texture_t *texture,
 		t_vars10 *vars)
 {
 	vars->start_y = vars->const_y;
@@ -56,7 +56,7 @@ void	ft_health5(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 				vars->y = 0;
 			if (!check_screen_limits(cube, (t_vect2){vars->start_x,
 					vars->start_y, 0, 0}))
-				ft_health4(cube, texture, enemy, vars);
+				ft_health4(cube, texture, vars);
 			vars->start_y++;
 			vars->tex_y += vars->scale_ratio;
 		}
@@ -71,7 +71,7 @@ bool	ft_health6(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 	vars->player_dst = sqrt((cube->player.x - vars->pos_x) * (cube->player.x
 				- vars->pos_x) + (cube->player.y - vars->pos_y)
 			* (cube->player.y - vars->pos_y));
-	if (!ft_health2(cube, texture, enemy, vars))
+	if (!ft_health2(cube, enemy, vars))
 		return (false);
 	ft_health3(cube, texture, enemy, vars);
 	if (vars->start_x >= cube->screen_width)
@@ -115,5 +115,5 @@ void	ft_health(t_cube *cube, t_enemy *enemy)
 	if (!ft_health6(cube, enemy->health, enemy, &vars))
 		return ;
 	while (vars.start_x < vars.end_x)
-		ft_health5(cube, enemy->health, enemy, &vars);
+		ft_health5(cube, enemy->health, &vars);
 }

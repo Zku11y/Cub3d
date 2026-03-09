@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 15:14:54 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:08:20 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	cube->texture2 = nu->txtrs[SO];
 	cube->texture3 = nu->txtrs[WE];
 	cube->texture4 = nu->txtrs[EA];
-	cube->texture5 = mlx_load_png("./Monster_1.png");
-	cube->texture6 = mlx_load_png("./job_app.png");
-	cube->texture_died = mlx_load_png("./you_died.png");
-	cube->crosshair = mlx_load_png("./crosshair_2.png");
+	ft_load_png(cube, &(cube->texture5), "./Monster_1.png");
+	ft_load_png(cube, &(cube->texture6), "./job_app.png");
+	ft_load_png(cube, &(cube->texture_died), "./you_died.png");
+	ft_load_png(cube, &(cube->crosshair), "./crosshair_2.png");
 	cube->line_girth = (int)(cube->screen_width / cube->res);
 	if (cube->line_girth == 0)
 		cube->line_girth = 1;
@@ -29,7 +29,7 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	if (cube->mlx == NULL)
 	{
 		perror("mlx init error :");
-		exit(EXIT_FAILURE); // call ft_clean
+		ft_clean(cube, cube->nu, 1); // call ft_clean
 	}
 	cube->image = mlx_new_image(cube->mlx, cube->screen_width_buff,
 			cube->screen_height_buff);
@@ -37,11 +37,11 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	{
 		mlx_terminate(cube->mlx);
 		perror("image init error :");
-		exit(EXIT_FAILURE);  // call ft_clean
+		ft_clean(cube, cube->nu, 1);  // call ft_clean
 	}
 }
 
-void	ft_init_11(t_cube *cube, t_nc *nu)
+void	ft_init_11(t_cube *cube)
 {
 	cube->image_death = mlx_new_image(cube->mlx, cube->screen_width_buff,
 			cube->screen_height_buff);
@@ -49,7 +49,7 @@ void	ft_init_11(t_cube *cube, t_nc *nu)
 	{
 		mlx_terminate(cube->mlx);
 		perror("image init error :");
-		exit(EXIT_FAILURE);
+		ft_clean(cube, cube->nu, 1);
 	}
 	mlx_image_to_window(cube->mlx, cube->image, 0, 0);
 	mlx_set_mouse_pos(cube->mlx, cube->screen_width / 2, cube->screen_height
@@ -93,7 +93,7 @@ void	ft_init_enemies(t_cube *cube)
 	i = 0;
 	gettimeofday(&tv, NULL);
 	seed = (unsigned long)tv.tv_usec / 100;
-	health_tex = mlx_load_png("./white_monster_2.png");
+	ft_load_png(cube, &(health_tex), "./white_monster_2.png");
 	while (i < ENEMY_NUM)
 	{
 		ft_init_enemies_1(cube, i, health_tex);

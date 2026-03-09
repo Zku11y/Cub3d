@@ -6,13 +6,13 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:58 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 18:53:02 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:17:14 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
+void	ft_enemy6(t_cube *cube, mlx_texture_t *texture,
 		t_vars10 *vars)
 {
 	if (vars->y < 0)
@@ -40,7 +40,7 @@ void	ft_enemy6(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
 	vars->start_y++;
 }
 
-void	ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
+void	ft_enemy7(t_cube *cube, mlx_texture_t *texture,
 		t_vars10 *vars)
 {
 	while (vars->start_x < vars->end_x)
@@ -60,7 +60,7 @@ void	ft_enemy7(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
 				vars->y = (int)vars->tex_y;
 				if (vars->y >= (int)texture->height)
 					vars->y = texture->height - 1;
-				ft_enemy6(cube, enemy, texture, vars);
+				ft_enemy6(cube, texture, vars);
 				vars->tex_y += vars->scale_ratio;
 			}
 		}

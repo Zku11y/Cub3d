@@ -6,13 +6,13 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:13:26 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/08 23:18:28 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_res_1080_900(t_cube *cube, int mouse_x, int mouse_y)
+void	ft_res_1080_900(t_cube *cube, int mouse_x)
 {
 	if (mouse_x > cube->menu.settings.res.start_x_1080
 		&& mouse_x < cube->menu.settings.res.end_x_1080)
@@ -32,7 +32,7 @@ void	ft_res(t_cube *cube)
 		return (ft_renderer(cube, cube->menu.settings.res.texture, 0, 0));
 	if (mouse_y > cube->menu.settings.res.start_y_1080_900
 		&& mouse_y < cube->menu.settings.res.end_y_1080_900)
-		ft_res_1080_900(cube, mouse_x, mouse_y);
+		ft_res_1080_900(cube, mouse_x);
 	else if (mouse_y > cube->menu.settings.res.start_y_480
 		&& mouse_y < cube->menu.settings.res.end_y_480)
 	{
@@ -60,10 +60,10 @@ void	ft_crosshair_color2(t_cube *cube, t_vars6 *vars)
 		vars->crosshair = (uint32_t *)cube->crosshair->pixels;
 		vars->i = 0;
 		vars->j = 0;
-		while (vars->j < cube->crosshair->height)
+		while (vars->j < (int)cube->crosshair->height)
 		{
 			vars->i = 0;
-			while (vars->i++ < cube->crosshair->width)
+			while (vars->i++ < (int)cube->crosshair->width)
 			{
 				vars->index = vars->j * cube->crosshair->width + vars->i;
 				if (vars->crosshair[vars->index]
