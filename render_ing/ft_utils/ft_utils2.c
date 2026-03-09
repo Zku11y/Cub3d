@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:48 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 19:15:55 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 23:39:19 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ t_vect2	calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
         if (ray->hori_obstacle == 'H')
             ray->texture = cube->nu->txtrs[ED];
         else if (ray->y_dir == UP)
-            ray->texture = cube->nu->txtrs[1];
+            ray->texture = cube->nu->txtrs[WA];
         else
-            ray->texture = cube->nu->txtrs[0];          
+            ray->texture = cube->nu->txtrs[WA];          
 
         if (ray->y_dir == UP)
             ray->normal_dst = fmod(hori.x, GRID_SIZE) / GRID_SIZE;
@@ -54,9 +54,9 @@ t_vect2	calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray)
 	if (ray->vert_obstacle == 'V')
         ray->texture = cube->nu->txtrs[ED];
     else if (ray->x_dir == RIGHT)
-        ray->texture = cube->nu->txtrs[2];
+        ray->texture = cube->nu->txtrs[WA];
     else
-        ray->texture = cube->nu->txtrs[3];
+        ray->texture = cube->nu->txtrs[WA];
         
     if (ray->x_dir == RIGHT)
         ray->normal_dst = fmod(vert.y, GRID_SIZE) / GRID_SIZE;

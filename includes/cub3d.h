@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/09 21:10:45 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 23:33:43 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ typedef enum e_key
 	CI,
 	PR,
 	EN,
-	ED
-
+	ED,
+	HP
 }	t_key;
 
 typedef struct s_elv
@@ -67,8 +67,8 @@ typedef struct s_teto
 
 typedef struct s_nc
 {
-	char			*imgs[6];
-	mlx_texture_t	*txtrs[6];
+	char			*imgs[7];
+	mlx_texture_t	*txtrs[7];
 	struct s_nc		*next;
 	char			**map;
 	t_elv			*start;

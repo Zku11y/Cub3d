@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:25:44 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 17:24:35 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:37 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,7 @@ t_teto	*ts_key(char *lain)
 		return (ts_get(&lain[i + 3], EN));
 	if (ts_strncmp(&lain[i], "ED ", 3) == 0)
 		return (ts_get(&lain[i + 3], ED));
+	if (ts_strncmp(&lain[i], "HP ", 3) == 0)
+		return (ts_get(&lain[i + 3], HP));
 	return (NULL);
 }

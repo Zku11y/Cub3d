@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:34:22 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 17:26:09 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 23:21:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_teto	*ts_read(int fd)
 	if (!head)
 		return (NULL);
 	pear = head;
-	while (yes < 6)
+	while (yes < 7)
 	{
 		lain = get_lain(fd);
 		if (!lain)

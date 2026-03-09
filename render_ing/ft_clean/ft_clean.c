@@ -56,12 +56,10 @@ void ft_clean(t_cube *cube, t_nc *nu, int flag)
 		ft_free_tex(cube->blood.frame[11]);
 		free(cube->blood.frame);
 	}
-	ft_free_tex(cube->texture5);
-	ft_free_tex(cube->texture6);
+	// ft_free_tex(cube->texture5);
+	// ft_free_tex(cube->texture6);
 	ft_free_tex(cube->texture_died);
 	ft_free_tex(cube->crosshair);
-	if(cube->enemy)
-		ft_free_tex(cube->enemy[0].health);
 	if(cube->lerp_buffer)
 		free(cube->lerp_buffer);
 	if(cube->z_buffer)

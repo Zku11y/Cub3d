@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 21:48:44 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 23:37:54 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	ft_init_10(t_cube *cube, t_nc *nu)
 {
-	cube->texture2 = nu->txtrs[WA];
-	cube->texture3 = nu->txtrs[FL];
-	cube->texture4 = nu->txtrs[CI];
-	ft_load_png(cube, &(cube->texture5), "./Monster_1.png");
-	ft_load_png(cube, &(cube->texture6), "./job_app.png");
+	cube->texture2 = nu->txtrs[FL];
+	cube->texture3 = nu->txtrs[CI];
+	cube->texture4 = nu->txtrs[EN];
+	cube->texture5 = cube->nu->txtrs[HP];
+	cube->texture6 = cube->nu->txtrs[PR];
 	ft_load_png(cube, &(cube->texture_died), "./you_died.png");
 	ft_load_png(cube, &(cube->crosshair), "./crosshair_2.png");
 	cube->line_girth = (int)(cube->screen_width / cube->res);
@@ -95,7 +95,7 @@ void	ft_init_enemies(t_cube *cube)
 	i = 0;
 	gettimeofday(&tv, NULL);
 	seed = (unsigned long)tv.tv_usec / 100;
-	ft_load_png(cube, &(health_tex), "./white_monster_2.png");
+	health_tex = cube->nu->txtrs[HP];
 	while (i < ENEMY_NUM)
 	{
 		ft_init_enemies_1(cube, i, health_tex);

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:15:29 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 17:23:48 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 23:44:53 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ts_cln_pngs(t_nc *nu)
 	int	i;
 
 	i = WA;
-	while (i <= ED && nu->txtrs[i])
+	while (i <= HP && nu->txtrs[i])
 	{
 		mlx_delete_texture(nu->txtrs[i]);
 		i++;
@@ -32,9 +32,9 @@ int	ts_check_data(t_nc *nu)
 	if (!nu)
 		return (1);
 	if (!nu->imgs[WA] || !nu->imgs[FL] || !nu->imgs[ED]
-		|| !nu->imgs[CI] || !nu->imgs[PR] || !nu->imgs[EN])
+		|| !nu->imgs[CI] || !nu->imgs[PR] || !nu->imgs[EN] || !nu->imgs[HP])
 		return (1);
-	while (i <= ED)
+	while (i <= HP)
 	{
 		nu->txtrs[i] = mlx_load_png(nu->imgs[i]);
 		if (!nu->txtrs[i])
