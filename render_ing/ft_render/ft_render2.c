@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_render2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:15 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 16:54:55 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 17:09:41 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	ft_ups(t_cube *cube, mlx_image_t *image)
 	vars.screen_H = cube->screen_height;
 	vars.screen_W = cube->screen_width;
 	ft_ups2(cube, &vars);
+	
 	while (vars.new_y < cube->screen_height_buff && vars.prev_y < vars.screen_H)
 	{
 		vars.new_x = 0;

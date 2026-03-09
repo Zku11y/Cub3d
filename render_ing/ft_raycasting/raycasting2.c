@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:55:47 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 01:38:00 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 17:16:14 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ bool	check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert,
 		t_ray *ray)
 {
 	t_vect2	grid_cords;
+	char	result;
 
 	grid_cords.x = 0;
 	grid_cords.y = 0;
@@ -65,7 +66,10 @@ bool	check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert,
 		grid_cords.x = cube->map_x - 1;
 	if ((int)grid_cords.y >= cube->map_y)
 		grid_cords.y = cube->map_y - 1;
-	if (cube->map[(int)grid_cords.y][(int)grid_cords.x] == '1'){
+	result = cube->map[(int)grid_cords.y][(int)grid_cords.x];
+	if (result == '1' || result == 'D'){
+		if(result == 'D')
+			ray->texture = 
 		if(hori_vert == HORI && ray->y_dir == DOWN)
 			ray->texture = cube->nu->txtrs[0];
 		else if(hori_vert == HORI && ray->y_dir == UP)
