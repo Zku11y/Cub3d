@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 19:53:46 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:55:29 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,21 +100,34 @@ void	ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 }
 
 void ft_doors(t_cube *cube){
+	double dx;
+	double dy;
 	double player_dst_1;
 	double player_dst_2;
 
-	player_dst_1 = sqrt((cube->player.x - (double)cube->nu->start->d_x * GRID_SIZE) * (cube->player.x - (double)cube->nu->start->d_x * GRID_SIZE) + (cube->player.y - (double)cube->nu->start->d_y * GRID_SIZE) * (cube->player.y - (double)cube->nu->start->d_y * GRID_SIZE));
-	player_dst_2 = sqrt((cube->player.x - (double)cube->nu->end->d_x * GRID_SIZE) * (cube->player.x - (double)cube->nu->end->d_x * GRID_SIZE) + (cube->player.y - (double)cube->nu->end->d_y * GRID_SIZE) * (cube->player.y - (double)cube->nu->end->d_y * GRID_SIZE));
-	if(player_dst_1 > 5.0)
-		cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = '0';
-	else
-		cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = 'D';
-	printf("player_dst_1 : %lf\n", player_dst_1);
-	if(player_dst_2 > 5.0)
-		cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = '0';
-	else
-		cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = 'D';
+    dx = cube->player.x - ((cube->nu->start->d_x * GRID_SIZE) + (GRID_SIZE / 2.0));
+    dy = cube->player.y - ((cube->nu->start->d_y * GRID_SIZE) + (GRID_SIZE / 2.0));
+    player_dst_1 = sqrt((dx * dx) + (dy * dy));
+
+    dx = cube->player.x - ((cube->nu->end->d_x * GRID_SIZE) + (GRID_SIZE / 2.0));
+    dy = cube->player.y - ((cube->nu->end->d_y * GRID_SIZE) + (GRID_SIZE / 2.0));
+    player_dst_2 = sqrt((dx * dx) + (dy * dy));
+
+    printf("player_dst_1 : %lf, door : (%d, %d), player : (%lf, %lf)\n", 
+           player_dst_1, cube->nu->start->d_x, cube->nu->start->d_y, 
+           cube->player.x, cube->player.y);
+
+    if (player_dst_1 < 30.0)
+        cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = '0';
+    else
+        cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = 'D';
+
+    if (player_dst_2 < 30.0)
+        cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = '0';
+    else
+        cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = 'D';
 }
+
 
 void	ft_mouvement1(t_cube *cube)
 {

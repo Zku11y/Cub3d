@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 16:38:16 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:56:41 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int main(int ac, char **av)
 	t_nc *nu;
 
 	nu = NULL;
-    atexit(feet);
+    // atexit(feet);
 	if (ac < 2)
 	return 1;
 	t_cube *cube;
@@ -177,8 +177,9 @@ int main(int ac, char **av)
 		y++;
 	}
 
+	// printf("doors : (%d, %d)\n", nu->start->d_x, nu->start->d_y);
 	ft_init(cube, nu);
-	printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->start->x, nu->start->y);
+	// printf("player pos (%lf, %lf), parse pos (%d, %d)\n", cube->player.x, cube->player.y, nu->start->x, nu->start->y);
 	mlx_loop_hook(cube->mlx, ft_update, cube);
 	mlx_loop(cube->mlx);
 	ft_clean(cube, nu, 0);

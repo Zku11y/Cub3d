@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:05:20 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 17:28:52 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:19:20 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,7 @@ t_nc	*ts_pars(char **arg)
 		nu = nu->next;
 		i++;
 	}
+	printf("DS::x%d,y%d\n", nu->start->d_x, nu->start->d_y);
+	printf("DE::x%d,y%d\n", nu->end->d_x, nu->end->d_y);
 	return (hd);
 }

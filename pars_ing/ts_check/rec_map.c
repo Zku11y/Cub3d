@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rec_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:13:08 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/08 20:31:58 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/09 20:28:01 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ int	rec_map(char **map, t_nc *nu)
 	map_cln(map, nu->start->y, nu->start->x, nu->start);
 	if (get_path(map, nu->start, m_s))
 		return (free(m_s), free(nu->start), free(nu->end), 1);
+	put_door(map, nu->start);
+	put_door(map, nu->end);
 	free(m_s);
 	return (0);
 }
