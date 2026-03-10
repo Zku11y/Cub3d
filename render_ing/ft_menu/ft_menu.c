@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_menu.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:21 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:17:43 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:05:41 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 void	ft_menu_2(t_cube *cube, t_vars5 vars, int *x)
 {
-	vars.tex_x = (double)(vars.x) *vars.ratio_x;
+	vars.tex_x = (double)(vars.x) * vars.ratio_x;
 	vars.pixel_cords = (vars.y * 4 * cube->screen_width_buff) + (vars.x * 4);
 	vars.title_cords = (vars.tex_y * 4 * vars.texture->width) + (vars.tex_x
 			* 4);
-	if (vars.tex_x >= (int)vars.texture->width || vars.tex_y >= (int)vars.texture->height
+	if (vars.tex_x >= (int)vars.texture->width
+		|| vars.tex_y >= (int)vars.texture->height
 		|| vars.texture->pixels[vars.tex_y * 4 * vars.texture->width
-			+ vars.tex_x * 4 + 3] < 127)
+		+ vars.tex_x * 4 + 3] < 127)
 		return ((void)(*x)++);
 	cube->image->pixels[vars.pixel_cords
 		+ 0] = vars.texture->pixels[vars.title_cords + 0];
@@ -80,7 +81,7 @@ void	ft_menu(t_cube *cube)
 	while (vars.y < cube->screen_height_buff)
 	{
 		vars.x = vars.start_x;
-		vars.tex_y = (double)(vars.y) *vars.ratio_y;
+		vars.tex_y = (double)(vars.y) * vars.ratio_y;
 		while (vars.x < cube->screen_width_buff)
 			ft_menu_2(cube, vars, &vars.x);
 		vars.y++;

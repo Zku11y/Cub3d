@@ -40,17 +40,13 @@ SRC = ./render_ing/cub3d.c \
 	./render_ing/ft_render/ft_render2.c \
 	./render_ing/ft_render/ft_render3.c \
 	./render_ing/ft_render/ft_floor_ceiling.c \
-	./render_ing/ft_enemy/ft_enemy.c \
-	./render_ing/ft_enemy/ft_enemy2.c \
-	./render_ing/ft_enemy/ft_enemy3.c \
-	./render_ing/ft_enemy/ft_projectile.c \
 	./render_ing/ft_menu/ft_menu.c \
 	./render_ing/ft_menu/ft_menu2.c \
 	./render_ing/ft_menu/ft_menu3.c \
 	./render_ing/ft_menu/ft_menu4.c \
 	./render_ing/ft_minimap/ft_minimap.c \
 	./render_ing/ft_minimap/ft_minimap2.c \
-	./render_ing/ft_clean/ft_clean.c \
+	./render_ing/ft_clean/ft_clean.c
 
 
 OBJ = $(SRC:.c=.o)
@@ -61,7 +57,7 @@ MLX_INC = -I$(MLX_DIR)
 LIBTS_DIR = ./pars_ing/libts
 LIBTS_INC = -I$(LIBTS_DIR)
 
-CUB3D_HEADER = includes/cub3d.h pars_ing/head.h
+CUB3D_HEADER = includes/cub3d.h
 
 CC = cc
 
@@ -95,7 +91,8 @@ ifeq ($(FT_UNAME), Darwin)
 endif
 
 ifeq ($(FT_UNAME), Linux)
-	MLX_LIB = ./lib/libmlx42_linux.a
+# 	MLX_LIB = ./lib/libmlx42_linux.a
+	MLX_LIB = ./MLX42/build/libmlx42.a
 	LIBTS_LIB = ./lib/libts_linux.a
 	LDFLAGS = -ldl -lglfw -pthread -lm
 
@@ -107,7 +104,9 @@ $(NAME): $(OBJ) $(MLX_LIB) $(LIBTS_LIB)
 $(LIBTS_LIB):
 	make -C $(LIBTS_DIR)
 
-%.o: %.c $(CUB3D_HEADER)
+$(OBJ): $(CUB3D_HEADER)
+
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

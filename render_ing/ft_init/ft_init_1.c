@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:25:04 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:16:45 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	ft_init_5(t_cube *cube)
 {
-	ft_load_png(cube, &(cube->menu.settings.mouse_sens.slider_2), "./sa/slider_2.png");
+	ft_load_png(cube, &(cube->menu.settings.mouse_sens.slider_2),
+		"./sa/slider_2.png");
 	cube->menu.settings.mouse_sens.slider_start_y = 0.78
 		* cube->screen_height_buff;
 	cube->menu.settings.mouse_sens.slider_end_y = 0.81
@@ -41,7 +42,8 @@ void	ft_init_5(t_cube *cube)
 
 void	ft_init_61(t_cube *cube)
 {
-	ft_load_png(cube, &(cube->menu.settings.crosshair.border), "./sa/border.png");
+	ft_load_png(cube, &(cube->menu.settings.crosshair.border),
+		"./sa/border.png");
 	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
 	cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
 	cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
@@ -79,9 +81,6 @@ void	ft_init_7(t_cube *cube)
 	gettimeofday(&tv, NULL);
 	cube->player.weapon.DMG = 50;
 	cube->player.weapon.fire_rate = 2;
-	ft_load_png(cube, &(cube->player.weapon.idle_texture), "./shotgun_idle.png");
-	ft_load_png(cube, &(cube->player.weapon.shoot_texture), "./shoot_shotgun.png");
-	ft_load_png(cube, &(cube->player.weapon.pump_texture), "./pump_shotgun.png");
 	cube->player.weapon.texture = cube->player.weapon.idle_texture;
 	cube->player.weapon.pitch_increase = 1;
 	cube->player.weapon.pitch_increased = 0;
@@ -89,10 +88,6 @@ void	ft_init_7(t_cube *cube)
 	cube->player.weapon.idle_frame = 0;
 	cube->player.weapon.move_lerp = 0;
 	cube->player.weapon.pitch_changed = false;
-	ft_load_png(cube, &(cube->heart.frame_1), "./blood_lvl_1.png");
-	ft_load_png(cube, &(cube->heart.frame_2), "./blood_lvl_2.png");
-	ft_load_png(cube, &(cube->heart.frame_3), "./blood_lvl_3.png");
-	ft_load_png(cube, &(cube->heart.frame_4), "./blood_lvl_4.png");
 	cube->heart.prev_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	cube->heart.frame = 0;
 	cube->heart.last_angle = 0;
@@ -106,8 +101,8 @@ void	ft_init_8(t_cube *cube)
 	cube->heart.blur_lerp = BLUR_LERP;
 	cube->heart.blood_op = 0.0;
 	cube->blood.frame = ts_calloc(sizeof(mlx_texture_t *), 13);
-	if(!cube->blood.frame)
-		return(ft_clean(cube, cube->nu, 1));
+	if (!cube->blood.frame)
+		return (ft_clean(cube, cube->nu, 1));
 	ft_load_png(cube, &(cube->blood.frame[0]), "./blood/1_0.png");
 	ft_load_png(cube, &(cube->blood.frame[1]), "./blood/1_1.png");
 	ft_load_png(cube, &(cube->blood.frame[2]), "./blood/1_2.png");

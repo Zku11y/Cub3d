@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:04:41 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 17:19:15 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ void	ft_init_2(t_cube *cube, t_nc *nu)
 		cube->player.angle = PI / 2.0;
 	else if (cube->map[nu->hi->y][nu->hi->x] == 'N')
 		cube->player.angle = (PI / 2.0) + PI;
-	cube->state = MENU;
-	cube->prev_state = MENU;
+	cube->state = GAME;
+	cube->prev_state = GAME;
 	ft_load_png(cube, &(cube->menu.title), "./menu_screen_1.png");
 	ft_load_png(cube, &(cube->menu.settings.background), "./sa/s_bg.png");
 	ft_load_png(cube, &(cube->menu.settings.fov.bar_1), "./sa/bar_1.png");

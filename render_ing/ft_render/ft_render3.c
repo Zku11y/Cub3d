@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:17 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 02:32:58 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:28:41 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,16 @@ void	ft_draw_texture2(t_cube *cube, t_ray *ray, t_vars11 *vars)
 			vars->k = ((int)vars->cords.x * ray->texture->bytes_per_pixel)
 				+ (ray->texture->width * ray->texture->bytes_per_pixel
 					* (int)vars->cords.y);
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+			cube->image->pixels[(cube->screen_width * (int)vars->start.y * 4)
 				+ ((int)vars->start.x * 4) + 0] = ray->texture->pixels[vars->k
-				+ 0] * (vars->tmp);
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+				+ 0];
+			cube->image->pixels[(cube->screen_width * (int)vars->start.y * 4)
 				+ ((int)vars->start.x * 4) + 1] = ray->texture->pixels[vars->k
-				+ 1] * (vars->tmp);
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+				+ 1];
+			cube->image->pixels[(cube->screen_width * (int)vars->start.y * 4)
 				+ ((int)vars->start.x * 4) + 2] = ray->texture->pixels[vars->k
-				+ 2] * (vars->tmp);
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+				+ 2];
+			cube->image->pixels[(cube->screen_width * (int)vars->start.y * 4)
 				+ ((int)vars->start.x * 4) + 3] = ray->texture->pixels[vars->k
 				+ 3];
 		}
@@ -47,11 +47,6 @@ void	ft_draw_texture1(t_cube *cube, t_ray *ray, t_vars11 *vars)
 		vars->cords.x = 0;
 	if (vars->cords.x >= ray->texture->width)
 		vars->cords.x = ray->texture->width - 1;
-	vars->tmp = 1.0 - (ray->length / MAX_DST);
-	if (vars->tmp > 1.0)
-		vars->tmp = 1.0;
-	else if (vars->tmp < 0.0)
-		vars->tmp = 0.0;
 }
 
 void	ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end)

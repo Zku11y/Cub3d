@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/09 01:19:49 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:03:27 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,9 @@ void    free_mp(t_mp *mp);
 
 //-----------------------------------------------------------------
 
-# define UPS_RATE 4
-# define SCREEN_WIDTH_BUFF 1600
-# define SCREEN_HEIGHT_BUFF 900
+# define UPS_RATE 1
+# define SCREEN_WIDTH_BUFF 1280
+# define SCREEN_HEIGHT_BUFF 720
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPS_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPS_RATE)
 # define RES SCREEN_WIDTH
@@ -113,7 +113,7 @@ void    free_mp(t_mp *mp);
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 5
-# define TURN_SPEED 0.0015
+# define TURN_SPEED 0.015
 # define GRID_SIZE 32.0f
 # define PLAYER_SPEED 200.0f
 # define HORI 0
@@ -696,6 +696,14 @@ typedef struct s_flash{
 }	t_flash;
 
 
+typedef struct s_colour{
+
+	int r;
+	int g;
+	int b;
+
+}	t_colour;
+
 typedef struct s_cube
 {
 	mlx_t			*mlx;
@@ -890,3 +898,4 @@ void				vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double a
 void				hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);
 void 				ft_clean(t_cube *cube, t_nc *nu, int flag);
 void 				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path);
+void				ft_rectangle_prev(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, t_colour color);

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:05:20 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 13:44:19 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 16:23:39 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void	free_nu(t_nc *nu)
 		free_nu_map(ts->map);
 		ts_cln_pngs(ts);
 		ts_free_one_nomap(ts);
-		free(ts);
 	}
 }
 
