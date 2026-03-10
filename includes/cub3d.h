@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/10 01:26:09 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 15:11:18 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,8 @@ int			get_door(char **map, t_elv *hi);
 //-----------------------------------------------------------------
 
 # define UPS_RATE 4
-# define SCREEN_WIDTH_BUFF 1600
-# define SCREEN_HEIGHT_BUFF 900
+# define SCREEN_WIDTH_BUFF 1
+# define SCREEN_HEIGHT_BUFF 1
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPS_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPS_RATE)
 # define RES SCREEN_WIDTH
@@ -860,7 +860,6 @@ void				ft_draw_proj(t_cube *cube);
 bool 				is_looking(t_cube *cube, t_enemy *enemy);
 void 				ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture);
 void 				ft_projectile(t_cube *cube, t_projectile *projectile);
-void				ft_menu(t_cube *cube);
 void				ft_settings(t_cube *cube);
 void				ft_crosshair_color(t_cube *cube);
 void				ft_fov_slider(t_cube *cube);

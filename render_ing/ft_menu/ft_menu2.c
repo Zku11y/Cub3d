@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_menu2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:23 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:13:24 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 15:26:40 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,7 @@ void	ft_update_screen_buff(t_cube *cube, mlx_texture_t *texture, int new_w,
 	cube->screen_width_buff = new_w;
 	cube->screen_height = cube->screen_height_buff / cube->ups;
 	cube->screen_width = cube->screen_width_buff / cube->ups;
+	cube->transition = (cube->screen_width_buff / 2);
+	cube->trans_dst = cube->transition;
 	ft_updated_buff_init(cube);
 }

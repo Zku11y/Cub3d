@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_menu3.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:56:57 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 15:29:09 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	ft_res(t_cube *cube)
 			ft_update_screen_buff(cube, cube->menu.settings.res._480, 854, 480);
 	}
 	ft_renderer(cube, cube->menu.settings.res.texture, 0, 0);
+	printf("screen_res_buff : (%d, %d)\n", cube->screen_width_buff,
+		cube->screen_height_buff);
 }
 
 void	ft_crosshair_color2(t_cube *cube, t_vars6 *vars)
@@ -61,14 +63,13 @@ void	ft_crosshair_color2(t_cube *cube, t_vars6 *vars)
 		vars->j = 0;
 		while (vars->j < (int)cube->crosshair->height)
 		{
-			vars->i = 0;
-			while (vars->i < (int)cube->crosshair->width)
+			vars->i = -1;
+			while (++(vars->i) < (int)cube->crosshair->width)
 			{
 				vars->index = vars->j * cube->crosshair->width + vars->i;
 				if (vars->crosshair[vars->index]
 					== (uint32_t)cube->menu.settings.crosshair.color)
 					vars->crosshair[vars->index] = vars->color;
-				vars->i++;
 			}
 			vars->j++;
 		}

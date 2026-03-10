@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:21 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:05:11 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 15:27:02 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	ft_settings_2(t_cube *cube, int mouse_x, int mouse_y)
 		&& mouse_x < (cube->menu.settings.fov.slider_end_x)
 		&& mouse_x > (cube->menu.settings.fov.slider_start_x))
 		cube->menu.settings.mouse_held = FOV_SLIDER;
-	else if (mouse_x > cube->menu.settings.res.start_x_1080
+	if (mouse_x > cube->menu.settings.res.start_x_1080
 		&& mouse_y > cube->menu.settings.res.start_y_1080_900
 		&& mouse_x < cube->menu.settings.res.end_x_480
 		&& mouse_y < cube->menu.settings.res.end_y_480)
