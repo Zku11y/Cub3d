@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_pars.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:05:20 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/10 00:34:06 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 03:46:00 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	ts_free_one_nomap(t_nc *nu)
 	free(nu->imgs[PR]);
 	free(nu->imgs[EN]);
 	free(nu->imgs[ED]);
+	free(nu->imgs[HP]);
 	free(nu);
 }
 
