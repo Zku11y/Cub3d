@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/10 20:03:27 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:47:24 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -899,3 +899,4 @@ void				hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double a
 void 				ft_clean(t_cube *cube, t_nc *nu, int flag);
 void 				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path);
 void				ft_rectangle_prev(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, t_colour color);
+t_vect2				calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray);

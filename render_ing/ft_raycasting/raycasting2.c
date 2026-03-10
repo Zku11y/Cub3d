@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:55:47 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 01:38:00 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:50:06 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,29 +53,29 @@ void	check_collision2(t_cube *cube, t_vect2 *cords, t_ray *ray,
 bool	check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert,
 		t_ray *ray)
 {
-	t_vect2	grid_cords;
+	t_vect2	gc;
 
-	grid_cords.x = 0;
-	grid_cords.y = 0;
+	gc.x = 0;
+	gc.y = 0;
 	if (hori_vert == HORI)
-		check_collision1(cube, cords, ray, &grid_cords);
+		check_collision1(cube, cords, ray, &gc);
 	else
-		check_collision2(cube, cords, ray, &grid_cords);
-	if ((int)grid_cords.x >= cube->map_x)
-		grid_cords.x = cube->map_x - 1;
-	if ((int)grid_cords.y >= cube->map_y)
-		grid_cords.y = cube->map_y - 1;
-	if (cube->map[(int)grid_cords.y][(int)grid_cords.x] == '1'){
-		if(hori_vert == HORI && ray->y_dir == DOWN)
+		check_collision2(cube, cords, ray, &gc);
+	if ((int)gc.x >= cube->map_x)
+		gc.x = cube->map_x - 1;
+	if ((int)gc.y >= cube->map_y)
+		gc.y = cube->map_y - 1;
+	if (cube->map[(int)gc.y][(int)gc.x] == '1')
+	{
+		if (hori_vert == HORI && ray->y_dir == DOWN)
 			ray->texture = cube->nu->txtrs[0];
-		else if(hori_vert == HORI && ray->y_dir == UP)
+		else if (hori_vert == HORI && ray->y_dir == UP)
 			ray->texture = cube->nu->txtrs[1];
-		else if(hori_vert == VERT && ray->x_dir == LEFT)
+		else if (hori_vert == VERT && ray->x_dir == LEFT)
 			ray->texture = cube->nu->txtrs[2];
-		else if(hori_vert == VERT && ray->x_dir == RIGHT)
+		else if (hori_vert == VERT && ray->x_dir == RIGHT)
 			ray->texture = cube->nu->txtrs[3];
-		return (cords->grid_x = grid_cords.x, cords->grid_y = grid_cords.y,
-			true);
+		return (cords->grid_x = gc.x, cords->grid_y = gc.y, true);
 	}
 	return (false);
 }

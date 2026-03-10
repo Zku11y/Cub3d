@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:17 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:28:41 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:50:33 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,7 @@ void	ft_ray_init(t_cube *cube, t_ray *ray, double angle)
 		ray->angle = angle - PI;
 	else if (ray->y_dir == DOWN && ray->x_dir == LEFT)
 		ray->angle = PI - angle;
-
-		hori = hori_first_point(cube, ray);
+	hori = hori_first_point(cube, ray);
 	vert = vert_first_point(cube, ray);
 	ray->end = calc_length(cube, hori, vert, ray);
 }

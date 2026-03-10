@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:15 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 16:49:38 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 20:54:03 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,6 @@ void	ft_draw_world(t_cube *cube)
 	int		i;
 
 	start.x = (cube->screen_width - (cube->line_girth * cube->res)) / 2;
-	ft_rectangle(cube, (t_vect2){0, 0, 0, 0}, (t_vect2){start.x,
-		cube->screen_height, 0, 0}, 0x000000ff);
-	ft_rectangle(cube, (t_vect2){cube->screen_width - start.x, 0, 0, 0},
-		(t_vect2){cube->screen_width, cube->screen_height, 0, 0}, 0x000000ff);
 	i = 0;
 	while (i <= cube->res)
 	{
@@ -122,14 +118,6 @@ void	ft_draw_rays(t_cube *cube)
 			vars.rayAngle -= 2 * PI;
 		cube->rays[vars.i].real_angle = vars.rayAngle;
 		ft_ray_init(cube, &(cube->rays[vars.i]), vars.rayAngle);
-		// if(vars.rayAngle <= (PI / 4.0) && vars.rayAngle > 7.0 * (PI / 4.0))
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[2];
-		// if(vars.rayAngle <= 7.0 * (PI / 4.0) && vars.rayAngle > 5.0 * (PI / 4.0))
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[1];
-		// if(vars.rayAngle <= 5.0 * (PI / 4.0) && vars.rayAngle > 3.0 * (PI / 4.0))
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[3];
-		// else
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[0];
 		vars.i++;
 	}
 }
