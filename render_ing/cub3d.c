@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:34:04 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 02:06:34 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,9 @@ int	main(int ac, char **av)
 {
 	t_nc	*nu;
 	t_cube	*cube;
-	int		y;
-	int		x;
 
 	nu = NULL;
+	atexit(feet);
 	if (ac < 2)
 		return (1);
 	cube = ts_calloc(sizeof(t_cube), 1);
@@ -76,6 +75,7 @@ int	main(int ac, char **av)
 	nu = ts_pars(&av[1]);
 	if (!nu)
 		return (1);
+
 	cube->nu = nu;
 	cube->map = nu->map;
 	ft_init(cube, nu);

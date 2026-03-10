@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_menu3.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:15:52 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:56:57 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,17 @@ void	ft_crosshair_color2(t_cube *cube, t_vars6 *vars)
 	if (mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT))
 	{
 		vars->crosshair = (uint32_t *)cube->crosshair->pixels;
-		vars->i = 0;
 		vars->j = 0;
 		while (vars->j < (int)cube->crosshair->height)
 		{
 			vars->i = 0;
-			while (vars->i++ < (int)cube->crosshair->width)
+			while (vars->i < (int)cube->crosshair->width)
 			{
 				vars->index = vars->j * cube->crosshair->width + vars->i;
 				if (vars->crosshair[vars->index]
 					== (uint32_t)cube->menu.settings.crosshair.color)
 					vars->crosshair[vars->index] = vars->color;
+				vars->i++;
 			}
 			vars->j++;
 		}

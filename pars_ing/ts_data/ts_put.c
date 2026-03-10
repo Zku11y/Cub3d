@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_put.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:26:54 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 23:20:40 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 02:21:06 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_nc	*ts_put(t_teto *teto)
 	{
 		nu->imgs[i] = ts_get_img(teto, i);
 		if (!nu->imgs[i])
-			return (ts_free_one_nomap(nu), NULL);
+			return (ts_free_one_nomap(nu), ts_cln_pngs(nu), NULL);
 		i++;
 	}
 	return (nu);
