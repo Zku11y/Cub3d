@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:55:52 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 17:52:47 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:11:15 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,29 @@ void	hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray,
 		else
 			start->x = start->x - add;
 	}
+}
+
+void	ft_limit_cords(t_cube *cube, t_vect2 *len)
+{
+	if (len->x > cube->map_x * GRID_SIZE)
+		len->x = cube->map_x * GRID_SIZE;
+	else if (len->x < 0)
+		len->x = 0;
+	if (len->y > cube->map_y * GRID_SIZE)
+		len->y = cube->map_y * GRID_SIZE;
+	else if (len->y < 0)
+		len->y = 0;
+}
+
+bool	ft_check_limits(t_cube *cube, t_vect2 len)
+{
+	if (len.x > cube->map_x * GRID_SIZE)
+		return (true);
+	else if (len.x < 0)
+		return (true);
+	if (len.y > cube->map_y * GRID_SIZE)
+		return (true);
+	else if (len.y < 0)
+		return (true);
+	return (false);
 }

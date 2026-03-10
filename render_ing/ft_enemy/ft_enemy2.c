@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:57 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 22:22:49 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:51:38 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,7 @@ bool	ft_enemy2(t_cube *cube, t_enemy *enemy, mlx_texture_t **texture,
 	return (true);
 }
 
-bool	ft_enemy3(t_cube *cube, t_enemy *enemy,
-		t_vars10 *vars)
+bool	ft_enemy3(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
 {
 	enemy->player_dst = sqrt((cube->player.x - enemy->x) * (cube->player.x
 				- enemy->x) + (cube->player.y - enemy->y) * (cube->player.y
@@ -68,8 +67,7 @@ bool	ft_enemy3(t_cube *cube, t_enemy *enemy,
 	return (true);
 }
 
-bool	ft_enemy4(t_cube *cube, t_enemy *enemy,
-		t_vars10 *vars)
+bool	ft_enemy4(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
 {
 	if (enemy->delay == true)
 	{
@@ -132,8 +130,8 @@ void	ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture)
 	t_vars10	vars;
 
 	if (!ft_enemy2(cube, enemy, &texture, &vars) || !ft_enemy3(cube, enemy,
-			 &vars) || !ft_enemy4(cube, enemy, &vars)
-		|| !ft_enemy5(cube, enemy, texture, &vars))
+			&vars) || !ft_enemy4(cube, enemy, &vars) || !ft_enemy5(cube, enemy,
+			texture, &vars))
 		return ;
 	if (vars.end_x > cube->screen_width)
 		vars.end_x = cube->screen_width;

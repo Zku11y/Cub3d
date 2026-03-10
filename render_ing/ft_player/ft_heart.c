@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 22:22:30 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:07:09 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,36 +41,6 @@ void	ft_heart(t_cube *cube)
 	}
 }
 
-bool	ft_health2(t_cube *cube, t_enemy *enemy,
-		t_vars10 *vars)
-{
-	if (vars->player_dst < HITBOX_DST)
-	{
-		cube->flash.r = 0.2;
-		cube->flash.g = 3.0;
-		cube->flash.b = 0.2;
-		cube->player.HP += 50;
-		if (cube->player.HP > MAX_HP)
-			cube->player.HP = MAX_HP;
-		return (enemy->health_spawn = false, false);
-	}
-	vars->angle_diff = atan2(vars->pos_y - cube->player.y, vars->pos_x
-			- cube->player.x);
-	vars->tetha_delta = vars->angle_diff - cube->player.angle;
-	while (vars->tetha_delta > PI)
-		vars->tetha_delta -= 2 * PI;
-	while (vars->tetha_delta < -PI)
-		vars->tetha_delta += 2 * PI;
-	vars->midX = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
-			* cube->proj_dst);
-	vars->dst = sqrt((vars->pos_x - cube->player.x) * (vars->pos_x
-				- cube->player.x) + (vars->pos_y - cube->player.y)
-			* (vars->pos_y - cube->player.y)) * cos(vars->tetha_delta);
-	if (vars->dst < 0.1)
-		return (false);
-	return (true);
-}
-
 void	ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 		t_vars10 *vars)
 {
@@ -99,35 +69,32 @@ void	ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 	}
 }
 
-void ft_doors(t_cube *cube){
-	double dx;
-	double dy;
-	double player_dst_1;
-	double player_dst_2;
+void	ft_doors(t_cube *cube)
+{
+	double	dx;
+	double	dy;
+	double	player_dst_1;
+	double	player_dst_2;
 
-    dx = cube->player.x - ((cube->nu->start->d_x * GRID_SIZE) + (GRID_SIZE / 2.0));
-    dy = cube->player.y - ((cube->nu->start->d_y * GRID_SIZE) + (GRID_SIZE / 2.0));
-    player_dst_1 = sqrt((dx * dx) + (dy * dy));
-
-    dx = cube->player.x - ((cube->nu->end->d_x * GRID_SIZE) + (GRID_SIZE / 2.0));
-    dy = cube->player.y - ((cube->nu->end->d_y * GRID_SIZE) + (GRID_SIZE / 2.0));
-    player_dst_2 = sqrt((dx * dx) + (dy * dy));
-
-    // printf("player_dst_1 : %lf, door : (%d, %d), player : (%lf, %lf)\n", 
-    //        player_dst_1, cube->nu->start->d_x, cube->nu->start->d_y, 
-    //        cube->player.x, cube->player.y);
-
-    if (player_dst_1 < 30.0)
-        cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = '0';
-    else
-        cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = 'D';
-
-    if (player_dst_2 < 30.0)
-        cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = '0';
-    else
-        cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = 'D';
+	dx = cube->player.x - ((cube->nu->start->d_x * GRID_SIZE) + (GRID_SIZE
+				/ 2.0));
+	dy = cube->player.y - ((cube->nu->start->d_y * GRID_SIZE) + (GRID_SIZE
+				/ 2.0));
+	player_dst_1 = sqrt((dx * dx) + (dy * dy));
+	dx = cube->player.x - ((cube->nu->end->d_x * GRID_SIZE) + (GRID_SIZE
+				/ 2.0));
+	dy = cube->player.y - ((cube->nu->end->d_y * GRID_SIZE) + (GRID_SIZE
+				/ 2.0));
+	player_dst_2 = sqrt((dx * dx) + (dy * dy));
+	if (player_dst_1 < 30.0)
+		cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = '0';
+	else
+		cube->nu->map[cube->nu->start->d_y][cube->nu->start->d_x] = 'D';
+	if (player_dst_2 < 30.0)
+		cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = '0';
+	else
+		cube->nu->map[cube->nu->end->d_y][cube->nu->end->d_x] = 'D';
 }
-
 
 void	ft_mouvement1(t_cube *cube)
 {
@@ -171,5 +138,4 @@ void	ft_mouvement2(t_cube *cube)
 			cube->dst_camera_h = CAM_H / 2.0;
 		}
 	}
-
 }

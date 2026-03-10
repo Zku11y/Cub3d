@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:00:47 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:58:18 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	if (cube->mlx == NULL)
 	{
 		perror("mlx init error :");
-		ft_clean(cube, cube->nu, 1); // call ft_clean
+		ft_clean(cube, cube->nu, 1);
 	}
 	cube->image = mlx_new_image(cube->mlx, cube->screen_width_buff,
 			cube->screen_height_buff);
@@ -37,7 +37,7 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	{
 		mlx_terminate(cube->mlx);
 		perror("image init error :");
-		ft_clean(cube, cube->nu, 1);  // call ft_clean
+		ft_clean(cube, cube->nu, 1);
 	}
 }
 

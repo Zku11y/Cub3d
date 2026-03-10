@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_menu.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:21 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 16:55:39 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:05:11 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ void	ft_menu_2(t_cube *cube, t_vars5 vars, int *x)
 	vars.pixel_cords = (vars.y * 4 * cube->screen_width_buff) + (vars.x * 4);
 	vars.title_cords = (vars.tex_y * 4 * vars.texture->width) + (vars.tex_x
 			* 4);
-	if (vars.tex_x >= (int)vars.texture->width || vars.tex_y >= (int)vars.texture->height
+	if (vars.tex_x >= (int)vars.texture->width
+		|| vars.tex_y >= (int)vars.texture->height
 		|| vars.texture->pixels[vars.tex_y * 4 * vars.texture->width
 			+ vars.tex_x * 4 + 3] < 127)
 		return ((void)(*x)++);
@@ -56,12 +57,7 @@ void	ft_menu_3(t_cube *cube, t_vars5 vars)
 		cube->state = GAME;
 		cube->trans_dst = 0;
 	}
-	if (mlx_is_mouse_down(cube->mlx, MLX_MOUSE_BUTTON_LEFT)
-		&& ((double)vars.mouse_x > ((double)cube->screen_width_buff * 0.92)
-			&& (double)vars.mouse_x < ((double)cube->screen_width_buff * 0.97))
-		&& ((double)vars.mouse_y > ((double)cube->screen_height_buff * 0.85))
-		&& ((double)vars.mouse_y < (double)cube->screen_height_buff * 0.95))
-		cube->menu.state = 1;
+	ft_menu31(cube, vars);
 }
 
 void	ft_menu(t_cube *cube)

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:17 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 23:38:46 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:14:09 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,22 @@
 
 void	ft_draw_texture2(t_cube *cube, t_ray *ray, t_vars11 *vars)
 {
-	while (vars->start.y < cube->screen_height && vars->start.y < vars->end.y
-		&& vars->cords.y < ray->texture->height)
+	if (!check_screen_limits(cube, vars->start))
 	{
-		if (!check_screen_limits(cube, vars->start))
-		{
-			vars->k = ((int)vars->cords.x * ray->texture->bytes_per_pixel)
-				+ (ray->texture->width * ray->texture->bytes_per_pixel
-					* (int)vars->cords.y);
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 0] = (ray->texture->pixels[vars->k
-				+ 0] * (vars->tmp)) + (0x33 * (1.0 - vars->tmp));;
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 1] = (ray->texture->pixels[vars->k
-				+ 1] * (vars->tmp)) + (0x33 * (1.0 - vars->tmp));;
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 2] = (ray->texture->pixels[vars->k
-				+ 2] * (vars->tmp)) + (0x33 * (1.0 - vars->tmp));
-			cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
-				+ ((int)vars->start.x * 4) + 3] = ray->texture->pixels[vars->k
-				+ 3];
-		}
-		vars->cords.y += vars->ratio.y;
-		vars->start.y++;
+		vars->k = ((int)vars->cords.x * ray->texture->bytes_per_pixel)
+			+ (ray->texture->width * ray->texture->bytes_per_pixel
+				* (int)vars->cords.y);
+		cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+			+ ((int)vars->start.x * 4) + 0] = (ray->texture->pixels[vars->k + 0]
+				* (vars->tmp)) + (0x33 * (1.0 - vars->tmp));
+		cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+			+ ((int)vars->start.x * 4) + 1] = (ray->texture->pixels[vars->k + 1]
+				* (vars->tmp)) + (0x33 * (1.0 - vars->tmp));
+		cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+			+ ((int)vars->start.x * 4) + 2] = (ray->texture->pixels[vars->k + 2]
+				* (vars->tmp)) + (0x33 * (1.0 - vars->tmp));
+		cube->prev_buffer[(cube->screen_width * (int)vars->start.y * 4)
+			+ ((int)vars->start.x * 4) + 3] = ray->texture->pixels[vars->k + 3];
 	}
 }
 
@@ -72,7 +65,13 @@ void	ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end)
 		vars.start.y = 0;
 	}
 	ft_draw_texture1(cube, ray, &vars);
-	ft_draw_texture2(cube, ray, &vars);
+	while (vars.start.y < cube->screen_height && vars.start.y < vars.end.y
+		&& vars.cords.y < ray->texture->height)
+	{
+		ft_draw_texture2(cube, ray, &vars);
+		vars.cords.y += vars.ratio.y;
+		vars.start.y++;
+	}
 }
 
 void	ft_ray_init(t_cube *cube, t_ray *ray, double angle)
@@ -97,8 +96,7 @@ void	ft_ray_init(t_cube *cube, t_ray *ray, double angle)
 		ray->angle = angle - PI;
 	else if (ray->y_dir == DOWN && ray->x_dir == LEFT)
 		ray->angle = PI - angle;
-
-		hori = hori_first_point(cube, ray);
+	hori = hori_first_point(cube, ray);
 	vert = vert_first_point(cube, ray);
 	ray->end = calc_length(cube, hori, vert, ray);
 }

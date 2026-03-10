@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:00 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 22:42:27 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:56:43 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,20 +108,7 @@ void	ft_projectile5(t_cube *cube, t_projectile *projectile, t_vars10 *vars)
 			+ (projectile->texture->width * projectile->texture->bytes_per_pixel
 				* vars->y);
 		if (projectile->texture->pixels[vars->k + 3] > 128)
-		{
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4)
-				+ 0] = (projectile->texture->pixels[vars->k + 0] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4)
-				+ 1] = (projectile->texture->pixels[vars->k + 1] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4)
-				+ 2] = (projectile->texture->pixels[vars->k + 2] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
-			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
-				+ ((int)vars->start_x * 4)
-				+ 3] = projectile->texture->pixels[vars->k + 3];
-		}
+			ft_projectile51(cube, projectile, vars);
 	}
 	vars->start_y++;
 }

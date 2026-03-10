@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tilt.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:19 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:38:50 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:15:36 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ void	ft_tilt_2(t_cube *cube)
 
 void	ft_tilt_3(t_cube *cube, int new_dst, int prev_dst)
 {
-	if(new_dst >= (cube->screen_height - cube->tilt_addition_height) * (cube->screen_width - cube->tilt_addition_width) * 4)
-		return;
-	if(prev_dst >= cube->screen_height * cube->screen_width * 4)
-		return;
+	if (new_dst >= (cube->screen_height - cube->tilt_addition_height)
+		* (cube->screen_width - cube->tilt_addition_width) * 4)
+		return ;
+	if (prev_dst >= cube->screen_height * cube->screen_width * 4)
+		return ;
 	cube->new_buffer[new_dst + 0] = (uint8_t)cube->prev_buffer[prev_dst + 0]
 		* cube->flash.r;
 	if ((uint8_t)cube->prev_buffer[prev_dst + 0] * cube->flash.r > 255)

@@ -1,11 +1,11 @@
 
-WA ./backrooms_1.png
-FL ./carpenter.png
-CI ./ceiling_tiles_color.png
-PR ./middle_fingers.png
-EN ./miku.png
-ED ./job_app.png
-HP ./heart_2.png
+WA ./as/backrooms_1.png
+FL ./as/Concrete_02_Grey_1.png
+CI ./as/ceiling_tiles_color.png
+PR ./as/crosshair_2.png
+EN ./as/miku.png
+ED ./as/Brick_Wall.png
+HP ./as/white_monster_2.png
 
 111111111111111111111111111111111111111111111
 100000000010000000000000000001000000000000001

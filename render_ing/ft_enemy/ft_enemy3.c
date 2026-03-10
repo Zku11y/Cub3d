@@ -6,14 +6,13 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:58 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 22:30:23 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:52:19 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_enemy6(t_cube *cube, mlx_texture_t *texture,
-		t_vars10 *vars)
+void	ft_enemy6(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars)
 {
 	if (vars->y < 0)
 		vars->y = 0;
@@ -26,13 +25,13 @@ void	ft_enemy6(t_cube *cube, mlx_texture_t *texture,
 		{
 			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
 				+ ((int)vars->start_x * 4) + 0] = (texture->pixels[vars->k + 0]
-				* vars->tmp) + (0x33 * (1.0 - vars->tmp));
+					* vars->tmp) + (0x33 * (1.0 - vars->tmp));
 			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
 				+ ((int)vars->start_x * 4) + 1] = (texture->pixels[vars->k + 1]
-				* vars->tmp) + (0x33 * (1.0 - vars->tmp));
+					* vars->tmp) + (0x33 * (1.0 - vars->tmp));
 			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
 				+ ((int)vars->start_x * 4) + 2] = (texture->pixels[vars->k + 2]
-				* vars->tmp) + (0x33 * (1.0 - vars->tmp));
+					* vars->tmp) + (0x33 * (1.0 - vars->tmp));
 			cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
 				+ ((int)vars->start_x * 4) + 3] = texture->pixels[vars->k + 3];
 		}
@@ -40,8 +39,7 @@ void	ft_enemy6(t_cube *cube, mlx_texture_t *texture,
 	vars->start_y++;
 }
 
-void	ft_enemy7(t_cube *cube, mlx_texture_t *texture,
-		t_vars10 *vars)
+void	ft_enemy7(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars)
 {
 	while (vars->start_x < vars->end_x)
 	{

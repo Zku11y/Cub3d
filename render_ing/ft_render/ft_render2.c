@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:15 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 17:09:41 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:14:26 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	ft_ups(t_cube *cube, mlx_image_t *image)
 	vars.screen_H = cube->screen_height;
 	vars.screen_W = cube->screen_width;
 	ft_ups2(cube, &vars);
-	
 	while (vars.new_y < cube->screen_height_buff && vars.prev_y < vars.screen_H)
 	{
 		vars.new_x = 0;
@@ -123,14 +122,6 @@ void	ft_draw_rays(t_cube *cube)
 			vars.rayAngle -= 2 * PI;
 		cube->rays[vars.i].real_angle = vars.rayAngle;
 		ft_ray_init(cube, &(cube->rays[vars.i]), vars.rayAngle);
-		// if(vars.rayAngle <= (PI / 4.0) && vars.rayAngle > 7.0 * (PI / 4.0))
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[2];
-		// if(vars.rayAngle <= 7.0 * (PI / 4.0) && vars.rayAngle > 5.0 * (PI / 4.0))
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[1];
-		// if(vars.rayAngle <= 5.0 * (PI / 4.0) && vars.rayAngle > 3.0 * (PI / 4.0))
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[3];
-		// else
-		// 	cube->rays[vars.i].texture = cube->nu->txtrs[0];
 		vars.i++;
 	}
 }

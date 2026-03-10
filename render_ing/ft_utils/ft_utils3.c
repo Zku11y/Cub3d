@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:49 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 16:55:10 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:27:20 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,25 @@ void	ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords,
 		start_y++;
 	}
 }
-void ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path){
-	if(!path || !tex_buff)
+
+void	calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray)
+{
+	ray->length = len_vert;
+	if (ray->vert_obstacle == 'V')
+		ray->texture = cube->nu->txtrs[ED];
+	else if (ray->x_dir == RIGHT)
+		ray->texture = cube->nu->txtrs[WA];
+	else
+		ray->texture = cube->nu->txtrs[WA];
+	if (ray->x_dir == RIGHT)
+		ray->normal_dst = fmod(vert.y, GRID_SIZE) / GRID_SIZE;
+	else
+		ray->normal_dst = 1 - (fmod(vert.y, GRID_SIZE) / GRID_SIZE);
+}
+
+void	ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path)
+{
+	if (!path || !tex_buff)
 		ft_clean(cube, cube->nu, 1);
 	*tex_buff = mlx_load_png(path);
 }

@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/09 23:33:43 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:26:09 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -900,3 +900,6 @@ void				vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double a
 void				hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);
 void 				ft_clean(t_cube *cube, t_nc *nu, int flag);
 void 				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path);
+void				ft_projectile51(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
+void				ft_menu31(t_cube *cube, t_vars5 vars);
+void				calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray);

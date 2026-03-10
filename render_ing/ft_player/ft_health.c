@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_health.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:54 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:13:29 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:07:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_health4(t_cube *cube, mlx_texture_t *texture,
-		t_vars10 *vars)
+void	ft_health4(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars)
 {
 	vars->k = (vars->x * texture->bytes_per_pixel) + (texture->width
 			* texture->bytes_per_pixel * vars->y);
@@ -35,8 +34,7 @@ void	ft_health4(t_cube *cube, mlx_texture_t *texture,
 	}
 }
 
-void	ft_health5(t_cube *cube, mlx_texture_t *texture,
-		t_vars10 *vars)
+void	ft_health5(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars)
 {
 	vars->start_y = vars->const_y;
 	vars->x = (int)vars->tex_x;
@@ -89,6 +87,35 @@ bool	ft_health6(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 		vars->end_x = cube->screen_width;
 	if (vars->end_y > cube->screen_height)
 		vars->end_y = cube->screen_height;
+	return (true);
+}
+
+bool	ft_health2(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
+{
+	if (vars->player_dst < HITBOX_DST)
+	{
+		cube->flash.r = 0.2;
+		cube->flash.g = 3.0;
+		cube->flash.b = 0.2;
+		cube->player.HP += 50;
+		if (cube->player.HP > MAX_HP)
+			cube->player.HP = MAX_HP;
+		return (enemy->health_spawn = false, false);
+	}
+	vars->angle_diff = atan2(vars->pos_y - cube->player.y, vars->pos_x
+			- cube->player.x);
+	vars->tetha_delta = vars->angle_diff - cube->player.angle;
+	while (vars->tetha_delta > PI)
+		vars->tetha_delta -= 2 * PI;
+	while (vars->tetha_delta < -PI)
+		vars->tetha_delta += 2 * PI;
+	vars->midX = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
+			* cube->proj_dst);
+	vars->dst = sqrt((vars->pos_x - cube->player.x) * (vars->pos_x
+				- cube->player.x) + (vars->pos_y - cube->player.y)
+			* (vars->pos_y - cube->player.y)) * cos(vars->tetha_delta);
+	if (vars->dst < 0.1)
+		return (false);
 	return (true);
 }
 

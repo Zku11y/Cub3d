@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_enemy.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:55 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:15:05 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:57:14 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,20 @@ void	ft_draw_proj(t_cube *cube)
 			ft_projectile(cube, &cube->projectiles[i]);
 		i++;
 	}
+}
+
+void	ft_projectile51(t_cube *cube, t_projectile *projectile, t_vars10 *vars)
+{
+	cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
+		+ ((int)vars->start_x * 4) + 0] = (projectile->texture->pixels[vars->k
+			+ 0] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
+	cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
+		+ ((int)vars->start_x * 4) + 1] = (projectile->texture->pixels[vars->k
+			+ 1] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
+	cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
+		+ ((int)vars->start_x * 4) + 2] = (projectile->texture->pixels[vars->k
+			+ 2] * vars->tmp) + (0x33 * (1.0 - vars->tmp));
+	cube->prev_buffer[(cube->screen_width * (int)vars->start_y * 4)
+		+ ((int)vars->start_x * 4) + 3] = projectile->texture->pixels[vars->k
+		+ 3];
 }
