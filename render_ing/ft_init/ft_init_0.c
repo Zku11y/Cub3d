@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 21:56:05 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:06:39 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,8 @@ void	ft_init_0(t_cube *cube, t_nc *nu)
 	cube->ups = UPS_RATE;
 	cube->screen_height_buff = SCREEN_HEIGHT_BUFF;
 	cube->screen_width_buff = SCREEN_WIDTH_BUFF;
-	cube->screen_height = (double)cube->screen_height_buff
-		/ (double)cube->ups;
-	cube->screen_width = (double)cube->screen_width_buff
-		/ (double)cube->ups;
+	cube->screen_height = (double)cube->screen_height_buff / (double)cube->ups;
+	cube->screen_width = (double)cube->screen_width_buff / (double)cube->ups;
 	cube->mini_map_size = 0.2 * cube->screen_width_buff;
 	cube->mini_map_grid_size = cube->mini_map_size / GRID_SIZE;
 	cube->res = cube->screen_width;
@@ -77,7 +75,7 @@ void	ft_init_2(t_cube *cube, t_nc *nu)
 		cube->player.angle = (PI / 2.0) + PI;
 	cube->state = MENU;
 	cube->prev_state = MENU;
-	ft_load_png(cube, &(cube->menu.title), "./menu_screen_1.png");
+	ft_load_png(cube, &(cube->menu.title), "./as/menu.png");
 	ft_load_png(cube, &(cube->menu.settings.background), "./sa/s_bg.png");
 	ft_load_png(cube, &(cube->menu.settings.fov.bar_1), "./sa/bar_1.png");
 	ft_load_png(cube, &(cube->menu.settings.bar_2), "./sa/bar_2.png");

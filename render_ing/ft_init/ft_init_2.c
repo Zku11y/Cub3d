@@ -6,7 +6,7 @@
 /*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 23:37:54 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:00:47 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	cube->texture4 = nu->txtrs[EN];
 	cube->texture5 = cube->nu->txtrs[HP];
 	cube->texture6 = cube->nu->txtrs[PR];
-	ft_load_png(cube, &(cube->texture_died), "./you_died.png");
-	ft_load_png(cube, &(cube->crosshair), "./crosshair_2.png");
+	ft_load_png(cube, &(cube->texture_died), "./as/you_died.png");
+	ft_load_png(cube, &(cube->crosshair), "./as/crosshair_2.png");
 	cube->line_girth = (int)(cube->screen_width / cube->res);
 	if (cube->line_girth == 0)
 		cube->line_girth = 1;

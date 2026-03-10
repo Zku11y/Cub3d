@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_menu3.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:18:28 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/10 00:15:52 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_res(t_cube *cube)
 				720);
 		else if (mouse_x > cube->menu.settings.res.start_x_480
 			&& mouse_x < cube->menu.settings.res.end_x_480)
-			ft_update_screen_buff(cube, cube->menu.settings.res._480, 720, 480);
+			ft_update_screen_buff(cube, cube->menu.settings.res._480, 854, 480);
 	}
 	ft_renderer(cube, cube->menu.settings.res.texture, 0, 0);
 }
