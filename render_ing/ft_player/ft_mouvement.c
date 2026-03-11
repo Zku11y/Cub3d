@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_mouvement.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:58 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:48:37 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:12:35 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_mouvement3(t_cube *cube, struct timeval *tv)
 }
 
 void	ft_mouvement4(t_cube *cube, double *max_cos_speed,
-		double *max_sin_speed, struct timeval *tv)
+		double *max_sin_speed)
 {
 	*max_cos_speed = cos(cube->player.angle) * cube->player.speed_mult
 		* cube->mlx->delta_time;
@@ -83,11 +83,10 @@ void	ft_mouvement6(t_cube *cube, double max_cos_speed, double max_sin_speed)
 	}
 }
 
-void	ft_mouvement(t_cube *cube, double max_cos_speed, double max_sin_speed,
-		struct timeval tv)
+void	ft_mouvement(t_cube *cube, double max_cos_speed, double max_sin_speed)
 {
 	ft_mouvement1(cube);
-	ft_mouvement4(cube, &max_cos_speed, &max_sin_speed, &tv);
+	ft_mouvement4(cube, &max_cos_speed, &max_sin_speed);
 	ft_mouvement5(cube, max_cos_speed, max_sin_speed);
 	ft_mouvement6(cube, max_cos_speed, max_sin_speed);
 	cube->player.current_speed_FB_X = ft_lerp_speed(cube->player.dst_speed_FB_X,

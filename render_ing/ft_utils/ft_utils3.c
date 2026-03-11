@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:49 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:54:28 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:11:48 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ unsigned long	ft_rand(unsigned long *seed)
 void	ft_rectangle_prev(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords,
 		t_colour color)
 {
-	uint32_t	*prev;
 
 	int (start_x), (start_y), (end_x), (end_y);
 	start_y = (int)(start_cords.y);
@@ -61,7 +60,7 @@ void	ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path)
 	*tex_buff = mlx_load_png(path);
 }
 
-t_vect2	calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray)
+void	calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray)
 {
 	ray->length = len_vert;
 	if (ray->x_dir == RIGHT)

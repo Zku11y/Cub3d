@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_render3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:17 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:50:33 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:19:06 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	ft_draw_texture2(t_cube *cube, t_ray *ray, t_vars11 *vars)
 	}
 }
 
-void	ft_draw_texture1(t_cube *cube, t_ray *ray, t_vars11 *vars)
+void	ft_draw_texture1(t_ray *ray, t_vars11 *vars)
 {
 	vars->cords.x = ray->texture->width * ray->normal_dst;
 	if (vars->cords.x < 0)
@@ -66,7 +66,7 @@ void	ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end)
 		vars.cords.y = vars.ratio.y * ((-1) * vars.start.y);
 		vars.start.y = 0;
 	}
-	ft_draw_texture1(cube, ray, &vars);
+	ft_draw_texture1(ray, &vars);
 	ft_draw_texture2(cube, ray, &vars);
 }
 

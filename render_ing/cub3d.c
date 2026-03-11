@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:41:52 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:18:36 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_game(t_cube *cube)
 {
-	ft_mouvement(cube, 0.0f, 0.0f, (struct timeval){0, 0});
+	ft_mouvement(cube, 0.0f, 0.0f);
 	ft_draw_rays(cube);
 	ft_rectangle_prev(cube, (t_vect2){0, 0, 0, 0},
 		(t_vect2){cube->screen_width_buff, cube->screen_height_buff / 2, 0, 0},
@@ -71,8 +71,6 @@ int	main(int ac, char **av)
 {
 	t_nc	*nu;
 	t_cube	*cube;
-	int		y;
-	int		x;
 
 	nu = NULL;
 	if (ac < 2)

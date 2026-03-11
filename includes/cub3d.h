@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/10 20:47:24 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:12:51 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ void free_nu(t_nc *nu);
 t_nc *ts_make_one(int fd);
 void ts_cln_pngs(t_nc *nu);
 void    free_mp(t_mp *mp);
+int			ts_edg_chk(char **map, int m_x, int m_y);
+char	*get_lain_with_space(int fd);
 
 
 //-----------------------------------------------------------------
@@ -821,7 +823,7 @@ void				ft_map_init(t_cube *cube, t_nc *nu);
 void				state_machine(t_cube *cube);
 void				state_transition(t_cube *cube, t_state dest);
 void 				ft_game(t_cube *cube);
-void				ft_mouvement(t_cube *cube, double max_cos_speed, double	max_sin_speed, struct timeval tv);
+void				ft_mouvement(t_cube *cube, double max_cos_speed, double	max_sin_speed);
 void    			ft_draw_rays(t_cube *cube);
 void    			ft_floor_ceiling(t_cube *cube);
 void    			ft_draw_world(t_cube *cube);
@@ -899,4 +901,4 @@ void				hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double a
 void 				ft_clean(t_cube *cube, t_nc *nu, int flag);
 void 				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path);
 void				ft_rectangle_prev(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, t_colour color);
-t_vect2				calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray);
+void				calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray);
