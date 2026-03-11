@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heart.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 19:51:04 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:23:02 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,6 @@ void	ft_mouvement1(t_cube *cube)
 {
 	ft_turn(cube);
 	ft_angle_limit(&cube->player.angle);
-	cube->camera_h = ft_lerp_move(cube->dst_camera_h, cube->camera_h, 0.85);
-	if (mlx_is_key_down(cube->mlx, MLX_KEY_LEFT_SHIFT)
-		&& cube->player.move_state == WALK && (mlx_is_key_down(cube->mlx,
-				MLX_KEY_A) || mlx_is_key_down(cube->mlx, MLX_KEY_D)
-			|| mlx_is_key_down(cube->mlx, MLX_KEY_W)
-			|| mlx_is_key_down(cube->mlx, MLX_KEY_S)))
-	{
-		cube->player.dst_speed_mult = 1.5 * PLAYER_SPEED;
-		cube->player.move_state = SPRINT;
-	}
 	cube->player.speed_mult = ft_lerp_move(cube->player.dst_speed_mult,
 			cube->player.speed_mult, 0.9);
 	if (cube->player.move_state == SPRINT && !mlx_is_key_down(cube->mlx,

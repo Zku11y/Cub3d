@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/11 03:22:21 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:25:47 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,45 +110,27 @@ char		*get_lain_with_space(int fd);
 
 //-----------------------------------------------------------------
 
-# define UPS_RATE 4
-# define SCREEN_WIDTH_BUFF 1920
-# define SCREEN_HEIGHT_BUFF 1080
-# define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPS_RATE)
-# define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPS_RATE)
-# define RES SCREEN_WIDTH
+# define UPS_RATE 2
+# define SCREEN_WIDTH_BUFF 1280
+# define SCREEN_HEIGHT_BUFF 720
 # define FOV 70
 # define PI 3.14159265359
-# define RADIANT_RATE (PI / 180)
+# define RADIANT_RATE 0.01745329251
 # define WALL_DST 5
 # define TURN_SPEED 0.0015
 # define GRID_SIZE 32.0f
 # define PLAYER_SPEED 200.0f
 # define HORI 0
 # define VERT 1
-# define MAP_X 30
-# define MAP_Y 30
 # define MAX_DST 200
-# define PROJ_DST (SCREEN_WIDTH / 2.0) / tan((FOV / 2.0) * RADIANT_RATE)
-# define HALF_FOV_RAD tan((FOV / 2.0) * RADIANT_RATE)
-# define CAM_H (GRID_SIZE / 2.0)
+# define CAM_H 16.0f
 # define MAX_HP 200
-# define BLUR_MAX 0.06
-# define BLUR_MIN 0.5
-# define BLUR_LERP BLUR_MIN
+# define BLUR_LERP 0.5
 # define SPEED_LERP 0.1
 # define TILT_LERP 0.1
 # define FOV_LERP 0.01
 # define RECOIL_LERP 0.81
-# define MOVE_LERP 0.1
 # define FLASH_LERP 0.03
-# define LERP_LERP 0.01
-# define TRP_LERP 0.8
-# define MOVE_INCREASE (0.05 * SCREEN_HEIGHT)
-# define PITCH_MAX (SCREEN_HEIGHT + 100)
-# define MINI_MAP_X 50
-# define MINI_MAP_Y 50
-# define MAP_SIZE 100
-# define ENEMY_RADIUS 50.0
 # define ENEMY_SPEED 1
 # define ENEMY_NUM 15
 # define CROSSHAIR_LEN 7.0
@@ -160,8 +142,6 @@ char		*get_lain_with_space(int fd);
 # define HITBOX_DST 30
 # define TILT_ANGLE 2
 # define BLOOD_ANIM_DELAY 20
-# define MINI_MAP_SIZE 400.0f
-# define MINI_MAP_GRID_SIZE MINI_MAP_SIZE / GRID_SIZE
 
 typedef enum s_direction
 {
