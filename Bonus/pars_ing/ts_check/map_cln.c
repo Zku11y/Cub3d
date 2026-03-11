@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   map_cln.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:22:47 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/10 00:35:10 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:55:14 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	map_cln(char **map, int x, int y, t_elv *hi)
+void	map_cln(char **map)
 {
 	int	i;
 	int	j;
@@ -31,10 +31,8 @@ void	map_cln(char **map, int x, int y, t_elv *hi)
 	}
 }
 
-void	put_door(char **map, t_elv *hi)
+void	put_door(t_elv *hi)
 {
-	printf("IN::x%d,y%d\n", hi->x, hi->y);
-	write(1, "WTF\n", 4);
 	if (hi->door == 'N')
 	{
 		hi->d_x = hi->x;

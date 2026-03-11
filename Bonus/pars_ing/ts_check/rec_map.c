@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:13:08 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/11 01:49:44 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:55:45 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,11 +130,11 @@ int	rec_map(char **map, t_nc *nu)
 	m_s = go_rec(map, nu->start->y, nu->start->x, nu->start);
 	if (!m_s)
 		return (free(nu->start), free(nu->end), 1);
-	map_cln(map, nu->start->y, nu->start->x, nu->start);
+	map_cln(map);
 	if (get_path(map, nu->start, m_s))
 		return (free(m_s), free(nu->start), free(nu->end), 1);
-	put_door(map, nu->start);
-	put_door(map, nu->end);
+	put_door(nu->start);
+	put_door(nu->end);
 	free(m_s);
 	return (0);
 }

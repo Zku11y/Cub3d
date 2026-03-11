@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_pars.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:05:20 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/10 16:23:39 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:15:05 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_nc	*ts_nu(char *lain)
 
 	fd = ts_opn(lain);
 	if (fd == -1)
-		return (ts_putstr_fd("cant open\n", 2), NULL);
+		return (NULL);
 	nu = ts_make_one(fd);
 	close(fd);
 	if (!nu)

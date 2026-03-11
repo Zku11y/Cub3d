@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/11 19:43:01 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:56:44 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ t_nc				*ts_pars(char **arg);
 void				free_nu(t_nc *nu);
 t_nc				*ts_make_one(int fd);
 void				free_mp(t_mp *mp);
-void				map_cln(char **map, int x, int y, t_elv *hi);
-void				put_door(char **map, t_elv *hi);
+void				map_cln(char **map);
+void				put_door(t_elv *hi);
 int					ts_check_door(char **map, int x, int y);
 int					ts_check_elv(char **map);
 int					get_path(char **map, t_elv *elv, int *m_s);
@@ -752,14 +752,14 @@ void				set_screen_buff_limits(t_cube *cube, t_vect2 *len);
 
 void				ft_init_0(t_cube *cube, t_nc *nu);
 void				ft_init_1(t_cube *cube, t_nc *nu);
-void				ft_init_2(t_cube *cube, t_nc *nu);
+void				ft_init_2(t_cube *cube);
 void				ft_init_3(t_cube *cube);
 void				ft_init_4(t_cube *cube);
 void				ft_init_5(t_cube *cube);
 void				ft_init_6(t_cube *cube);
 void				ft_init_7(t_cube *cube);
 void				ft_init_8(t_cube *cube);
-void				ft_init_9(t_cube *cube, t_nc *nu);
+void				ft_init_9(t_cube *cube);
 void				ft_init_10(t_cube *cube, t_nc *nu);
 void				ft_init_11(t_cube *cube);
 

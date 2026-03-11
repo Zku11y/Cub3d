@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:05:20 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/10 03:46:00 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:15:56 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_nc	*ts_nu(char *lain)
 
 	fd = ts_opn(lain);
 	if (fd == -1)
-		return (ts_putstr_fd("cant open\n", 2), NULL);
+		return (NULL);
 	nu = ts_make_one(fd);
 	close(fd);
 	if (!nu)
@@ -74,7 +74,5 @@ t_nc	*ts_pars(char **arg)
 		nu = nu->next;
 		i++;
 	}
-	printf("DS::x%d,y%d\n", nu->start->d_x, nu->start->d_y);
-	printf("DE::x%d,y%d\n", nu->end->d_x, nu->end->d_y);
 	return (hd);
 }

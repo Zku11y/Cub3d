@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 17:55:23 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:59:39 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ void	ft_init(t_cube *cube, t_nc *nu)
 {
 	ft_init_0(cube, nu);
 	ft_init_1(cube, nu);
-	ft_init_2(cube, nu);
+	ft_init_2(cube);
 	ft_init_3(cube);
 	ft_init_4(cube);
 	ft_init_5(cube);
 	ft_init_6(cube);
 	ft_init_7(cube);
 	ft_init_8(cube);
-	ft_init_9(cube, nu);
+	ft_init_9(cube);
 	ft_init_10(cube, nu);
 	ft_init_11(cube);
 }
@@ -70,10 +70,10 @@ int	main(int ac, char **av)
 		return (1);
 	cube = ts_calloc(sizeof(t_cube), 1);
 	if (!cube)
-		return (1);
+		return (perror("Error\n"), 1);
 	nu = ts_pars(&av[1]);
 	if (!nu)
-		return (free(cube), 1);
+		return (ts_putstr_fd("Error\nInvalid file\n", 2), free(cube), 1);
 	cube->nu = nu;
 	cube->map = nu->map;
 	ft_init(cube, nu);

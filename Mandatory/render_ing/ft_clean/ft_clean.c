@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_clean.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 01:42:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:14:27 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:35:14 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,7 @@ void	ft_clean(t_cube *cube, t_nc *nu, int flag)
 		mlx_terminate(cube->mlx);
 	free_nu(nu);
 	free(cube);
+	if (flag == 1)
+		perror("Error\n");
 	exit(flag);
 }

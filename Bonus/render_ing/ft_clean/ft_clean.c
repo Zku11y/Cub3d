@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 01:42:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 01:28:19 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:59:56 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,7 @@ void	ft_clean(t_cube *cube, t_nc *nu, int flag)
 		mlx_terminate(cube->mlx);
 	free_nu(nu);
 	free(cube);
+	if (flag == 1)
+		perror("Error\n");
 	exit(flag);
 }

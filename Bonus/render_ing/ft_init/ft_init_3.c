@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:37 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:58:26 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:56:38 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
 
-void	ft_init_91(t_cube *cube, t_nc *nu, struct timeval tv)
+void	ft_init_91(t_cube *cube, struct timeval tv)
 {
 	cube->lerp_buffer = ts_calloc(cube->screen_height * cube->screen_width, 4);
 	if (!(cube->lerp_buffer))
@@ -38,7 +38,7 @@ void	ft_init_91(t_cube *cube, t_nc *nu, struct timeval tv)
 	cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 }
 
-void	ft_init_9(t_cube *cube, t_nc *nu)
+void	ft_init_9(t_cube *cube)
 {
 	struct timeval	tv;
 
@@ -62,5 +62,5 @@ void	ft_init_9(t_cube *cube, t_nc *nu)
 				- cube->tilt_addition_width), 4);
 	if (!(cube->projectiles) || !(cube->prev_buffer) || !(cube->new_buffer))
 		return (ft_clean(cube, cube->nu, 1));
-	ft_init_91(cube, nu, tv);
+	ft_init_91(cube, tv);
 }

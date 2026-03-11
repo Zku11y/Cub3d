@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 17:56:02 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:55:53 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,8 @@ void	ft_init_1(t_cube *cube, t_nc *nu)
 	cube->player.hit = false;
 }
 
-void	ft_init_2(t_cube *cube, t_nc *nu)
+void	ft_init_2(t_cube *cube)
 {
-	printf("who: %c\n", cube->nu->start->door);
 	if (cube->nu->start->door == 'E')
 		cube->player.angle = 0;
 	else if (cube->nu->start->door == 'W')

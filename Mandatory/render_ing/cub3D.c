@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 17:57:10 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:35:04 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,25 +62,20 @@ void	ft_init(t_cube *cube, t_nc *nu)
 	ft_init_11(cube);
 }
 
-void	feet(void)
-{
-	system("leaks cub3D");
-}
-
 int	main(int ac, char **av)
 {
 	t_nc	*nu;
 	t_cube	*cube;
 
 	nu = NULL;
-	if (ac < 2)
-		return (1);
+	if (ac != 2)
+		return (ts_putstr_fd("Error\nWrong args\n", 2), 1);
 	cube = ts_calloc(sizeof(t_cube), 1);
 	if (!cube)
-		return (1);
+		return (perror("Error\n"), 1);
 	nu = ts_pars(&av[1]);
 	if (!nu)
-		return (1);
+		return (ts_putstr_fd("Error\nInvalid file\n", 2), free(cube), 1);
 	cube->nu = nu;
 	cube->map = nu->map;
 	ft_init(cube, nu);

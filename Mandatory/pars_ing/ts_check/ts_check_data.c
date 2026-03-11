@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:15:29 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/11 01:41:26 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:12:28 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ts_cln_pngs(t_nc *nu)
 	int	i;
 
 	i = NO;
-	while (i < EA && nu->txtrs[i])
+	while (i <= EA && nu->txtrs[i])
 	{
 		mlx_delete_texture(nu->txtrs[i]);
 		i++;

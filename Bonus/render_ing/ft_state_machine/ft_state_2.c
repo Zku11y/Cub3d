@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 17:56:30 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 22:56:58 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,6 @@ void	ft_init_map1(t_cube *cube)
 
 void	ft_init_map(t_cube *cube)
 {
-	int	y;
-	int	x;
-
 	if (cube->nu->next == NULL)
 		return (ft_clean(cube, cube->nu, 0));
 	cube->nu = cube->nu->next;
