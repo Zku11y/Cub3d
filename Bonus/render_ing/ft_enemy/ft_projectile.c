@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_projectile.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:00 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:56:43 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 19:54:03 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool	ft_projectile2(t_cube *cube, t_projectile *projectile, t_vars10 *vars)
 			* (cube->player.y - projectile->y));
 	if (vars->player_dst < HITBOX_DST)
 	{
-		cube->player.HP -= projectile->DMG;
+		cube->player.hp -= projectile->dmg;
 		cube->player.hit = true;
 		projectile->in_use = 0;
 		return (false);
@@ -47,7 +47,7 @@ bool	ft_projectile3(t_cube *cube, t_projectile *projectile, t_vars10 *vars)
 		vars->tetha_delta -= 2 * PI;
 	while (vars->tetha_delta < -PI)
 		vars->tetha_delta += 2 * PI;
-	vars->midX = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
+	vars->midx = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
 			* cube->proj_dst);
 	vars->dst = sqrt((projectile->x - cube->player.x) * (projectile->x
 				- cube->player.x) + (projectile->y - cube->player.y)
@@ -63,7 +63,7 @@ bool	ft_projectile3(t_cube *cube, t_projectile *projectile, t_vars10 *vars)
 	vars->scale_ratio = projectile->texture->height / vars->height;
 	vars->proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / vars->dst)
 		* cube->proj_dst;
-	vars->start_x = vars->midX - (projectile->texture->width
+	vars->start_x = vars->midx - (projectile->texture->width
 			/ vars->scale_ratio) / 2;
 	return (true);
 }

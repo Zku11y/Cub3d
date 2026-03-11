@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 02:40:06 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:55:23 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_update(void *param)
 	if (cube->final_t - cube->init_t == 1)
 	{
 		printf("fps : %d, player HP : %d, player angle : %lf\n", cube->fps,
-			cube->player.HP, cube->player.angle);
+			cube->player.hp, cube->player.angle);
 		cube->init_t = cube->final_t;
 		cube->fps = 0;
 	}

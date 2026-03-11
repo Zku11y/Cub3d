@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_enemy3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:58 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:52:19 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 19:52:24 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir)
 	proj.y = enemy->y;
 	proj.dir = *dir;
 	proj.in_use = 1;
-	proj.DMG = enemy->DMG;
+	proj.dmg = enemy->dmg;
 	proj.texture = cube->texture6;
 	proj.dst_traveled = 0;
 	proj.speed = 7;

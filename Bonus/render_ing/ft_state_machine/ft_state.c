@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_state.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:33 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 15:22:00 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:56:24 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	state_game(t_cube *cube)
 	draw_crosshair(cube);
 	draw_grid(cube);
 	draw_player(cube);
-	if (cube->player.HP == 0)
+	if (cube->player.hp == 0)
 		return (cube->state = DIED, (void)(cube->trans_dst = 0));
 }
 

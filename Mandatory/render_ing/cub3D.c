@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.c                                            :+:      :+:    :+:   */
+/*   cub3D.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 03:18:15 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:57:10 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_update(void *param)
 	if (cube->final_t - cube->init_t == 1)
 	{
 		printf("fps : %d, player HP : %d\n", cube->fps,
-			cube->player.HP);
+			cube->player.hp);
 		cube->init_t = cube->final_t;
 		cube->fps = 0;
 	}

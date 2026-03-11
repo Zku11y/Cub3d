@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_mouvement2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:59 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/09 21:42:26 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:58:41 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ void	ft_mouvement_limits2(t_cube *cube, double *check_x, double *new_x,
 			cube->player.x = ((cube->player.grid_x + 1) * GRID_SIZE) - WALL_DST;
 		else
 			cube->player.x = ((cube->player.grid_x) * GRID_SIZE) + WALL_DST;
-		cube->player.current_speed_FB_X = 0;
-		cube->player.current_speed_LR_X = 0;
+		cube->player.current_speed_fb_x = 0;
+		cube->player.current_speed_lr_x = 0;
 	}
 	cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
 }
@@ -85,8 +85,8 @@ void	ft_mouvement_limits(t_cube *cube, double new_x, double new_y)
 			cube->player.y = ((cube->player.grid_y + 1) * GRID_SIZE) - WALL_DST;
 		else
 			cube->player.y = ((cube->player.grid_y) * GRID_SIZE) + WALL_DST;
-		cube->player.current_speed_FB_Y = 0;
-		cube->player.current_speed_LR_Y = 0;
+		cube->player.current_speed_fb_y = 0;
+		cube->player.current_speed_lr_y = 0;
 	}
 	cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_render2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:15 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:14:26 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 18:01:21 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ void	ft_ups2(t_cube *cube, t_vars8 *vars)
 	if (cube->state == GAME)
 	{
 		vars->prev = (uint32_t *)cube->new_buffer;
-		vars->screen_H = cube->screen_height - (cube->tilt_addition_height * 2);
-		vars->screen_W = cube->screen_width - (cube->tilt_addition_width * 2);
+		vars->screen_h = cube->screen_height - (cube->tilt_addition_height * 2);
+		vars->screen_w = cube->screen_width - (cube->tilt_addition_width * 2);
 	}
-	vars->iter_x = (double)vars->screen_W / (double)cube->screen_width_buff;
-	vars->iter_y = (double)vars->screen_H / (double)cube->screen_height_buff;
+	vars->iter_x = (double)vars->screen_w / (double)cube->screen_width_buff;
+	vars->iter_y = (double)vars->screen_h / (double)cube->screen_height_buff;
 	vars->prev_x = 0.0;
 	vars->prev_y = 0.0;
 	vars->new_x = 0;
@@ -34,18 +34,18 @@ void	ft_ups(t_cube *cube, mlx_image_t *image)
 
 	vars.new = (uint32_t *)image->pixels;
 	vars.prev = (uint32_t *)cube->prev_buffer;
-	vars.screen_H = cube->screen_height;
-	vars.screen_W = cube->screen_width;
+	vars.screen_h = cube->screen_height;
+	vars.screen_w = cube->screen_width;
 	ft_ups2(cube, &vars);
-	while (vars.new_y < cube->screen_height_buff && vars.prev_y < vars.screen_H)
+	while (vars.new_y < cube->screen_height_buff && vars.prev_y < vars.screen_h)
 	{
 		vars.new_x = 0;
 		vars.prev_x = 0.0;
 		while (vars.new_x < cube->screen_width_buff
-			&& vars.prev_x < vars.screen_W)
+			&& vars.prev_x < vars.screen_w)
 		{
 			vars.new[(vars.new_y * cube->screen_width_buff)
-				+ vars.new_x] = vars.prev[((int)vars.prev_y * vars.screen_W)
+				+ vars.new_x] = vars.prev[((int)vars.prev_y * vars.screen_w)
 				+ (int)vars.prev_x];
 			vars.new_x++;
 			vars.prev_x += vars.iter_x;
@@ -105,23 +105,23 @@ void	ft_draw_rays(t_cube *cube)
 {
 	t_vars12	vars;
 
-	vars.DirX = cos(cube->player.angle);
-	vars.DirY = sin(cube->player.angle);
-	vars.PlaneX = -vars.DirY * cube->half_fov_rad;
-	vars.PlaneY = vars.DirX * cube->half_fov_rad;
+	vars.dirx = cos(cube->player.angle);
+	vars.diry = sin(cube->player.angle);
+	vars.planex = -vars.diry * cube->half_fov_rad;
+	vars.planey = vars.dirx * cube->half_fov_rad;
 	vars.i = 0;
 	while (vars.i < cube->res)
 	{
-		vars.cameraX = 2.0 * vars.i / (double)cube->res - 1.0;
-		vars.rayDirX = vars.DirX + vars.PlaneX * vars.cameraX;
-		vars.rayDirY = vars.DirY + vars.PlaneY * vars.cameraX;
-		vars.rayAngle = atan2(vars.rayDirY, vars.rayDirX);
-		if (vars.rayAngle < 0)
-			vars.rayAngle += 2 * PI;
-		else if (vars.rayAngle > 2 * PI)
-			vars.rayAngle -= 2 * PI;
-		cube->rays[vars.i].real_angle = vars.rayAngle;
-		ft_ray_init(cube, &(cube->rays[vars.i]), vars.rayAngle);
+		vars.camerax = 2.0 * vars.i / (double)cube->res - 1.0;
+		vars.raydirx = vars.dirx + vars.planex * vars.camerax;
+		vars.raydiry = vars.diry + vars.planey * vars.camerax;
+		vars.rayangle = atan2(vars.raydiry, vars.raydirx);
+		if (vars.rayangle < 0)
+			vars.rayangle += 2 * PI;
+		else if (vars.rayangle > 2 * PI)
+			vars.rayangle -= 2 * PI;
+		cube->rays[vars.i].real_angle = vars.rayangle;
+		ft_ray_init(cube, &(cube->rays[vars.i]), vars.rayangle);
 		vars.i++;
 	}
 }

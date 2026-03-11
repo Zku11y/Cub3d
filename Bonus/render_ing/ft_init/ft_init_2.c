@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 02:32:40 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:56:17 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,12 @@ void	ft_init_11(t_cube *cube)
 
 void	ft_init_enemies_1(t_cube *cube, int i, mlx_texture_t *texture)
 {
-	cube->enemy[i].HP = 100;
+	cube->enemy[i].hp = 100;
 	cube->enemy[i].blood_frame_index = 0;
 	cube->enemy[i].dead = false;
 	cube->enemy[i].delay = false;
 	cube->enemy[i].atk_delay = 1;
-	cube->enemy[i].DMG = 20;
+	cube->enemy[i].dmg = 20;
 	cube->enemy[i].hitbox_len = 50;
 	cube->enemy[i].health_offset = 0;
 	cube->enemy[i].health_animation = 0;

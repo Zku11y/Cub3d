@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_enemy.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:55 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:57:14 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 19:52:01 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,7 @@ void	sk_check_enemies(t_cube *cube, int i)
 		&& (cube->enemy[ENEMY_NUM - 1 - i].player_dst < cube->rays[cube->res
 				/ 2].length))
 	{
-		printf("enemy %d attacked! enemy HP: %d\n", ENEMY_NUM - 1 - i,
-			cube->enemy[ENEMY_NUM - 1 - i].HP);
-		cube->enemy[ENEMY_NUM - 1 - i].HP -= cube->player.weapon.DMG;
+		cube->enemy[ENEMY_NUM - 1 - i].hp -= cube->player.weapon.dmg;
 	}
 }
 

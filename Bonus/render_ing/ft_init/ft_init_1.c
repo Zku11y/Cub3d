@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 15:14:57 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:48:35 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ft_init_7(t_cube *cube)
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	cube->player.weapon.DMG = 50;
+	cube->player.weapon.dmg = 50;
 	cube->player.weapon.fire_rate = 2;
 	ft_load_png(cube, &(cube->player.weapon.idle_texture), "./as/idle.png");
 	ft_load_png(cube, &(cube->player.weapon.shoot_texture), "./as/shoot.png");

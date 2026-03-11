@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/11 17:44:37 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 19:43:01 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ typedef enum s_weapon_type
 
 typedef struct s_weapon
 {
-	int				DMG;
+	int				dmg;
 	int				fire_rate;
 	int				delay;
 	suseconds_t		frame_delay;
@@ -300,8 +300,8 @@ typedef struct s_vars8
 {
 	uint32_t		*new;
 	uint32_t		*prev;
-	int				screen_H;
-	int				screen_W;
+	int				screen_h;
+	int				screen_w;
 	double			iter_x;
 	double			iter_y;
 	double			prev_x;
@@ -313,28 +313,28 @@ typedef struct s_vars8
 
 typedef struct s_vars9
 {
-	double			DirX;
-	double			DirY;
-	double			PlaneX;
-	double			PlaneY;
-	t_vect2			RayDirL;
-	t_vect2			RayDirR;
+	double			dirx;
+	double			diry;
+	double			planex;
+	double			planey;
+	t_vect2			raydirl;
+	t_vect2			raydirr;
 	double			mid_point;
 	double			cam_height;
 	double			p;
 	mlx_texture_t	*tex;
 	int				i;
-	double			rowDst;
-	t_vect2			floorL;
-	t_vect2			floorR;
+	double			rowdst;
+	t_vect2			floorl;
+	t_vect2			floorr;
 	t_vect2			step;
 	t_vect2			ft_floor;
 	double			tmp;
 	int				j;
-	double			fracX;
-	double			fracY;
-	int				texX;
-	int				texY;
+	double			fracx;
+	double			fracy;
+	int				texx;
+	int				texy;
 	int				k;
 	uint8_t			r;
 	uint8_t			g;
@@ -354,7 +354,7 @@ typedef struct s_vars10
 	double			player_dst;
 	double			angle_diff;
 	double			tetha_delta;
-	int				midX;
+	int				midx;
 	double			dst;
 	double			tmp;
 	double			height;
@@ -390,14 +390,14 @@ typedef struct s_vars11
 
 typedef struct s_vars12
 {
-	double			DirX;
-	double			DirY;
-	double			PlaneX;
-	double			PlaneY;
-	double			cameraX;
-	double			rayDirX;
-	double			rayDirY;
-	double			rayAngle;
+	double			dirx;
+	double			diry;
+	double			planex;
+	double			planey;
+	double			camerax;
+	double			raydirx;
+	double			raydiry;
+	double			rayangle;
 	int				i;
 
 }					t_vars12;
@@ -467,18 +467,18 @@ typedef struct s_player
 	t_move_state	move_state;
 	double			speed_mult;
 	double			dst_speed_mult;
-	double			current_speed_LR_X;
-	double			current_speed_LR_Y;
-	double			current_speed_FB_X;
-	double			current_speed_FB_Y;
-	double			dst_speed_LR_X;
-	double			dst_speed_LR_Y;
-	double			dst_speed_FB_X;
-	double			dst_speed_FB_Y;
-	t_direction		last_LR;
-	t_direction		last_FB;
-	int				HP;
-	int				DMG;
+	double			current_speed_lr_x;
+	double			current_speed_lr_y;
+	double			current_speed_fb_x;
+	double			current_speed_fb_y;
+	double			dst_speed_lr_x;
+	double			dst_speed_lr_y;
+	double			dst_speed_fb_x;
+	double			dst_speed_fb_y;
+	t_direction		last_lr;
+	t_direction		last_fb;
+	int				hp;
+	int				dmg;
 	int				atk_delay;
 	unsigned long	atk_time;
 	bool			delay;
@@ -497,8 +497,8 @@ typedef struct s_enemy
 {
 	double			x;
 	double			y;
-	int				HP;
-	int				DMG;
+	int				hp;
+	int				dmg;
 	int				atk_delay;
 	unsigned long	atk_time;
 	unsigned long	blood_time;
@@ -526,7 +526,7 @@ typedef struct s_projectile
 	t_vect2			dir;
 	double			speed;
 	double			dst_traveled;
-	int				DMG;
+	int				dmg;
 	mlx_texture_t	*texture;
 }					t_projectile;
 

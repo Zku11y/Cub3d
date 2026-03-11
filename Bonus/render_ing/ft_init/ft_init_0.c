@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:06:39 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:56:02 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,19 @@ void	ft_init_1(t_cube *cube, t_nc *nu)
 	cube->half_fov_rad = tan(((double)cube->fov / 2.0) * RADIANT_RATE);
 	cube->player.x = (GRID_SIZE * (double)nu->start->x) + GRID_SIZE / 2.0;
 	cube->player.y = (GRID_SIZE * (double)nu->start->y) + GRID_SIZE / 2.0;
-	cube->player.HP = MAX_HP;
+	cube->player.hp = MAX_HP;
 	cube->player.delay = false;
 	cube->player.atk_delay = 1;
-	cube->player.DMG = 50;
+	cube->player.dmg = 50;
 	cube->player.speed_mult = PLAYER_SPEED;
 	cube->player.dst_speed_mult = PLAYER_SPEED;
 	cube->player.move_state = WALK;
-	cube->player.current_speed_LR_X = 0.0;
-	cube->player.current_speed_LR_Y = 0.0;
-	cube->player.current_speed_FB_X = 0.0;
-	cube->player.current_speed_FB_Y = 0.0;
-	cube->player.last_FB = UP;
-	cube->player.last_LR = LEFT;
+	cube->player.current_speed_lr_x = 0.0;
+	cube->player.current_speed_lr_y = 0.0;
+	cube->player.current_speed_fb_x = 0.0;
+	cube->player.current_speed_fb_y = 0.0;
+	cube->player.last_fb = UP;
+	cube->player.last_lr = LEFT;
 	cube->player.attacked = false;
 	cube->player.hit = false;
 }

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 02:58:20 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:48:35 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	ft_init_7(t_cube *cube)
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	cube->player.weapon.DMG = 50;
+	cube->player.weapon.dmg = 50;
 	cube->player.weapon.fire_rate = 2;
 	cube->player.weapon.texture = cube->player.weapon.idle_texture;
 	cube->player.weapon.pitch_increase = 1;

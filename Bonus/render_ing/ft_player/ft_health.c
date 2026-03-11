@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_health.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:54 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:07:23 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:57:34 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ bool	ft_health2(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
 		cube->flash.r = 0.2;
 		cube->flash.g = 3.0;
 		cube->flash.b = 0.2;
-		cube->player.HP += 50;
-		if (cube->player.HP > MAX_HP)
-			cube->player.HP = MAX_HP;
+		cube->player.hp += 50;
+		if (cube->player.hp > MAX_HP)
+			cube->player.hp = MAX_HP;
 		return (enemy->health_spawn = false, false);
 	}
 	vars->angle_diff = atan2(vars->pos_y - cube->player.y, vars->pos_x
@@ -109,7 +109,7 @@ bool	ft_health2(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
 		vars->tetha_delta -= 2 * PI;
 	while (vars->tetha_delta < -PI)
 		vars->tetha_delta += 2 * PI;
-	vars->midX = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
+	vars->midx = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
 			* cube->proj_dst);
 	vars->dst = sqrt((vars->pos_x - cube->player.x) * (vars->pos_x
 				- cube->player.x) + (vars->pos_y - cube->player.y)

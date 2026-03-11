@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 14:14:11 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 20:11:54 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	ft_floor_ceiling1(t_cube *cube, t_vars9 *vars)
 {
-	vars->DirX = cos(cube->player.angle);
-	vars->DirY = sin(cube->player.angle);
-	vars->PlaneX = -vars->DirY * (cube->half_fov_rad);
-	vars->PlaneY = vars->DirX * (cube->half_fov_rad);
-	vars->RayDirL = (t_vect2){vars->DirX - vars->PlaneX, vars->DirY
-		- vars->PlaneY, 0, 0};
-	vars->RayDirR = (t_vect2){vars->DirX + vars->PlaneX, vars->DirY
-		+ vars->PlaneY, 0, 0};
+	vars->dirx = cos(cube->player.angle);
+	vars->diry = sin(cube->player.angle);
+	vars->planex = -vars->diry * (cube->half_fov_rad);
+	vars->planey = vars->dirx * (cube->half_fov_rad);
+	vars->raydirl = (t_vect2){vars->dirx - vars->planex, vars->diry
+		- vars->planey, 0, 0};
+	vars->raydirr = (t_vect2){vars->dirx + vars->planex, vars->diry
+		+ vars->planey, 0, 0};
 	vars->mid_point = (cube->screen_height / 2.0) + cube->pitch;
 	vars->cam_height = cube->camera_h;
 	vars->p = 0;
@@ -44,30 +44,30 @@ void	ft_floor_ceiling2(t_cube *cube, t_vars9 *vars)
 	}
 	if (vars->p == 0.0)
 		vars->p = 1.0;
-	vars->rowDst = (vars->cam_height * cube->proj_dst) / vars->p;
-	vars->floorL = (t_vect2){(cube->player.x) + vars->rowDst * vars->RayDirL.x,
-		(cube->player.y) + vars->rowDst * vars->RayDirL.y, 0, 0};
-	vars->floorR = (t_vect2){(cube->player.x) + vars->rowDst * vars->RayDirR.x,
-		(cube->player.y) + vars->rowDst * vars->RayDirR.y, 0, 0};
-	vars->step = (t_vect2){(vars->floorR.x - vars->floorL.x)
-		/ cube->screen_width, (vars->floorR.y - vars->floorL.y)
+	vars->rowdst = (vars->cam_height * cube->proj_dst) / vars->p;
+	vars->floorl = (t_vect2){(cube->player.x) + vars->rowdst * vars->raydirl.x,
+		(cube->player.y) + vars->rowdst * vars->raydirl.y, 0, 0};
+	vars->floorr = (t_vect2){(cube->player.x) + vars->rowdst * vars->raydirr.x,
+		(cube->player.y) + vars->rowdst * vars->raydirr.y, 0, 0};
+	vars->step = (t_vect2){(vars->floorr.x - vars->floorl.x)
+		/ cube->screen_width, (vars->floorr.y - vars->floorl.y)
 		/ cube->screen_width, 0, 0};
-	vars->ft_floor = (t_vect2){vars->floorL.x, vars->floorL.y, 0, 0};
-	vars->tmp = 1.0 - (vars->rowDst / MAX_DST);
+	vars->ft_floor = (t_vect2){vars->floorl.x, vars->floorl.y, 0, 0};
+	vars->tmp = 1.0 - (vars->rowdst / MAX_DST);
 }
 
 void	ft_floor_ceiling3(t_cube *cube, t_vars9 *vars)
 {
-	vars->fracX = fmod(vars->ft_floor.x / GRID_SIZE, 1.0);
-	vars->fracY = fmod(vars->ft_floor.y / GRID_SIZE, 1.0);
-	if (vars->fracX < 0)
-		vars->fracX += 1.0;
-	if (vars->fracY < 0)
-		vars->fracY += 1.0;
-	vars->texX = (int)(vars->fracX * vars->tex->width);
-	vars->texY = (int)(vars->fracY * vars->tex->height);
-	vars->k = ((vars->tex->bytes_per_pixel * vars->texY * vars->tex->width)
-			+ (vars->texX * vars->tex->bytes_per_pixel));
+	vars->fracx = fmod(vars->ft_floor.x / GRID_SIZE, 1.0);
+	vars->fracy = fmod(vars->ft_floor.y / GRID_SIZE, 1.0);
+	if (vars->fracx < 0)
+		vars->fracx += 1.0;
+	if (vars->fracy < 0)
+		vars->fracy += 1.0;
+	vars->texx = (int)(vars->fracx * vars->tex->width);
+	vars->texy = (int)(vars->fracy * vars->tex->height);
+	vars->k = ((vars->tex->bytes_per_pixel * vars->texy * vars->tex->width)
+			+ (vars->texx * vars->tex->bytes_per_pixel));
 	vars->r = vars->tex->pixels[vars->k + 0] * (vars->tmp);
 	vars->g = vars->tex->pixels[vars->k + 1] * (vars->tmp);
 	vars->b = vars->tex->pixels[vars->k + 2] * (vars->tmp);

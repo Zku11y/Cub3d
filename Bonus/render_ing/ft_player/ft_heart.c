@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heart.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:13:56 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:07:09 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:58:41 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,22 @@
 
 void	ft_heart(t_cube *cube)
 {
-	if ((double)cube->player.HP > (0.8 * (double)MAX_HP))
+	if ((double)cube->player.hp > (0.8 * (double)MAX_HP))
 		return ((void)(cube->heart.blur_lerp = BLUR_LERP));
-	else if ((double)cube->player.HP > (0.6 * (double)MAX_HP)
-		&& (double)cube->player.HP <= (0.8 * (double)MAX_HP))
+	else if ((double)cube->player.hp > (0.6 * (double)MAX_HP)
+		&& (double)cube->player.hp <= (0.8 * (double)MAX_HP))
 	{
 		ft_prev_renderer(cube, cube->heart.frame_1, 0, 0);
 		cube->heart.blur_lerp = 0.4;
 	}
-	else if ((double)cube->player.HP > (0.4 * (double)MAX_HP)
-		&& (double)cube->player.HP <= (0.6 * (double)MAX_HP))
+	else if ((double)cube->player.hp > (0.4 * (double)MAX_HP)
+		&& (double)cube->player.hp <= (0.6 * (double)MAX_HP))
 	{
 		ft_prev_renderer(cube, cube->heart.frame_2, 0, 0);
 		cube->heart.blur_lerp = 0.3;
 	}
-	else if ((double)cube->player.HP > (0.2 * (double)MAX_HP)
-		&& (double)cube->player.HP <= (0.4 * (double)MAX_HP))
+	else if ((double)cube->player.hp > (0.2 * (double)MAX_HP)
+		&& (double)cube->player.hp <= (0.4 * (double)MAX_HP))
 	{
 		ft_prev_renderer(cube, cube->heart.frame_3, 0, 0);
 		cube->heart.blur_lerp = 0.2;
@@ -53,7 +53,7 @@ void	ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy,
 	vars->scale_ratio = texture->height / vars->height;
 	vars->proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / vars->dst)
 		* cube->proj_dst;
-	vars->start_x = vars->midX - (texture->width / vars->scale_ratio) / 2;
+	vars->start_x = vars->midx - (texture->width / vars->scale_ratio) / 2;
 	vars->start_y = ((cube->screen_height / 2.0) + cube->pitch
 			+ enemy->health_offset - vars->proj_z_offset) - (texture->height
 			/ vars->scale_ratio) / 2;
@@ -125,15 +125,15 @@ void	ft_mouvement2(t_cube *cube)
 {
 	if (cube->player.move_state == WALK || cube->player.move_state == SPRINT)
 	{
-		if ((int)(cube->player.current_speed_FB_X * 10.0) != 0
-			|| (int)(cube->player.current_speed_LR_X * 10.0) != 0
-			|| (int)(cube->player.current_speed_FB_Y * 10.0) != 0
-			|| (int)(cube->player.current_speed_LR_Y * 10.0) != 0)
+		if ((int)(cube->player.current_speed_fb_x * 10.0) != 0
+			|| (int)(cube->player.current_speed_lr_x * 10.0) != 0
+			|| (int)(cube->player.current_speed_fb_y * 10.0) != 0
+			|| (int)(cube->player.current_speed_lr_y * 10.0) != 0)
 		{
-			cube->player.current_speed_FB_X *= 1.5;
-			cube->player.current_speed_FB_Y *= 1.5;
-			cube->player.current_speed_LR_X *= 1.5;
-			cube->player.current_speed_LR_Y *= 1.5;
+			cube->player.current_speed_fb_x *= 1.5;
+			cube->player.current_speed_fb_y *= 1.5;
+			cube->player.current_speed_lr_x *= 1.5;
+			cube->player.current_speed_lr_y *= 1.5;
 			cube->player.move_state = SLIDE;
 			cube->dst_camera_h = CAM_H / 2.0;
 		}

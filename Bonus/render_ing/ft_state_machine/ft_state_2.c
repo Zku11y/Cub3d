@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_state_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 01:23:23 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:56:30 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	ft_init_map(t_cube *cube)
 	cube->map_x = cube->nu->x;
 	cube->map_y = cube->nu->y;
 	ft_init_map1(cube);
-	cube->player.HP = MAX_HP;
+	cube->player.hp = MAX_HP;
 	cube->player.delay = false;
 	ft_init_enemies(cube);
 }

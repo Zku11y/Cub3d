@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_enemy2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:57 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:51:38 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 19:52:10 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	ft_enemy2(t_cube *cube, t_enemy *enemy, mlx_texture_t **texture,
 		else
 			return (false);
 	}
-	if (enemy->dead == false && enemy->HP <= 0)
+	if (enemy->dead == false && enemy->hp <= 0)
 	{
 		*texture = cube->blood.frame[enemy->blood_frame_index];
 		enemy->blood_time = vars->current_time;
@@ -58,8 +58,8 @@ bool	ft_enemy3(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
 		{
 			printf("enemy has shot!\n");
 			ft_init_projectile(cube, enemy, &vars->player_dir);
-			if (cube->player.HP < 0)
-				cube->player.HP = 0;
+			if (cube->player.hp < 0)
+				cube->player.hp = 0;
 			enemy->atk_time = vars->tv.tv_sec;
 			enemy->delay = true;
 		}
@@ -81,7 +81,7 @@ bool	ft_enemy4(t_cube *cube, t_enemy *enemy, t_vars10 *vars)
 		vars->tetha_delta -= 2 * PI;
 	while (vars->tetha_delta < -PI)
 		vars->tetha_delta += 2 * PI;
-	vars->midX = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
+	vars->midx = ((0.5 * cube->screen_width)) + (tan(vars->tetha_delta)
 			* cube->proj_dst);
 	vars->dst = sqrt((enemy->x - cube->player.x) * (enemy->x - cube->player.x)
 			+ (enemy->y - cube->player.y) * (enemy->y - cube->player.y))
@@ -103,7 +103,7 @@ bool	ft_enemy5(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture,
 	vars->scale_ratio = texture->height / vars->height;
 	vars->proj_z_offset = (((GRID_SIZE / 2.0) - cube->camera_h) / vars->dst)
 		* cube->proj_dst;
-	vars->start_x = vars->midX - (texture->width / vars->scale_ratio) / 2;
+	vars->start_x = vars->midx - (texture->width / vars->scale_ratio) / 2;
 	vars->start_y = ((cube->screen_height / 2.0) + cube->pitch
 			- vars->proj_z_offset) - (texture->height / vars->scale_ratio) / 2;
 	vars->const_y = vars->start_y;
