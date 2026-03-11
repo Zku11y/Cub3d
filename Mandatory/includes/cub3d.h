@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/11 17:30:01 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 17:42:59 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,93 +14,87 @@
 # define CUB3D_H
 
 # include "../../MLX42/include/MLX42/MLX42.h"
+# include "../pars_ing/libts/libts.h"
 # include <fcntl.h>
-# include <stdio.h>
 # include <math.h>
 # include <stdbool.h>
-# include <sys/time.h>
-# include <unistd.h>
+# include <stdio.h>
 # include <stdlib.h>
+# include <sys/time.h>
 # include <time.h>
-
-//-----------------------------------------------------------------
-
-#include "../pars_ing/libts/libts.h"
+# include <unistd.h>
 
 typedef enum e_key
 {
-    NO,
-    SO,
-    WE,
-    EA,
-    F,
-    C
-} t_key;
+	NO,
+	SO,
+	WE,
+	EA,
+	F,
+	C
+}					t_key;
 
 typedef struct s_plyr
 {
-    int x;
-    int y;
-    char who;
-} t_plyr;
+	int				x;
+	int				y;
+	char			who;
+}					t_plyr;
 
 typedef struct s_mp
 {
-    char *val;
-    struct s_mp *next;
-} t_mp;
+	char			*val;
+	struct s_mp		*next;
+}					t_mp;
 
 typedef struct s_teto
 {
-    char *val;
-    struct s_teto *next;
-    t_key key;
-} t_teto;
+	char			*val;
+	struct s_teto	*next;
+	t_key			key;
+}					t_teto;
 
 typedef struct s_nc
 {
-    char *imgs[4];
-    mlx_texture_t *txtrs[4];
-    struct s_nc *next;
-    char **map;
-    t_plyr *hi;
-    int x;
-    int y;
-    int flor_r;
-    int flor_g;
-    int flor_b;
-    int ceil_r;
-    int ceil_g;
-    int ceil_b;
-} t_nc;
+	char			*imgs[4];
+	mlx_texture_t	*txtrs[4];
+	struct s_nc		*next;
+	char			**map;
+	t_plyr			*hi;
+	int				x;
+	int				y;
+	int				flor_r;
+	int				flor_g;
+	int				flor_b;
+	int				ceil_r;
+	int				ceil_g;
+	int				ceil_b;
+}					t_nc;
 
-int ts_spaces_skip(char *str);
-char *ts_get_val(char *str);
-char *ts_get_rgb_val(char *str);
-t_teto *ts_key(char *lain);
-int ts_rgb(char *val, int *r, int *g, int *b);
-int ts_mt(char *lain);
-char *get_lain(int fd);
-t_teto *ts_read(int fd);
-int ts_check_data(t_nc *nu);
-void ts_free_pear(t_teto *head);
-int ts_opn(char *path);
-int dot_chk(char *path);
-void ts_free_one_nomap(t_nc *nu);
-t_nc *ts_put(t_teto *teto);
-void free_nu_map(char **nu);
-int get_map(int fd, t_nc *nu);
-int rec_map(char **map, t_nc *nu);
-t_nc *ts_pars(char **arg);
-void free_nu(t_nc *nu);
-t_nc *ts_make_one(int fd);
-void ts_cln_pngs(t_nc *nu);
-void    free_mp(t_mp *mp);
-int			ts_edg_chk(char **map, int m_x, int m_y);
-char	*get_lain_with_space(int fd);
-
-
-//-----------------------------------------------------------------
+int					ts_spaces_skip(char *str);
+char				*ts_get_val(char *str);
+char				*ts_get_rgb_val(char *str);
+t_teto				*ts_key(char *lain);
+int					ts_rgb(char *val, int *r, int *g, int *b);
+int					ts_mt(char *lain);
+char				*get_lain(int fd);
+t_teto				*ts_read(int fd);
+int					ts_check_data(t_nc *nu);
+void				ts_free_pear(t_teto *head);
+int					ts_opn(char *path);
+int					dot_chk(char *path);
+void				ts_free_one_nomap(t_nc *nu);
+t_nc				*ts_put(t_teto *teto);
+void				free_nu_map(char **nu);
+int					get_map(int fd, t_nc *nu);
+int					rec_map(char **map, t_nc *nu);
+t_nc				*ts_pars(char **arg);
+void				free_nu(t_nc *nu);
+t_nc				*ts_make_one(int fd);
+void				ts_cln_pngs(t_nc *nu);
+void				free_mp(t_mp *mp);
+int					ts_edg_chk(char **map, int m_x, int m_y);
+char				*get_lain_with_space(int fd);
 
 # define UPS_RATE 1
 # define SCREEN_WIDTH_BUFF 1280
@@ -149,8 +143,8 @@ typedef enum s_weapon_type
 	PUMP
 }					t_weapon_type;
 
-typedef struct s_weapon{
-
+typedef struct s_weapon
+{
 	int				DMG;
 	int				fire_rate;
 	int				delay;
@@ -166,8 +160,8 @@ typedef struct s_weapon{
 	bool			pitch_changed;
 	bool			pitch_back;
 	double			pitch_dst;
-	unsigned long 	idle_time;
-	bool 			idle_frame;
+	unsigned long	idle_time;
+	bool			idle_frame;
 	double			move_lerp;
 }					t_weapon;
 
@@ -184,7 +178,7 @@ typedef struct s_heart
 	double			added_angle;
 	double			added_pitch;
 	double			blur_lerp;
-	double			blood_op; // op : Opacity, just used op for less lengthy code :P
+	double			blood_op;
 }					t_heart;
 
 typedef enum s_state
@@ -203,55 +197,53 @@ typedef struct s_vect2
 
 typedef struct s_vars
 {
-	int			x;
-	int			y;
-	double				i;
-	double				j;
+	int				x;
+	int				y;
+	double			i;
+	double			j;
 }					t_vars;
 
 typedef struct s_vars2
 {
-	int			*x;
-	int			*y;
-	int			*start_x;
-	int			*start_y;
-	int			*tex_x;
-	int			*tex_y;
-	int			*prev_cords;
-	int			*weapon_cords;
+	int				*x;
+	int				*y;
+	int				*start_x;
+	int				*start_y;
+	int				*tex_x;
+	int				*tex_y;
+	int				*prev_cords;
+	int				*weapon_cords;
 }					t_vars2;
 
 typedef struct s_vars3
 {
-	int			x;
-	int			y;
-	int			start_x;
-	int			start_y;
-	int			tex_x;
-	int			tex_y;
-	int			prev_cords;
-	int			weapon_cords;
-	long		current_time;
+	int				x;
+	int				y;
+	int				start_x;
+	int				start_y;
+	int				tex_x;
+	int				tex_y;
+	int				prev_cords;
+	int				weapon_cords;
+	long			current_time;
 }					t_vars3;
 
 typedef struct s_vars4
 {
-
-    int x;
-    int y;
-    int max_new_x;
-    int max_new_y;
-    double prev_x;
-    double prev_y;
-    double offset;
-    struct timeval tv;
-    long time; 
+	int				x;
+	int				y;
+	int				max_new_x;
+	int				max_new_y;
+	double			prev_x;
+	double			prev_y;
+	double			offset;
+	struct timeval	tv;
+	long			time;
 
 }					t_vars4;
 
 typedef struct s_vars5
 {
-
 	int				start_x;
 	int				start_y;
 	int				x;
@@ -270,55 +262,52 @@ typedef struct s_vars5
 
 typedef struct s_vars6
 {
-
-	int				 mouse_x;
-	int				 mouse_y;
-	int				 start_x;
-	int				 start_y;
-	int				 end_x;
-	int				 end_y;
-	int				 x;
-	int				 y;
-	int				 color;
-	int				 i;
-	int				 j;
-	int				 index;
-	uint32_t		 *crosshair;
-	uint32_t		 *prev;
+	int				mouse_x;
+	int				mouse_y;
+	int				start_x;
+	int				start_y;
+	int				end_x;
+	int				end_y;
+	int				x;
+	int				y;
+	int				color;
+	int				i;
+	int				j;
+	int				index;
+	uint32_t		*crosshair;
+	uint32_t		*prev;
 
 }					t_vars6;
 
 typedef struct s_vars7
 {
-	int			x;
-	int			y;
-	int			tex_x;
-	int			tex_y;
-	int			pixel_cords;
-	int			title_cords;
-	mlx_texture_t *texture;
+	int				x;
+	int				y;
+	int				tex_x;
+	int				tex_y;
+	int				pixel_cords;
+	int				title_cords;
+	mlx_texture_t	*texture;
 
 }					t_vars7;
 
 typedef struct s_vars8
 {
-
-	uint32_t	*new;
-	uint32_t	*prev;
-	int			screen_H;
-	int			screen_W;
-	double		iter_x;
-	double		iter_y;
-	double		prev_x;
-	double		prev_y;
-	int			new_x;
-	int			new_y;
+	uint32_t		*new;
+	uint32_t		*prev;
+	int				screen_H;
+	int				screen_W;
+	double			iter_x;
+	double			iter_y;
+	double			prev_x;
+	double			prev_y;
+	int				new_x;
+	int				new_y;
 
 }					t_vars8;
 
 typedef struct s_vars9
 {
-
 	double			DirX;
 	double			DirY;
 	double			PlaneX;
@@ -350,12 +339,10 @@ typedef struct s_vars9
 	t_vect2			coords;
 	int				iter;
 
-
 }					t_vars9;
 
 typedef struct s_vars10
 {
-
 	struct timeval	tv;
 	long			current_time;
 	t_vect2			player_dir;
@@ -379,71 +366,65 @@ typedef struct s_vars10
 	double			tex_y;
 	int				x;
 	int				y;
-	int				k;	
+	int				k;
 
 }					t_vars10;
 
 typedef struct s_vars11
 {
-
-	mlx_texture_t *texture;
-	t_vect2	ratio;
-	t_vect2	cords;
-	t_vect2	start;
-	t_vect2	end;
-	double	len;
-	double	tmp;
-	int		k;
+	mlx_texture_t	*texture;
+	t_vect2			ratio;
+	t_vect2			cords;
+	t_vect2			start;
+	t_vect2			end;
+	double			len;
+	double			tmp;
+	int				k;
 
 }					t_vars11;
 
 typedef struct s_vars12
 {
-
-	double DirX;
-	double DirY;
-	double PlaneX;
-	double PlaneY;
-	double cameraX;
-	double rayDirX;
-	double rayDirY;
-	double rayAngle;
-	int i;	
+	double			DirX;
+	double			DirY;
+	double			PlaneX;
+	double			PlaneY;
+	double			cameraX;
+	double			rayDirX;
+	double			rayDirY;
+	double			rayAngle;
+	int				i;
 
 }					t_vars12;
 
-
 typedef struct s_vars13
 {
-
-	int				 start_x;
-	int				 start_y;
-	int				 end_x;
-	int				 end_y;
-	int				 x;
-	int				 y;
-	int				 i;
-	int				 j;
-	double		 	 dst;
+	int				start_x;
+	int				start_y;
+	int				end_x;
+	int				end_y;
+	int				x;
+	int				y;
+	int				i;
+	int				j;
+	double			dst;
 
 }					t_vars13;
 
 typedef struct s_vars14
 {
+	int				y;
+	int				x;
+	int				offset;
+	double			dst;
+	int				arrow_start_x;
+	int				arrow_start_y;
+	double			arrow_angle;
+	int				left_x;
+	int				left_y;
+	int				right_x;
+	int				right_y;
 
-	int		y;
-	int		x;
-	int		offset;
-	double	dst;
-	int		arrow_start_x;
-	int		arrow_start_y;
-	double	arrow_angle;
-	int		left_x;
-	int		left_y;
-	int		right_x;
-	int		right_y;
-
-	
 }					t_vars14;
 
 typedef struct s_ray
@@ -460,13 +441,12 @@ typedef struct s_ray
 	mlx_texture_t	*texture;
 }					t_ray;
 
-typedef enum s_move_state{
-
+typedef enum s_move_state
+{
 	WALK,
 	SPRINT,
 	CROUCH,
 	SLIDE
-	
 }					t_move_state;
 
 typedef struct s_player
@@ -477,16 +457,16 @@ typedef struct s_player
 	int				grid_x;
 	int				grid_y;
 	t_ray			ray;
-	t_move_state    move_state;
+	t_move_state	move_state;
 	double			speed_mult;
 	double			dst_speed_mult;
-	double			current_speed_LR_X; 
+	double			current_speed_LR_X;
 	double			current_speed_LR_Y;
-	double			current_speed_FB_X; 
+	double			current_speed_FB_X;
 	double			current_speed_FB_Y;
-	double			dst_speed_LR_X; 
+	double			dst_speed_LR_X;
 	double			dst_speed_LR_Y;
-	double			dst_speed_FB_X; 
+	double			dst_speed_FB_X;
 	double			dst_speed_FB_Y;
 	t_direction		last_LR;
 	t_direction		last_FB;
@@ -502,14 +482,14 @@ typedef struct s_player
 
 typedef struct s_blood
 {
-	mlx_texture_t **frame;
+	mlx_texture_t	**frame;
 
-} t_blood;
+}					t_blood;
 
 typedef struct s_enemy
 {
-	double 			x;
-	double 			y;
+	double			x;
+	double			y;
 	int				HP;
 	int				DMG;
 	int				atk_delay;
@@ -518,7 +498,7 @@ typedef struct s_enemy
 	bool			delay;
 	bool			dead;
 	bool			health_spawn;
-	double				health_offset;
+	double			health_offset;
 	bool			health_animation;
 	mlx_texture_t	*health;
 	int				blood_frame_index;
@@ -535,22 +515,16 @@ typedef struct s_projectile
 {
 	int				in_use;
 	double			x;
-	double 			y;
+	double			y;
 	t_vect2			dir;
 	double			speed;
 	double			dst_traveled;
-	int 			DMG;
+	int				DMG;
 	mlx_texture_t	*texture;
 }					t_projectile;
 
-// typedef struct s_audio
-// {
-// 	ma_engine		engine;
-// 	ma_sound		bg_start;
-// 	ma_sound		bg_loop;
-// }					t_audio;
-
-typedef struct s_fov{
+typedef struct s_fov
+{
 	mlx_texture_t	*bar_1;
 	mlx_texture_t	*slider_1;
 	int				slider_start_x;
@@ -561,30 +535,30 @@ typedef struct s_fov{
 	int				max_fov;
 }					t_fov;
 
-typedef struct s_res{
-
+typedef struct s_res
+{
 	mlx_texture_t	*texture;
 	mlx_texture_t	*_480;
 	mlx_texture_t	*_720;
 	mlx_texture_t	*_900;
 	mlx_texture_t	*_1080;
-	int start_x_1080;
-    int end_x_1080;
-	int start_x_900;
-    int end_x_900;
-    int start_y_1080_900;
-    int end_y_1080_900;
-	int start_x_720;
-    int end_x_720;
-	int start_x_480;
-    int end_x_480;
-    int start_y_480;
-    int end_y_480;
+	int				start_x_1080;
+	int				end_x_1080;
+	int				start_x_900;
+	int				end_x_900;
+	int				start_y_1080_900;
+	int				end_y_1080_900;
+	int				start_x_720;
+	int				end_x_720;
+	int				start_x_480;
+	int				end_x_480;
+	int				start_y_480;
+	int				end_y_480;
 
 }					t_res;
 
-typedef struct s_ups{
-
+typedef struct s_ups
+{
 	mlx_texture_t	*texture;
 	mlx_texture_t	*x1_glow;
 	mlx_texture_t	*x2_glow;
@@ -608,26 +582,26 @@ typedef struct s_ups{
 	int				end_y5678;
 }					t_ups;
 
-typedef struct s_crosshair{
-
-	int 			start_x;
-	int			 	start_y;
-	int 			end_x;
-	int 			end_y;
-	mlx_texture_t	*border;	
+typedef struct s_crosshair
+{
+	int				start_x;
+	int				start_y;
+	int				end_x;
+	int				end_y;
+	mlx_texture_t	*border;
 	int				color;
-	
+
 }					t_crosshair;
 
-typedef struct s_mouse_sens{
-
+typedef struct s_mouse_sens
+{
 	mlx_texture_t	*slider_2;
 	int				slider_start_x;
 	int				slider_end_x;
 	int				slider_start_y;
 	int				slider_end_y;
-	double				min_sens;
-	double				max_sens;
+	double			min_sens;
+	double			max_sens;
 
 }					t_mouse_sens;
 
@@ -639,49 +613,49 @@ typedef enum s_held
 	UPS,
 	CROSSHAIR,
 	MOUSE_SENS_SLIDER
-}	t_held;
+}					t_held;
 
-typedef struct s_settings{
-
+typedef struct s_settings
+{
 	mlx_texture_t	*background;
 	mlx_texture_t	*bar_2;
 	mlx_texture_t	*slider_2;
 	t_held			mouse_held;
 	t_fov			fov;
-	t_res	res;
+	t_res			res;
 	t_crosshair		crosshair;
 	t_mouse_sens	mouse_sens;
-	t_ups		ups;
+	t_ups			ups;
 
-}	t_settings;
+}					t_settings;
 
-typedef struct s_menu{
-	mlx_texture_t *title;
-	mlx_texture_t *background;
-	t_settings	   settings;
-	int			   state;
+typedef struct s_menu
+{
+	mlx_texture_t	*title;
+	mlx_texture_t	*background;
+	t_settings		settings;
+	int				state;
 }					t_menu;
 
-typedef struct s_flash{
+typedef struct s_flash
+{
+	double			r;
+	double			g;
+	double			b;
+	double			dst_r;
+	double			dst_g;
+	double			dst_b;
+	bool			flashed;
 
-	double r;
-	double g;
-	double b;
-	double dst_r;
-	double dst_g;
-	double dst_b;
-	bool flashed;
+}					t_flash;
 
-}	t_flash;
+typedef struct s_colour
+{
+	int				r;
+	int				g;
+	int				b;
 
-
-typedef struct s_colour{
-
-	int r;
-	int g;
-	int b;
-
-}	t_colour;
+}					t_colour;
 
 typedef struct s_cube
 {
@@ -761,19 +735,17 @@ typedef struct s_cube
 
 	t_flash			flash;
 
-	t_blood	blood;
-	// t_audio			*audio;
+	t_blood			blood;
 }					t_cube;
-
-#endif
 
 bool				ft_check_limits(t_cube *cube, t_vect2 len);
 void				ft_limit_cords(t_cube *cube, t_vect2 *len);
 t_vect2				hori_first_point(t_cube *cube, t_ray *ray);
 t_vect2				vert_first_point(t_cube *cube, t_ray *ray);
-void 				ft_updated_res_init(t_cube *cube);
-void 				ft_updated_buff_init(t_cube *cube);
-void 				ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish, int color);
+void				ft_updated_res_init(t_cube *cube);
+void				ft_updated_buff_init(t_cube *cube);
+void				ft_draw_line(t_cube *cube, t_vect2 start, t_vect2 finish,
+						int color);
 void				set_screen_buff_limits(t_cube *cube, t_vect2 *len);
 
 void				ft_init_0(t_cube *cube, t_nc *nu);
@@ -793,53 +765,67 @@ void				ft_updated_buff_init(t_cube *cube);
 void				ft_updated_res_init(t_cube *cube);
 void				clear_image(t_cube *cube);
 
-
 unsigned long		ft_rand(unsigned long *seed);
 void				ft_map_init(t_cube *cube, t_nc *nu);
-void 				ft_game(t_cube *cube);
-void				ft_mouvement(t_cube *cube, double max_cos_speed, double	max_sin_speed);
-void    			ft_draw_rays(t_cube *cube);
-void    			ft_floor_ceiling(t_cube *cube);
-void    			ft_draw_world(t_cube *cube);
-void    			ft_heart(t_cube *cube);
-void    			ft_fov_mod(t_cube *cube);
-uint8_t 			ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate);
-double 				ft_lerp_speed(double dst, double current);
-double 				ft_lerp_tilt(double dst, double current);
+void				ft_game(t_cube *cube);
+void				ft_mouvement(t_cube *cube, double max_cos_speed,
+						double max_sin_speed);
+void				ft_draw_rays(t_cube *cube);
+void				ft_floor_ceiling(t_cube *cube);
+void				ft_draw_world(t_cube *cube);
+void				ft_heart(t_cube *cube);
+void				ft_fov_mod(t_cube *cube);
+uint8_t				ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate);
+double				ft_lerp_speed(double dst, double current);
+double				ft_lerp_tilt(double dst, double current);
 double				ft_lerp_fov(double dst, double current, double lerp_rate);
-double 				ft_lerp_move(double dst, double current, double lerp_rate);
+double				ft_lerp_move(double dst, double current, double lerp_rate);
 void				ft_tilt(t_cube *cube);
-void    			ft_draw_rays(t_cube *cube);
-void    			ft_floor_ceiling(t_cube *cube);
-void    			ft_draw_world(t_cube *cube);
-void			    ft_heart(t_cube *cube);
-void			    ft_fov_mod(t_cube *cube);
-void 				ft_ups(t_cube *cube, mlx_image_t *image);
+void				ft_draw_rays(t_cube *cube);
+void				ft_floor_ceiling(t_cube *cube);
+void				ft_draw_world(t_cube *cube);
+void				ft_heart(t_cube *cube);
+void				ft_fov_mod(t_cube *cube);
+void				ft_ups(t_cube *cube, mlx_image_t *image);
 void				draw_crosshair(t_cube *cube);
-void 				ft_prev_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
+void				ft_prev_renderer(t_cube *cube, mlx_texture_t *texture,
+						int start_x, int start_y);
 void				ft_heart(t_cube *cube);
 void				ft_tilt(t_cube *cube);
-bool 				is_looking(t_cube *cube, t_enemy *enemy);
-void 				ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
+bool				is_looking(t_cube *cube, t_enemy *enemy);
+void				ft_renderer(t_cube *cube, mlx_texture_t *texture,
+						int start_x, int start_y);
 void				ft_floor_ceiling(t_cube *cube);
-bool 				check_screen_limits(t_cube *cube, t_vect2 len);
-void 				ft_health(t_cube *cube, t_enemy *enemy);
+bool				check_screen_limits(t_cube *cube, t_vect2 len);
+void				ft_health(t_cube *cube, t_enemy *enemy);
 bool				ft_health2(t_cube *cube, t_enemy *enemy, t_vars10 *vars);
-void				ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
-void				ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end);
-void 				set_screen_limits(t_cube *cube, t_vect2 *len);
-t_vect2 			calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray);
+void				ft_health3(t_cube *cube, mlx_texture_t *texture,
+						t_enemy *enemy, t_vars10 *vars);
+void				ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start,
+						t_vect2 end);
+void				set_screen_limits(t_cube *cube, t_vect2 *len);
+t_vect2				calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert,
+						t_ray *ray);
 void				ft_ray_init(t_cube *cube, t_ray *ray, double angle);
 void				ft_mouvement1(t_cube *cube);
 void				ft_mouvement2(t_cube *cube);
 void				ft_turn(t_cube *cube);
-void 				ft_angle_limit(double *angle);
-void 				ft_mouvement_limits(t_cube *cube, double new_x, double new_y);
-bool 				check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert, t_ray *ray);
+void				ft_angle_limit(double *angle);
+void				ft_mouvement_limits(t_cube *cube, double new_x,
+						double new_y);
+bool				check_collision(t_cube *cube, t_vect2 *cords,
+						bool hori_vert, t_ray *ray);
 double				ft_safe_tan(double angle);
-void				vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);
-void				hori_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);
-void 				ft_clean(t_cube *cube, t_nc *nu, int flag);
-void 				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff, char *path);
-void				ft_rectangle_prev(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, t_colour color);
-void				calc_length1(t_cube *cube, double len_vert, t_vect2 vert, t_ray *ray);
+void				vert_check_next_point(t_cube *cube, t_vect2 *start,
+						t_ray *ray, double add);
+void				hori_check_next_point(t_cube *cube, t_vect2 *start,
+						t_ray *ray, double add);
+void				ft_clean(t_cube *cube, t_nc *nu, int flag);
+void				ft_load_png(t_cube *cube, mlx_texture_t **tex_buff,
+						char *path);
+void				ft_rectangle_prev(t_cube *cube, t_vect2 start_cords,
+						t_vect2 end_cords, t_colour color);
+void				calc_length1(t_cube *cube, double len_vert, t_vect2 vert,
+						t_ray *ray);
+
+#endif
