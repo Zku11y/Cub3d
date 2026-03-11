@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/10 15:11:18 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:01:48 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,14 @@ int			get_path(char **map, t_elv *elv, int *m_s);
 t_elv		*get_elv(char **map, char who);
 int			chk_elv(char **map);
 int			get_door(char **map, t_elv *hi);
+int			ts_edg_chk(char **map, int m_x, int m_y);
+char		*get_lain_with_space(int fd);
 
 //-----------------------------------------------------------------
 
 # define UPS_RATE 4
-# define SCREEN_WIDTH_BUFF 1
-# define SCREEN_HEIGHT_BUFF 1
+# define SCREEN_WIDTH_BUFF 1920
+# define SCREEN_HEIGHT_BUFF 1080
 # define SCREEN_WIDTH (SCREEN_WIDTH_BUFF / UPS_RATE)
 # define SCREEN_HEIGHT (SCREEN_HEIGHT_BUFF / UPS_RATE)
 # define RES SCREEN_WIDTH

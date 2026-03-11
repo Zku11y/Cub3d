@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ts_read_map.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-mado <oel-mado@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:28:31 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/09 14:03:32 by oel-mado         ###   ########.fr       */
+/*   Updated: 2026/03/11 02:05:31 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_mp	*ts_read_map(int fd)
 	ts = head;
 	while (1)
 	{
-		lain = get_lain(fd);
+		lain = get_lain_with_space(fd);
 		if (!lain)
 			break ;
 		ts->next = ts_calloc(1, sizeof(t_mp));

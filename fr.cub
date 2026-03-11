@@ -1,11 +1,11 @@
 
-WA ./miku.png
-FL ./miku.png
-CI ./miku.png
-PR ./miku.png
-EN ./miku.png
-ED ./lain_2.png
-HP ./lain_2.png
+WA ./as/miku.png
+FL ./as/miku.png
+CI ./as/miku.png
+PR ./as/miku.png
+EN ./as/miku.png
+ED ./as/miku.png
+HP ./as/miku.png
 
 
 111111111111111111111111111111
@@ -22,3 +22,11 @@ HP ./lain_2.png
 100000000000000000000000000001
 111111111111111111111111111111
 
+
+
+
+
+
+            111111111
+            100000001
+            111111111

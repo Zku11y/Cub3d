@@ -80,10 +80,10 @@ FT_UNAME := $(shell uname -s)
 
 # MacOS Compilation :
 
-CFLAGS = -g $(MLX_INC) $(LIBTS_INC)
+# CFLAGS = -g $(MLX_INC) $(LIBTS_INC)
 #          -I/Users/mdakni/.brew/opt/glfw/include 
 # CFLAGS = -g -fsanitize=address $(MLX_INC) $(LIBTS_INC)
-# CFLAGS = -O3 $(MLX_INC) $(LIBTS_INC)
+CFLAGS = -O3 $(MLX_INC) $(LIBTS_INC)
 
 ifeq ($(FT_UNAME), Darwin)
 	MLX_LIB = ./lib/libmlx42_mac.a

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 03:50:51 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 01:37:42 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	main(int ac, char **av)
 	printf("before\n");
 	nu = ts_pars(&av[1]);
 	if (!nu)
-		return (1);
+		return (free(cube), 1);
 	cube->nu = nu;
 	cube->map = nu->map;
 	ft_init(cube, nu);

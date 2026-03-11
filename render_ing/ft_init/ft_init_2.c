@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 00:58:18 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 01:13:50 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	ft_init_10(t_cube *cube, t_nc *nu)
 	cube->texture6 = cube->nu->txtrs[PR];
 	ft_load_png(cube, &(cube->texture_died), "./as/you_died.png");
 	ft_load_png(cube, &(cube->crosshair), "./as/crosshair_2.png");
+	printf("SCREEN_WIDTH : %d, res : %d\n", cube->screen_width, cube->res);
 	cube->line_girth = (int)(cube->screen_width / cube->res);
 	if (cube->line_girth == 0)
 		cube->line_girth = 1;

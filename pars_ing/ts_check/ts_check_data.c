@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:15:29 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/10 03:35:06 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 01:40:30 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,37 @@ t_elv	*get_elv(char **map, char who)
 		hi->y++;
 	}
 	return (free(hi), NULL);
+}
+
+int	ts_floor(char c)
+{
+	return (c == '0' || c == 'D' || c == 'S' || c == 'E');
+}
+
+int	ts_edg_chk(char **map, int m_x, int m_y)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+	if (!map || m_x <= 0 || m_y <= 0)
+		return (1);
+	while (y < m_y)
+	{
+		x = 0;
+		while (x < m_x)
+		{
+			if (ts_floor(map[y][x]))
+			{
+				if (x == 0 || y == 0 || x == m_x - 1 || y == m_y - 1)
+					return (1);
+				if (map[y + 1][x] == ' ' || map[y - 1][x] == ' '
+					|| map[y][x + 1] == ' ' || map[y][x - 1] == ' ')
+					return (1);
+			}
+			x++;
+		}
+		y++;
+	}
+	return (0);
 }

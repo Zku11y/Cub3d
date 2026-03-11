@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rec_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:13:08 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/10 00:39:03 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 01:49:44 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int	*go_rec(char **map, int x, int y, t_elv *start)
 		m_s[0]++;
 	m_s[1] = ts_strlen(map[0]);
 	if (m_s[0] < 3 || m_s[1] < 3)
-		return (NULL);
+		return (free(m_s), NULL);
 	if (start->door == 'N')
 		ret = rec(map, x, y + 2, m_s);
 	if (start->door == 'S')
@@ -111,7 +111,7 @@ int	*go_rec(char **map, int x, int y, t_elv *start)
 	if (start->door == 'W')
 		ret = rec(map, x - 2, y, m_s);
 	if (ret)
-		return (NULL);
+		return (free(m_s), NULL);
 	return (m_s);
 }
 
