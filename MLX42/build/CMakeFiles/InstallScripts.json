@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"/home/skully/work/Cub3d/MLX42/build/cmake_install.cmake"
+		"/Users/mdakni/projects/Mandatory/MLX42/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

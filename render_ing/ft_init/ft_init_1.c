@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:16:45 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:58:20 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void	ft_init_5(t_cube *cube)
 {
-	ft_load_png(cube, &(cube->menu.settings.mouse_sens.slider_2),
-		"./sa/slider_2.png");
 	cube->menu.settings.mouse_sens.slider_start_y = 0.78
 		* cube->screen_height_buff;
 	cube->menu.settings.mouse_sens.slider_end_y = 0.81
@@ -26,10 +24,6 @@ void	ft_init_5(t_cube *cube)
 		* cube->screen_width_buff;
 	cube->menu.settings.mouse_sens.min_sens = 0.0002;
 	cube->menu.settings.mouse_sens.max_sens = 0.0040;
-	ft_load_png(cube, &(cube->menu.settings.res._480), "./sa/480_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.res._720), "./sa/720_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.res._900), "./sa/900_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.res._1080), "./sa/1080_glow.png");
 	if (cube->screen_height_buff == 1080)
 		cube->menu.settings.res.texture = cube->menu.settings.res._1080;
 	if (cube->screen_height_buff == 900)
@@ -42,8 +36,6 @@ void	ft_init_5(t_cube *cube)
 
 void	ft_init_61(t_cube *cube)
 {
-	ft_load_png(cube, &(cube->menu.settings.crosshair.border),
-		"./sa/border.png");
 	cube->menu.settings.crosshair.color = CROSSHAIR_COLOR;
 	cube->menu.settings.crosshair.start_x = 0.636 * cube->screen_width_buff;
 	cube->menu.settings.crosshair.end_x = 0.865 * cube->screen_width_buff;
@@ -103,18 +95,6 @@ void	ft_init_8(t_cube *cube)
 	cube->blood.frame = ts_calloc(sizeof(mlx_texture_t *), 13);
 	if (!cube->blood.frame)
 		return (ft_clean(cube, cube->nu, 1));
-	ft_load_png(cube, &(cube->blood.frame[0]), "./blood/1_0.png");
-	ft_load_png(cube, &(cube->blood.frame[1]), "./blood/1_1.png");
-	ft_load_png(cube, &(cube->blood.frame[2]), "./blood/1_2.png");
-	ft_load_png(cube, &(cube->blood.frame[3]), "./blood/1_3.png");
-	ft_load_png(cube, &(cube->blood.frame[4]), "./blood/1_4.png");
-	ft_load_png(cube, &(cube->blood.frame[5]), "./blood/1_5.png");
-	ft_load_png(cube, &(cube->blood.frame[6]), "./blood/1_6.png");
-	ft_load_png(cube, &(cube->blood.frame[7]), "./blood/1_7.png");
-	ft_load_png(cube, &(cube->blood.frame[8]), "./blood/1_8.png");
-	ft_load_png(cube, &(cube->blood.frame[9]), "./blood/1_9.png");
-	ft_load_png(cube, &(cube->blood.frame[10]), "./blood/1_10.png");
-	ft_load_png(cube, &(cube->blood.frame[11]), "./blood/1_11.png");
 	cube->flash.r = 1.0;
 	cube->flash.g = 1.0;
 	cube->flash.b = 1.0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:37 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 20:15:33 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 03:00:12 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void	ft_init_91(t_cube *cube, t_nc *nu, struct timeval tv)
 	cube->enemy = ts_calloc(ENEMY_NUM + 1, sizeof(t_enemy));
 	if (!(cube->enemy))
 		return (ft_clean(cube, cube->nu, 1));
-	ft_init_enemies(cube);
 	cube->player.grid_x = (int)(cube->player.x / GRID_SIZE);
 	cube->player.grid_y = (int)(cube->player.y / GRID_SIZE);
 	cube->texture = nu->txtrs[NO];

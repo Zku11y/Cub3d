@@ -1,9 +1,9 @@
 
-NO ./backrooms_1.png
-SO ./brick.png
-WE ./ceiling_tiles_color.png
-EA ./miku.png
-0
+NO ./as/backrooms_1.png
+SO ./as/Brick_Wall.png
+WE ./as/ceiling_tiles_color.png
+EA ./as/miku.png
+
 F 34, 240, 168
 C 61, 34, 240
 
@@ -39,7 +39,7 @@ C 61, 34, 240
                     10000000001
                     10000000001
                     10000000001
-                    10000000001
+                    10000100001
                     10000W00001
                     11111111111
 

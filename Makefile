@@ -1,4 +1,4 @@
-NAME = cub3d
+NAME = cub3D
 
 SRC = ./render_ing/cub3d.c \
 	./render_ing/ft_raycasting/raycasting.c \
@@ -72,7 +72,7 @@ FT_UNAME := $(shell uname -s)
 CFLAGS = -O3 -Wall -Wextra -Werror $(MLX_INC) $(LIBTS_INC)
 
 ifeq ($(FT_UNAME), Darwin)
-	MLX_LIB = ./lib/libmlx42_mac.a
+	MLX_LIB = ./MLX42/build/libmlx42.a
 	LIBTS_LIB = ./lib/libts_mac.a
 	LDFLAGS = -L"/goinfre/mdakni/homebrew/Cellar/glfw/3.4/lib" -lglfw \
           -framework Cocoa -framework OpenGL -framework IOKit 

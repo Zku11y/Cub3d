@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 13:51:25 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/10 17:19:15 by skully           ###   ########.fr       */
+/*   Updated: 2026/03/11 02:57:55 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,24 +76,10 @@ void	ft_init_2(t_cube *cube, t_nc *nu)
 		cube->player.angle = (PI / 2.0) + PI;
 	cube->state = GAME;
 	cube->prev_state = GAME;
-	ft_load_png(cube, &(cube->menu.title), "./menu_screen_1.png");
-	ft_load_png(cube, &(cube->menu.settings.background), "./sa/s_bg.png");
-	ft_load_png(cube, &(cube->menu.settings.fov.bar_1), "./sa/bar_1.png");
-	ft_load_png(cube, &(cube->menu.settings.bar_2), "./sa/bar_2.png");
-	ft_load_png(cube, &(cube->menu.settings.fov.slider_1), "./sa/slider_1.png");
-	ft_load_png(cube, &(cube->menu.settings.slider_2), "./sa/slider_2.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x1_glow), "./sa/x1_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x2_glow), "./sa/x2_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x3_glow), "./sa/x3_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x4_glow), "./sa/x4_glow.png");
 }
 
 void	ft_init_3(t_cube *cube)
 {
-	ft_load_png(cube, &(cube->menu.settings.ups.x5_glow), "./sa/x5_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x6_glow), "./sa/x6_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x7_glow), "./sa/x7_glow.png");
-	ft_load_png(cube, &(cube->menu.settings.ups.x8_glow), "./sa/x8_glow.png");
 	cube->menu.settings.ups.start_x15 = 0.089 * cube->screen_width_buff;
 	cube->menu.settings.ups.end_x15 = 0.11 * cube->screen_width_buff;
 	cube->menu.settings.ups.start_x26 = 0.162 * cube->screen_width_buff;

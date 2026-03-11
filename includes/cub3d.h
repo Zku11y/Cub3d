@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/11 02:12:51 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 03:09:14 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,14 @@
 # define CUB3D_H
 
 # include "../MLX42/include/MLX42/MLX42.h"
-// # include "miniaudio.h"
 # include <fcntl.h>
 # include <stdio.h>
-// #include <error.h>
 # include <math.h>
 # include <stdbool.h>
 # include <sys/time.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <time.h>
-// 1920 / 4 = 480 || 1080 / 4 = 270
 
 //-----------------------------------------------------------------
 
@@ -115,7 +112,7 @@ char	*get_lain_with_space(int fd);
 # define PI 3.14159265359
 # define RADIANT_RATE (PI / 180)
 # define WALL_DST 5
-# define TURN_SPEED 0.015
+# define TURN_SPEED 0.08
 # define GRID_SIZE 32.0f
 # define PLAYER_SPEED 200.0f
 # define HORI 0
@@ -130,11 +127,11 @@ char	*get_lain_with_space(int fd);
 # define BLUR_MAX 0.06
 # define BLUR_MIN 0.5
 # define BLUR_LERP BLUR_MIN
-# define SPEED_LERP 0.1
+# define SPEED_LERP 0.3
 # define TILT_LERP 0.1
 # define FOV_LERP 0.01
 # define RECOIL_LERP 0.81
-# define MOVE_LERP 0.1
+# define MOVE_LERP 0.5
 # define FLASH_LERP 0.03
 # define LERP_LERP 0.01
 # define TRP_LERP 0.8
@@ -817,19 +814,13 @@ void				ft_updated_res_init(t_cube *cube);
 void				clear_image(t_cube *cube);
 
 
-void 				ft_init_enemies(t_cube *cube);
 unsigned long		ft_rand(unsigned long *seed);
 void				ft_map_init(t_cube *cube, t_nc *nu);
-void				state_machine(t_cube *cube);
-void				state_transition(t_cube *cube, t_state dest);
 void 				ft_game(t_cube *cube);
 void				ft_mouvement(t_cube *cube, double max_cos_speed, double	max_sin_speed);
 void    			ft_draw_rays(t_cube *cube);
 void    			ft_floor_ceiling(t_cube *cube);
 void    			ft_draw_world(t_cube *cube);
-void    			ft_draw_enemies(t_cube *cube);
-void    			ft_draw_proj(t_cube *cube);
-void    			ft_weapon(t_cube *cube);
 void    			ft_heart(t_cube *cube);
 void    			ft_fov_mod(t_cube *cube);
 uint8_t 			ft_lerp_pixels(uint8_t new, uint8_t old, double lerp_rate);
@@ -837,53 +828,25 @@ double 				ft_lerp_speed(double dst, double current);
 double 				ft_lerp_tilt(double dst, double current);
 double				ft_lerp_fov(double dst, double current, double lerp_rate);
 double 				ft_lerp_move(double dst, double current, double lerp_rate);
-void				ft_died(t_cube *cube, double i, double j);
-void				ft_menu(t_cube *cube);
 void				ft_tilt(t_cube *cube);
 void    			ft_draw_rays(t_cube *cube);
 void    			ft_floor_ceiling(t_cube *cube);
 void    			ft_draw_world(t_cube *cube);
-void    			ft_draw_enemies(t_cube *cube);
-void    			ft_draw_proj(t_cube *cube);
-void			    ft_weapon(t_cube *cube);
 void			    ft_heart(t_cube *cube);
 void			    ft_fov_mod(t_cube *cube);
 void 				ft_ups(t_cube *cube, mlx_image_t *image);
 void				draw_crosshair(t_cube *cube);
-void				draw_grid(t_cube *cube);
-void				draw_player(t_cube *cube);
-void				ft_weapon(t_cube *cube);
 void 				ft_prev_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
 void				ft_heart(t_cube *cube);
 void				ft_tilt(t_cube *cube);
-void				ft_draw_proj(t_cube *cube);
 bool 				is_looking(t_cube *cube, t_enemy *enemy);
-void 				ft_enemy(t_cube *cube, t_enemy *enemy, mlx_texture_t *texture);
-void 				ft_projectile(t_cube *cube, t_projectile *projectile);
-void				ft_menu(t_cube *cube);
-void				ft_settings(t_cube *cube);
-void				ft_crosshair_color(t_cube *cube);
-void				ft_fov_slider(t_cube *cube);
-void				ft_res(t_cube *cube);
-void				ft_mouse_sens(t_cube *cube);
-void				ft_upscale(t_cube *cube);
-void 				ft_update_screen_res(t_cube *cube, int upscale, mlx_texture_t *texture);
 void 				ft_renderer(t_cube *cube, mlx_texture_t *texture, int start_x, int start_y);
-void				ft_update_screen_buff(t_cube *cube, mlx_texture_t *texture, int new_w, int new_h);
 void				ft_floor_ceiling(t_cube *cube);
 bool 				check_screen_limits(t_cube *cube, t_vect2 len);
 void 				ft_health(t_cube *cube, t_enemy *enemy);
-void 				ft_init_projectile(t_cube *cube, t_enemy *enemy, t_vect2 *dir);
-void				ft_enemy6(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars);
-void				ft_enemy7(t_cube *cube, mlx_texture_t *texture, t_vars10 *vars);
 bool				ft_health2(t_cube *cube, t_enemy *enemy, t_vars10 *vars);
 void				ft_health3(t_cube *cube, mlx_texture_t *texture, t_enemy *enemy, t_vars10 *vars);
-bool				ft_projectile2(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
-bool				ft_projectile3(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
-bool				ft_projectile4(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
-void				ft_projectile6(t_cube *cube, t_projectile *projectile, t_vars10 *vars);
 void				ft_draw_texture(t_cube *cube, t_ray *ray, t_vect2 start, t_vect2 end);
-void 				ft_rectangle(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords, int color);
 void 				set_screen_limits(t_cube *cube, t_vect2 *len);
 t_vect2 			calc_length(t_cube *cube, t_vect2 hori, t_vect2 vert, t_ray *ray);
 void				ft_ray_init(t_cube *cube, t_ray *ray, double angle);
@@ -892,8 +855,6 @@ void				ft_mouvement2(t_cube *cube);
 void				ft_turn(t_cube *cube);
 void 				ft_angle_limit(double *angle);
 void 				ft_mouvement_limits(t_cube *cube, double new_x, double new_y);
-void				draw_bg(t_cube *cube, int x, int y, uint32_t color);
-void				draw_map_entity(t_cube *cube, double pos_x, double pos_y, double angle);
 bool 				check_collision(t_cube *cube, t_vect2 *cords, bool hori_vert, t_ray *ray);
 double				ft_safe_tan(double angle);
 void				vert_check_next_point(t_cube *cube, t_vect2 *start, t_ray *ray, double add);

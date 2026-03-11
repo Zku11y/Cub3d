@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:49 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 02:11:48 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 03:01:09 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ unsigned long	ft_rand(unsigned long *seed)
 void	ft_rectangle_prev(t_cube *cube, t_vect2 start_cords, t_vect2 end_cords,
 		t_colour color)
 {
-
 	int (start_x), (start_y), (end_x), (end_y);
 	start_y = (int)(start_cords.y);
 	end_x = (int)(end_cords.x);

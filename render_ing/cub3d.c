@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:13:24 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 02:18:36 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/11 03:02:39 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	ft_init(t_cube *cube, t_nc *nu)
 
 void	feet(void)
 {
-	system("leaks cub3d");
+	system("leaks cub3D");
 }
 
 int	main(int ac, char **av)
