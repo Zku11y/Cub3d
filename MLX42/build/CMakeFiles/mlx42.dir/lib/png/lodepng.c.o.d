@@ -1,6 +1,6 @@
 CMakeFiles/mlx42.dir/lib/png/lodepng.c.o: \
-  /Users/mdakni/projects/Cub3d/MLX42/lib/png/lodepng.c \
-  /Users/mdakni/projects/Cub3d/MLX42/include/lodepng/lodepng.h \
+  /Users/mdakni/projects/Bonus/MLX42/lib/png/lodepng.c \
+  /Users/mdakni/projects/Bonus/MLX42/include/lodepng/lodepng.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types.h \

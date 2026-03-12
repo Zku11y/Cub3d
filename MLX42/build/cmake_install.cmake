@@ -1,4 +1,4 @@
-# Install script for directory: /Users/mdakni/projects/Cub3d/MLX42
+# Install script for directory: /Users/mdakni/projects/Bonus/MLX42
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -46,11 +46,11 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/usr/local/include" TYPE DIRECTORY FILES "/Users/mdakni/projects/Cub3d/MLX42/./include/MLX42" FILES_MATCHING REGEX "/mlx42\\.h$")
+  file(INSTALL DESTINATION "/usr/local/include" TYPE DIRECTORY FILES "/Users/mdakni/projects/Bonus/MLX42/./include/MLX42" FILES_MATCHING REGEX "/mlx42\\.h$")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/Users/mdakni/projects/Cub3d/MLX42/build/libmlx42.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/Users/mdakni/projects/Bonus/MLX42/build/libmlx42.a")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libmlx42.a" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libmlx42.a")
     execute_process(COMMAND "/usr/bin/ranlib" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libmlx42.a")
@@ -60,7 +60,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/mdakni/projects/Cub3d/MLX42/build/install_local_manifest.txt"
+  file(WRITE "/Users/mdakni/projects/Bonus/MLX42/build/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -76,6 +76,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/mdakni/projects/Cub3d/MLX42/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/Users/mdakni/projects/Bonus/MLX42/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
