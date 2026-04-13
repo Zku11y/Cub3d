@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 17:48:35 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/04/12 22:31:00 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	ft_init_7(t_cube *cube)
 	gettimeofday(&tv, NULL);
 	cube->player.weapon.dmg = 50;
 	cube->player.weapon.fire_rate = 2;
-	ft_load_png(cube, &(cube->player.weapon.idle_texture), "./as/idle.png");
+	ft_load_png(cube, &(cube->player.weapon.idle_texture), "./as/dogshit_gun_1.png");
 	ft_load_png(cube, &(cube->player.weapon.shoot_texture), "./as/shoot.png");
 	ft_load_png(cube, &(cube->player.weapon.pump_texture), "./as/pump.png");
 	cube->player.weapon.texture = cube->player.weapon.idle_texture;

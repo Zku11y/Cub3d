@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_state_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:31 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 22:56:58 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/04/10 13:54:52 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,14 @@ void	ft_game(t_cube *cube)
 		ft_init_map(cube);
 	}
 	ft_mouvement(cube, 0.0f, 0.0f, (struct timeval){0, 0});
-	ft_draw_rays(cube);
-	ft_floor_ceiling(cube);
-	ft_draw_world(cube);
-	ft_draw_enemies(cube);
-	ft_draw_proj(cube);
-	ft_weapon(cube);
-	ft_heart(cube);
-	ft_fov_mod(cube);
+	ft_draw_rays(cube); // negligable
+	ft_floor_ceiling(cube); // ~20fps
+	ft_draw_world(cube); // negligable
+	ft_draw_enemies(cube); // negligable
+	ft_draw_proj(cube); // negligable
+	ft_weapon(cube); // negligable
+	ft_heart(cube); // negligable
+	ft_fov_mod(cube); // negligable
 }
 
 void	ft_set_values(t_cube *cube, t_vars values)

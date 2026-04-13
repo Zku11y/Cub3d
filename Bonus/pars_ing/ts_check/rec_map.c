@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rec_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 23:13:08 by oel-mado          #+#    #+#             */
-/*   Updated: 2026/03/11 22:55:45 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/03/23 15:29:10 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int	*go_rec(char **map, int x, int y, t_elv *start)
 	int		*m_s;
 	int		ret;
 
+	ret = 0;
 	m_s = ts_calloc(2, sizeof(int));
 	if (!m_s)
 		return (NULL);

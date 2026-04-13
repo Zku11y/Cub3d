@@ -1,10 +1,10 @@
 
-WA ./as/teto.png
-FL ./as/mira.png
-CI ./as/thukuna.png
+WA ./as/smooth_wall_1.png
+FL ./as/smooth_wall_1.png
+CI ./as/smooth_wall_1.png
 PR ./as/flight.png
 EN ./as/retep_evil.png
-ED ./as/fon_cren_shut.png
+ED ./as/smooth_door_1.png
 HP ./as/white_monster_2.png
 
 111111111111111111111111111111111111111111111

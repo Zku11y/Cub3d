@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_state.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:14:33 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 17:56:24 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/04/10 13:54:23 by skully           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,6 @@ void	draw_transition2(t_cube *cube)
 
 void	state_machine(t_cube *cube)
 {
-	int	i;
-
-	i = 0;
 	cube->transition = ft_lerp_move(cube->trans_dst, cube->transition, 0.9);
 	if (cube->prev_state == MENU)
 	{
