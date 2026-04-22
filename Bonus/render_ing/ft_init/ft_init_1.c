@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_init_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skully <skully@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:12:12 by mdakni            #+#    #+#             */
-/*   Updated: 2026/04/12 22:31:00 by skully           ###   ########.fr       */
+/*   Updated: 2026/04/22 12:34:33 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,9 @@ void	ft_init_7(t_cube *cube)
 	cube->player.weapon.dmg = 50;
 	cube->player.weapon.fire_rate = 2;
 	ft_load_png(cube, &(cube->player.weapon.idle_texture), "./as/dogshit_gun_1.png");
-	ft_load_png(cube, &(cube->player.weapon.shoot_texture), "./as/shoot.png");
-	ft_load_png(cube, &(cube->player.weapon.pump_texture), "./as/pump.png");
+	ft_load_png(cube, &(cube->player.weapon.idle_texture_2), "./as/dogshit_gun_2.png");
+	ft_load_png(cube, &(cube->player.weapon.shoot_texture), "./as/dogshit_gun_shoot.png");
+	ft_load_png(cube, &(cube->player.weapon.pump_texture), "./as/dogshit_gun_reload.png");
 	cube->player.weapon.texture = cube->player.weapon.idle_texture;
 	cube->player.weapon.pitch_increase = 1;
 	cube->player.weapon.pitch_increased = 0;

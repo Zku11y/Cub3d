@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 01:42:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/11 22:59:56 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/04/22 12:01:47 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	ft_clean1(t_cube *cube)
 	ft_free_tex(cube->menu.settings.res._1080);
 	ft_free_tex(cube->menu.settings.crosshair.border);
 	ft_free_tex(cube->player.weapon.idle_texture);
+	ft_free_tex(cube->player.weapon.idle_texture_2);
 	ft_free_tex(cube->player.weapon.shoot_texture);
 	ft_free_tex(cube->player.weapon.pump_texture);
 }

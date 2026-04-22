@@ -2,8 +2,8 @@
 WA ./as/smooth_wall_1.png
 FL ./as/smooth_wall_1.png
 CI ./as/smooth_wall_1.png
-PR ./as/flight.png
-EN ./as/retep_evil.png
+PR ./as/bullet_1.png
+EN ./as/enemy_1.png
 ED ./as/smooth_door_1.png
 HP ./as/white_monster_2.png
 

@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 14:15:10 by mdakni            #+#    #+#             */
-/*   Updated: 2026/03/08 23:10:55 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/04/22 12:36:36 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,13 @@ void	ft_weapon(t_cube *cube)
 	vars.y = vars.start_y;
 	gettimeofday(&tv, NULL);
 	vars.current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	if(cube->player.delay == false && vars.current_time - cube->player.weapon.idle_time > 250){
+		mlx_texture_t *tmp = cube->player.weapon.idle_texture;
+		cube->player.weapon.idle_texture = cube->player.weapon.idle_texture_2;
+		cube->player.weapon.idle_texture_2 = tmp;
+		cube->player.weapon.idle_time = vars.current_time;
+		cube->player.weapon.texture = cube->player.weapon.idle_texture;
+	}
 	ft_weapon_1(cube, vars.current_time);
 	if (cube->player.weapon.pitch_changed)
 		ft_weapon_2(cube);

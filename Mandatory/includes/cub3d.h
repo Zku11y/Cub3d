@@ -6,7 +6,7 @@
 /*   By: mdakni <mdakni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:15:11 by skully            #+#    #+#             */
-/*   Updated: 2026/03/11 20:10:25 by mdakni           ###   ########.fr       */
+/*   Updated: 2026/04/22 11:58:07 by mdakni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ typedef struct s_weapon
 	unsigned long	idle_time;
 	bool			idle_frame;
 	double			move_lerp;
+	unsigned long	switch_time;
 }					t_weapon;
 
 typedef struct s_heart
